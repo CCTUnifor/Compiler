@@ -1,6 +1,6 @@
-﻿namespace MyCompiler.Core.Enums
+﻿namespace MyCompiler.Core.Enums.MathExpression
 {
-    public enum GrammarClass
+    public enum MathExpressionGrammarClass
     {
         Digits,
         Operations,

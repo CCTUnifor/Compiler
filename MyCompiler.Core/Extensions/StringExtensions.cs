@@ -1,4 +1,5 @@
 ﻿using MyCompiler.Core.Models;
+using MyCompiler.Core.Models.MathExpression;
 
 namespace MyCompiler.Core.Extensions
 {

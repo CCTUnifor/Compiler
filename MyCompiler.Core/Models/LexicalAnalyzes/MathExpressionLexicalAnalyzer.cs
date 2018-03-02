@@ -1,31 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
 using MyCompiler.Core.Enums;
+using MyCompiler.Core.Enums.MathExpression;
 using MyCompiler.Core.Extensions;
 using MyCompiler.Core.Interfaces;
+using MyCompiler.Core.Models.MathExpression;
 
-namespace MyCompiler.Core.Models
+namespace MyCompiler.Core.Models.LexicalAnalyzer
 {
-    public class MathExpressionLexicalAnalyzer : ILexicalAnalyzer
+    public class MathExpressionLexicalAnalyzer : ILexicalAnalyzer<MathExpressionGrammarClass>
     {
         public static string Parentheses => "()";
         public static string Operations => "+-/*";
         public static string Digits => "0123456789";
 
-        public Token LastToken { get; set; }
+        public IToken<MathExpressionGrammarClass> LastToken { get; set; }
         public bool IsToAdd { get; set; }
-        public StateType CurrentState { get; set; }
+        public MathExpressionStateType CurrentState { get; set; }
 
         public MathExpressionLexicalAnalyzer()
         {
-            CurrentState = StateType.Initial;
+            CurrentState = MathExpressionStateType.Initial;
         }
 
-        public IEnumerable<Token> LoadTokens(string input)
+        public IEnumerable<IToken<MathExpressionGrammarClass>> LoadTokens(string input)
         {
             input = input.Replace(" ", "");
 
-            var tokens = new List<Token>();
+            var tokens = new List<IToken<MathExpressionGrammarClass>>();
             var i = 0;
 
             while (i < input.Length)
@@ -34,37 +36,37 @@ namespace MyCompiler.Core.Models
 
                 switch (CurrentState)
                 {
-                    case StateType.Initial:
+                    case MathExpressionStateType.Initial:
                         HandleInitialState(value);
                         i--;
                         break;
 
-                    case StateType.Digit:
+                    case MathExpressionStateType.Digit:
                         if (!value.IsDigit())
                             i = GoToInitialState(i);
                         else
-                            HandleState(GrammarClass.Digits, value);
+                            HandleState(MathExpressionGrammarClass.Digits, value, i);
                         break;
 
-                    case StateType.Operation:
+                    case MathExpressionStateType.Operation:
                         if (!value.IsOperation())
                             i = GoToInitialState(i);
                         else
-                            HandleState(GrammarClass.Operations, value);
+                            HandleState(MathExpressionGrammarClass.Operations, value, i);
                         break;
 
-                    case StateType.Parentheses:
+                    case MathExpressionStateType.Parentheses:
                         if (!value.IsParentheses())
                             i = GoToInitialState(i);
                         else
-                            HandleState(GrammarClass.Parentheses, value);
+                            HandleState(MathExpressionGrammarClass.Parentheses, value, i);
                         break;
 
-                    case StateType.Final:
+                    case MathExpressionStateType.Final:
                         if (value.IsDigit() || value.IsParentheses() || value.IsOperation())
                             i = GoToInitialState(i);
                         else
-                            HandleState(GrammarClass.IsNotGrammarClass, value);
+                            HandleState(MathExpressionGrammarClass.IsNotGrammarClass, value, i);
                         break;
 
                     default:
@@ -82,34 +84,34 @@ namespace MyCompiler.Core.Models
         private void HandleInitialState(string value)
         {
             if (value.IsDigit())
-                CurrentState = StateType.Digit;
+                CurrentState = MathExpressionStateType.Digit;
             else if (value.IsOperation())
-                CurrentState = StateType.Operation;
+                CurrentState = MathExpressionStateType.Operation;
             else if (value.IsParentheses())
-                CurrentState = StateType.Parentheses;
+                CurrentState = MathExpressionStateType.Parentheses;
             else
-                CurrentState = StateType.Final;
+                CurrentState = MathExpressionStateType.Final;
         }
 
         private int GoToInitialState(int i)
         {
-            CurrentState = StateType.Initial;
+            CurrentState = MathExpressionStateType.Initial;
             IsToAdd = false;
             i--;
             return i;
         }
 
-        private void HandleState(GrammarClass operation, string value)
+        private void HandleState(MathExpressionGrammarClass operation, string value, int line)
         {
-            if (LastToken == null || LastToken.GrammarClasse != operation)
-                CreateToken(operation, value);
-            else if (LastToken.GrammarClasse == operation)
+            if (LastToken == null || LastToken.GrammarClass != operation)
+                CreateToken(operation, value, line);
+            else if (LastToken.GrammarClass == operation)
                 ConcatToken(value);
         }
 
-        private void CreateToken(GrammarClass operation, string value)
+        private void CreateToken(MathExpressionGrammarClass operation, string value, int line)
         {
-            LastToken = new Token(value, operation);
+            LastToken = new MathExpressionToken(value, operation, line);
             IsToAdd = true;
         }
 

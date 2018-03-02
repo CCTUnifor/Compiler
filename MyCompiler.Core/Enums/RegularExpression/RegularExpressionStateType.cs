@@ -1,7 +1,6 @@
-﻿namespace MyCompiler.Core.Enums
+namespace MyCompiler.Core.Enums.RegularExpression
 {
-    public enum StateType
-    {
+    public enum RegularExpressionStateType{
         Final = -1,
         Initial = 1,
         Digit = 2,
