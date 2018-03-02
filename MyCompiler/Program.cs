@@ -8,8 +8,7 @@ namespace MyCompiler
     {
         private static void Main(string[] args)
         {
-            //ILexicalAnalyzer lexicalAnalyzer = new MathExpressionLexicalAnalyzer();
-            ILexicalAnalyzer lexicalAnalyzer = new GenericLexicalAnalyzer(new string[0]);
+            ILexicalAnalyzer lexicalAnalyzer = new MathExpressionLexicalAnalyzer();
 
             try
             {
@@ -19,8 +18,8 @@ namespace MyCompiler
 
                 Console.WriteLine("\n-----------------------------------------------------\n");
                 Console.WriteLine("Result: ");
-                //foreach (var token in tokens)
-                //    Console.WriteLine($"{token.Value.PadRight(10)} - {token.GrammarClasse}");
+                foreach (var token in tokens)
+                    Console.WriteLine($"{token.Value.PadRight(10)} - {token.GrammarClasse}");
 
             }
             catch (Exception e)
