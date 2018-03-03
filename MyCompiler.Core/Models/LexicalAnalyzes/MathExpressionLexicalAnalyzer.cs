@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using MyCompiler.Core.Enums;
 using MyCompiler.Core.Enums.MathExpression;
 using MyCompiler.Core.Extensions;
 using MyCompiler.Core.Interfaces;
-using MyCompiler.Core.Models.MathExpression;
 
 namespace MyCompiler.Core.Models.LexicalAnalyzer
 {

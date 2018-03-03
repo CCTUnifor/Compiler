@@ -1,10 +1,13 @@
 namespace MyCompiler.Core.Enums.RegularExpression
 {
-    public enum RegularExpressionStateType{
+    public enum RegularExpressionStateType
+    {
         Final = -1,
         Initial = 1,
-        Digit = 2,
-        Operation = 3,
-        Parentheses = 4
+        Terminal = 2,
+        Parentheses = 3,
+        Repeat = 4,
+        Plus = 5,
+        Or = 6,
     }
 }
