@@ -1,6 +1,6 @@
-﻿namespace MyCompiler.Core.Enums
+﻿namespace MyCompiler.Core.Enums.MathExpression
 {
-    public enum StateType
+    public enum MathExpressionStateType
     {
         Final = -1,
         Initial = 1,

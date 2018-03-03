@@ -1,6 +1,7 @@
 ﻿using System;
+using MyCompiler.Core.Enums.RegularExpression;
 using MyCompiler.Core.Interfaces;
-using MyCompiler.Core.Models;
+using MyCompiler.Core.Models.LexicalAnalyzer;
 
 namespace MyCompiler
 {
@@ -8,7 +9,8 @@ namespace MyCompiler
     {
         private static void Main(string[] args)
         {
-            ILexicalAnalyzer lexicalAnalyzer = new MathExpressionLexicalAnalyzer();
+            //ILexicalAnalyzer<MathExpressionGrammarClass> lexicalAnalyzer = new MathExpressionLexicalAnalyzer();
+            ILexicalAnalyzer<RegularExpressionGrammarClass> lexicalAnalyzer = new RegularExpressionLexicalAnalyzer();
 
             try
             {
@@ -19,7 +21,7 @@ namespace MyCompiler
                 Console.WriteLine("\n-----------------------------------------------------\n");
                 Console.WriteLine("Result: ");
                 foreach (var token in tokens)
-                    Console.WriteLine($"{token.Value.PadRight(10)} - {token.GrammarClasse}");
+                    Console.WriteLine($"{token.Value.PadRight(10)} - {token.GrammarClass}");
 
             }
             catch (Exception e)

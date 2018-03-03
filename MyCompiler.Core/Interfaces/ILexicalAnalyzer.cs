@@ -3,8 +3,8 @@ using MyCompiler.Core.Models;
 
 namespace MyCompiler.Core.Interfaces
 {
-    public interface ILexicalAnalyzer
+    public interface ILexicalAnalyzer<T>
     {
-        IEnumerable<Token> LoadTokens(string input);
+        IEnumerable<IToken<T>> LoadTokens(string input);
     }
 }
