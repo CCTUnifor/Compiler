@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MyCompiler.Core.Enums.RegularExpression;
 using MyCompiler.Core.Interfaces;
 using MyCompiler.Core.Models.LexicalAnalyzer;
@@ -17,9 +18,10 @@ namespace MyCompiler.ConsoleApp
 
                 //ILexicalAnalyzer<MathExpressionGrammarClass> lexicalAnalyzer = new MathExpressionLexicalAnalyzer();
                 var lexicalAnalyzer = new RegularExpressionLexicalAnalyzer();
-                var sintaxAnalyzer = new RegularExpressionSintexAnalyzer();
+                var sintaxAnalyzer = new RegularExpressionSyntacticAnalyzer();
 
-                var tokens = lexicalAnalyzer.LoadTokens(input);
+                var tokens = lexicalAnalyzer.LoadTokens(input).ToList();
+                sintaxAnalyzer.Check(tokens);
 
 
                 PrintTokens(tokens);
@@ -40,11 +42,83 @@ namespace MyCompiler.ConsoleApp
         }
     }
 
-    public interface ISintexAnalyzer
+    public interface ISyntacticAnalyzer<T>
     {
+        void Check(IEnumerable<IToken<T>> tokens);
     }
 
-    public class RegularExpressionSintexAnalyzer : ISintexAnalyzer
+    public class RegularExpressionSyntacticAnalyzer : ISyntacticAnalyzer<RegularExpressionGrammarClass>
     {
+        public void Check(IEnumerable<IToken<RegularExpressionGrammarClass>> tokens)
+        {
+            RE();
+        }
+
+        private void RE()
+        {
+            var isUnion = true;
+            if (isUnion)
+                UNION();
+            else
+                SimpleRE();
+        }
+
+        private void SimpleRE()
+        {
+            var isConcatenation = true;
+            if (isConcatenation)
+                Concatenation();
+            else
+                BasicRE();
+        }
+
+        private void BasicRE()
+        {
+            if (true)
+                Star();
+            else if (false)
+                Plus();
+            else if (false)
+                ElementaryRE();
+        }
+
+        private void Star()
+        {
+            ElementaryRE();
+            // if token.Value == *
+        }
+
+        private void Plus()
+        {
+            ElementaryRE();
+            // if token.Value == +
+        }
+
+        private void ElementaryRE()
+        {
+            if (true)
+                Group();
+        }
+
+        private void Group()
+        {
+            // if token.Value == (
+            RE();
+            // if token.Value == )
+        }
+
+
+        private void Concatenation()
+        {
+            SimpleRE();
+            BasicRE();
+        }
+
+        private void UNION()
+        {
+            RE();
+            // if token.Value == |
+            SimpleRE();
+        }
     }
 }
