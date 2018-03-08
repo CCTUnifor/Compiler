@@ -1,7 +1,8 @@
 from Entidades.Token import Token
 
-
 class LexicalAnalyzer:
+    """Implementação de máquina de estados para reconher 
+        Léxicamente uma Expressão Regular(ER)"""
     def __init__(self):
         pass
     
@@ -91,11 +92,11 @@ class LexicalAnalyzer:
 
             cursor += 1
         
-        print('______________')
-        print('Found ' + str(len(tokens)) + ' tokens')
+        # print('______________')
+        # print('Found ' + str(len(tokens)) + ' tokens')
 
-        for item in tokens:
-            print(item)
+        # for item in tokens:
+        #     print(item)
 
-        print('______________')
+        # print('______________')
         return tokens
