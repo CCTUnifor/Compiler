@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MyCompiler.Core.Enums.RegularExpression;
 using MyCompiler.Core.Interfaces;
+using MyCompiler.Core.Models;
 using MyCompiler.Core.Models.LexicalAnalyzer;
 
 namespace MyCompiler.ConsoleApp
@@ -47,78 +48,97 @@ namespace MyCompiler.ConsoleApp
         void Check(IEnumerable<IToken<T>> tokens);
     }
 
+    public class RegularExpressionParser
+    {
+        private string _input { get; set; }
+
+        public RegularExpressionParser(string input)
+        {
+            _input = input;
+        }
+
+        public char Peek()
+            => _input[0];
+
+        public void Eat(char c)
+        {
+            if (Peek() == c)
+                _input = _input.Substring(1);
+            else
+                throw new Exception($"Expected: {c}; got: {Peek()}");
+        }
+
+        public char Next()
+        {
+            var c = Peek();
+            Eat(c);
+            return c;
+        }
+
+        public bool More()
+            => _input.Any();
+    }
+
+    public class RegularExpressionParserToken<T>
+    {
+        private IEnumerable<IToken<T>> _tokens { get; set; }
+
+        public RegularExpressionParserToken(IEnumerable<IToken<T>> tokens)
+        {
+            _tokens = tokens;
+        }
+
+        public IToken<T> Peek()
+            => _tokens.First();
+
+        public void Eat(IToken<T> c)
+        {
+            if (Peek() == c)
+                _tokens = _tokens.Skip(1);
+            else
+                throw new Exception($"Expected: {c.Line}; got: {Peek().Line}");
+        }
+
+        public IToken<T> Next()
+        {
+            var c = Peek();
+            Eat(c);
+            return c;
+        }
+
+        public bool More()
+            => _tokens.Any();
+    }
+
     public class RegularExpressionSyntacticAnalyzer : ISyntacticAnalyzer<RegularExpressionGrammarClass>
     {
+        private RegularExpressionToken Token;
+        private RegularExpressionParserToken<RegularExpressionGrammarClass> _regexParser;
+
         public void Check(IEnumerable<IToken<RegularExpressionGrammarClass>> tokens)
         {
-            RE();
+            _regexParser = new RegularExpressionParserToken<RegularExpressionGrammarClass>(tokens);
+
+            if (_regexParser.More())
+                RE();
         }
 
         private void RE()
         {
-            var isUnion = true;
-            if (isUnion)
-                UNION();
+            Termo();
+            if (_regexParser.Peek().Value == "|")
+            {
+
+            }
             else
-                SimpleRE();
+            {
+                Termo();
+            }
         }
 
-        private void SimpleRE()
+        private void Termo()
         {
-            var isConcatenation = true;
-            if (isConcatenation)
-                Concatenation();
-            else
-                BasicRE();
-        }
 
-        private void BasicRE()
-        {
-            if (true)
-                Star();
-            else if (false)
-                Plus();
-            else if (false)
-                ElementaryRE();
-        }
-
-        private void Star()
-        {
-            ElementaryRE();
-            // if token.Value == *
-        }
-
-        private void Plus()
-        {
-            ElementaryRE();
-            // if token.Value == +
-        }
-
-        private void ElementaryRE()
-        {
-            if (true)
-                Group();
-        }
-
-        private void Group()
-        {
-            // if token.Value == (
-            RE();
-            // if token.Value == )
-        }
-
-
-        private void Concatenation()
-        {
-            SimpleRE();
-            BasicRE();
-        }
-
-        private void UNION()
-        {
-            RE();
-            // if token.Value == |
-            SimpleRE();
         }
     }
 }
