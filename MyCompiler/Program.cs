@@ -43,11 +43,6 @@ namespace MyCompiler.ConsoleApp
         }
     }
 
-    public interface ISyntacticAnalyzer<T>
-    {
-        void Check(IEnumerable<IToken<T>> tokens);
-    }
-
     public class RegularExpressionParser
     {
         private string _input { get; set; }
@@ -123,22 +118,38 @@ namespace MyCompiler.ConsoleApp
                 RE();
         }
 
-        private void RE()
+        private RegEx RE()
         {
-            Termo();
-            if (_regexParser.Peek().Value == "|")
-            {
+            var term = Termo();
 
-            }
-            else
-            {
-                Termo();
-            }
+            if (!_regexParser.More() || _regexParser.Peek().Value != "|") return term;
+
+            _regexParser.Eat(_regexParser.Peek());
+            var regex = RE();
+            return new Choice(term, regex);
+
         }
 
-        private void Termo()
+        private RegEx Termo()
         {
-
+            //var factor = RegEx.
+            throw new NotImplementedException();
         }
+    }
+
+    public class Choice : RegEx
+    {
+        private RegEx thisOne;
+        private RegEx thatOne;
+
+        public Choice(RegEx term, RegEx regex)
+        {
+            thisOne = term;
+            thatOne = regex;
+        }
+    }
+
+    public abstract class RegEx
+    {
     }
 }
