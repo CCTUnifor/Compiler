@@ -7,9 +7,9 @@ class TokenType:
 
 class Token:
     NUMBER = TokenType(1, None, 'Number')
-    OPERATOR = TokenType(2, ['+', '*', '|'], 'Operator')
+    OPERATOR = TokenType(2, ['+', '*'], 'Operator')
     PARENTHESES = TokenType(3, ['(', ')'], 'Parentheses')
-    WORD = TokenType(4, None, 'word')
+    WORD = TokenType(4, None, 'Word')
     COMMENT = TokenType(5, ['-'], 'Comment')
     OR = TokenType(5, ['|'], 'Or')
 

@@ -3,13 +3,14 @@ from Sintatic import SintaticAnalyzer as StA
 
 
 if( __name__ == "__main__"):
-    # entry = 'e|d'
+    # entry = '(e|d)+'
     # entry = 'e*'
     # entry = '78d2'
+    entry= 'e|de|d)*'
     # http://matt.might.net/articles/parsing-regex-with-recursive-descent/
-    entry= 'e(e|d)*'
-
     tokens = LxA.analyze(entry)
+    for i in tokens:
+        print(i)
 
     sintaticAnalyzer = StA(tokens)
     sintaticAnalyzer.analyze()
