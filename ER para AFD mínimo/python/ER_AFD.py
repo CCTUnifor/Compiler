@@ -7,9 +7,12 @@ if( __name__ == "__main__"):
     # entry = 'e*'
     # entry = '78d2'
     # http://matt.might.net/articles/parsing-regex-with-recursive-descent/
-    entry= 'e(e|d)*' # falta implementar os ()
+    entry= 'e(e|d)*'
+
     tokens = LxA.analyze(entry)
-    StA.analyze(tokens)
+
+    sintaticAnalyzer = StA(tokens)
+    sintaticAnalyzer.analyze()
 
     # root = ERtoAFNE().convert(tokens)
     # matrix = AFNEtoAFD().convert(root)

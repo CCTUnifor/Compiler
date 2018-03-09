@@ -11,7 +11,7 @@ class LexicalAnalyzer:
         tokens = []
         state = 1
         cursor = 0
-        accumulator = ""
+        accumulator = None
 
         while(cursor <= len(stream)):
             character = stream[cursor] if cursor < len(stream) else ''
@@ -43,6 +43,10 @@ class LexicalAnalyzer:
                     accumulator.value = character
                     tokens.append(accumulator)
                     state = 6
+                
+                elif(character in Token.OR.values):
+                    tokens.append(Token(character, Token.OR))
+                    state = 9
 
                 else:
                     raise Exception('Lexical error on character: ' + str(character))
@@ -53,7 +57,7 @@ class LexicalAnalyzer:
                     
                 else:
                     tokens.append(accumulator)
-                    accumulator = ""
+                    accumulator = None
                     state = 1
                     continue    
 
@@ -84,11 +88,15 @@ class LexicalAnalyzer:
             elif(state == 8):
                 if(character in Token.COMMENT.values):
                     accumulator.value += character
-                    accumulator = ''
+                    accumulator = None
                     state = 1
                     
                 else:
                     raise Exception("Expected '-' on closing comment at: " + str(cursor))
+            
+            elif(state == 9):
+                state = 1
+                continue
 
             cursor += 1
         

@@ -11,10 +11,11 @@ class Token:
     PARENTHESES = TokenType(3, ['(', ')'], 'Parentheses')
     WORD = TokenType(4, None, 'word')
     COMMENT = TokenType(5, ['-'], 'Comment')
+    OR = TokenType(5, ['|'], 'Or')
 
     def __init__(self, value, ttype):
         self.value = value
         self.ttype = ttype
     
     def __str__(self):
-        return str(self.value).ljust(10, ' ') + ' ' + self.ttype.name
+        return "'" + str(self.value) + "' " + self.ttype.name
