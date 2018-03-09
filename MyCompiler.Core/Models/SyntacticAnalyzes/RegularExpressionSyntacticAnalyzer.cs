@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using MyCompiler.Core.Enums.RegularExpression;
 using MyCompiler.Core.Interfaces;
+using MyCompiler.Core.Models.LexicalAnalyzer;
 
 namespace MyCompiler.Core.Models.SyntacticAnalyzes
 {
     public class RegularExpressionSyntacticAnalyzer : ISyntacticAnalyzer<RegularExpressionGrammarClass>
     {
-        private RegularExpressionToken Token;
         private RegularExpressionParserToken<RegularExpressionGrammarClass> _regexParser;
 
         public void Check(IEnumerable<IToken<RegularExpressionGrammarClass>> tokens)
@@ -15,25 +15,62 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
             _regexParser = new RegularExpressionParserToken<RegularExpressionGrammarClass>(tokens);
 
             if (_regexParser.More())
-                RE();
+                Regex();
         }
 
-        private RegEx RE()
+        private void Regex()
         {
-            var term = Termo();
+            if (!_regexParser.More())
+                return;
 
-            if (!_regexParser.More() || _regexParser.Peek().Value != "|") return term;
+            Term();
 
-            _regexParser.Eat(_regexParser.Peek());
-            var regex = RE();
-            return new Choice(term, regex);
-
+            if (_regexParser.Peek.Value == "|")
+            {
+                _regexParser.Next();
+                Regex();
+            }
         }
 
-        private RegEx Termo()
+        private void Term()
         {
-            //var factor = RegEx.
-            throw new NotImplementedException();
+            switch (_regexParser.Peek.Value)
+            {
+                case "a":
+                case "b":
+                case "c":
+                case "d":
+                    Factor();
+                    Term();
+                    break;
+            }
         }
-    }    
+
+        private void Factor()
+        {
+            Base();
+            if (_regexParser.Peek.Value == "*")
+                _regexParser.Next();
+        }
+
+        private void Base()
+        {
+            if (RegularExpressionLexicalAnalyzer.Terminal.Contains(_regexParser.Peek.Value))
+            {
+                _regexParser.Next();
+                return;
+            }
+
+            if (_regexParser.Peek.Value != "(")
+                throw new Exception("Invalid");
+
+            _regexParser.Next();
+            Regex();
+
+            if (_regexParser.Peek.Value != "(")
+                throw new Exception("Invalid");
+
+            _regexParser.Next();
+        }
+    }
 }

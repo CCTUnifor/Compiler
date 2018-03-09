@@ -1,4 +1,4 @@
 regex   ::= term '|' regex | term
-term    ::= { factor }
-factor  ::= base { '*' }
-base    ::= char | '\' char | '(' regex ')'
+term    ::= factor term | &
+factor  ::= base * | base
+base    ::= a | b | c | d | '(' regex ')'

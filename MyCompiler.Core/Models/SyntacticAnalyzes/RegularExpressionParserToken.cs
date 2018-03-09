@@ -14,20 +14,20 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
             _tokens = tokens;
         }
 
-        public IToken<T> Peek()
-            => _tokens.First();
+        public IToken<T> Peek
+            => _tokens.FirstOrDefault();
 
         public void Eat(IToken<T> c)
         {
-            if (Peek() == c)
+            if (Peek == c)
                 _tokens = _tokens.Skip(1);
             else
-                throw new Exception($"Expected: {c.Line}; got: {Peek().Line}");
+                throw new Exception($"Expected: {c.Line}; got: {Peek.Line}");
         }
 
         public IToken<T> Next()
         {
-            var c = Peek();
+            var c = Peek;
             Eat(c);
             return c;
         }

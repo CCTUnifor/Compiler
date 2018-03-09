@@ -11,7 +11,7 @@ namespace MyCompiler.Core.Models.LexicalAnalyzer
         public static string Repeat => "*";
         public static string Plus => "+";
         public static string Or => "|";
-        public static string Terminal => "abc";
+        public static string Terminal => "abcd";
 
         public IToken<RegularExpressionGrammarClass> LastToken { get; set; }
         public bool IsToAdd { get; set; }
