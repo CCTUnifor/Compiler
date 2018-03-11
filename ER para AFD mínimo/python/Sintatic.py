@@ -1,11 +1,10 @@
 from Entidades.Token import Token
+from Entidades.Node import ThompsonGraph Graph
 
 
 class SintaticAnalyzer:
     def __init__(self, inputTokens):
         self.input = inputTokens
-        self.cursor = 0
-        self.logCount = 0
     
     def raiseException(self, expected, gotit):
         raise Exception("Expected " + expected + " got: " + gotit + ' on cursor ' + str(self.cursor))
@@ -28,8 +27,11 @@ class SintaticAnalyzer:
         return self.input[self.cursor]
 
     def eat(self, token):
+        print('EATING {' + token + '}')
         if(self.peek().value is token):
+            result = self.peek()
             self.cursor += 1
+            return result
         else:
             self.raiseException(str(self.peek), token)
 
@@ -42,50 +44,87 @@ class SintaticAnalyzer:
         return len(self.input) <= self.cursor
 
     def analyze(self):
-        self.regex()
+        self.cursor = 0
+        self.logCount = 0
+        self.thompsonCount = 0
+
+        result = self.regex()
+        if(not self.empty()):
+            raise Exception('End not finded')
+        
+        return result
+    
+    def getNewGraph(self):
+        self.thompsonCount += 1
+        return Graph(self.thompsonCount - 1)
     
     def regex(self):
         self.log('regex')
-        self.term()
+        graph = self.term()
 
         if(not self.empty()):
             if(self.peek().ttype is Token.OR):
                 self.eat('|')
-                self.regex()
-            # else:
-            #     self.raiseException('|', str(self.peek()))
+                graph = graph.addChoice(self.regex())
+
+            else:
+                self.raiseException('|', str(self.peek()))
+        
+        return graph
 
     def term(self):
         self.log('term')
-        if(not self.empty() and self.peek().value is not ')' and self.peek().ttype is not Token.OR):
-            self.factor()
-            self.term()
+        graph = None
+        
+        while(not self.empty() and self.peek().value is not ')' and self.peek().ttype is not Token.OR):
+            if(graph is None):
+                graph = self.factor()
+            else:
+                graph.addSequence(self.factor())
+        
+        if(graph is None):
+            self.raiseException("<term>", "ɛ")
+        
+        return graph
             
 
     def factor(self):
         self.log('factor')
-        self.base()
+               
+        graph = self.base()
+
         if(not self.empty()):
             if(self.peek().value is '*'):
                 self.eat('*')
+                graph.repeatN()
 
             elif(self.peek().value is '+'):
                 self.eat('+')
+                graph.repeatN(True)
+        
+        return graph
     
     def base(self):
         self.log('base')
         if(not self.empty()):
             if(self.peek().value is '('):
                 self.eat('(') # consome '('
-                self.regex()
+                graph = self.regex()
                 self.eat(')') # consome ')'
+                return graph
+            elif(self.peek().ttype.terminal):
+                graph = self.getNewGraph()                
+                self.character(graph)
+                return graph
             else:
-                self.character()
+                self.raiseException("<base>", "TERMINAL")                
+
+        self.raiseException("<base>", "Ɛ")
             
 
     def character(self):
         self.log('character')
         if(self.peek().ttype is Token.WORD or self.peek().ttype is Token.NUMBER):
-            self.next() # consome caractéres
+            graph.addToken(self.next()) # consome caractéres
         else:
             self.raiseException("<character>", str(self.peek()))
