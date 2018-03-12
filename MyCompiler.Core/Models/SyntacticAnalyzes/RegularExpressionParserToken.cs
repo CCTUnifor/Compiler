@@ -29,10 +29,13 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
         {
             var c = Peek;
             Eat(c);
-            return c;
+            return c ?? default;
         }
 
         public bool More()
             => _tokens.Any();
+
+        public override string ToString()
+            => Peek.ToString();
     }
 }

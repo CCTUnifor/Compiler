@@ -26,5 +26,8 @@ namespace MyCompiler.Core.Models
 
         void IToken<RegularExpressionGrammarClass>.ConcatValue(string value)
             => Value += value;
+
+        public override string ToString()
+            => $"{Value.PadRight(20)} - {GrammarClass}";
     }
 }
