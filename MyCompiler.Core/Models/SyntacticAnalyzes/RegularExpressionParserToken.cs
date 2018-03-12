@@ -29,7 +29,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
         {
             var c = Peek;
             Eat(c);
-            return c ?? default;
+            return c;
         }
 
         public bool More()

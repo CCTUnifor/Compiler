@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using MyCompiler.Core.Enums.RegularExpression;
+using MyCompiler.Core.Extensions;
 using MyCompiler.Core.Interfaces;
 using MyCompiler.Core.Models.LexicalAnalyzer;
 
@@ -20,35 +21,27 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
 
         private void Regex()
         {
-            Console.WriteLine($"Regex: {_regexParser.Peek}" );
-            //if (!_regexParser.More())
-            //    return;
+            Console.WriteLine($"Regex: {_regexParser.Peek}");
             Term();
 
-            if (_regexParser.Peek.GrammarClass != RegularExpressionGrammarClass.Or) return;
+            if (!_regexParser.More() || _regexParser.Peek.GrammarClass != RegularExpressionGrammarClass.Or)
+                return;
             _regexParser.Next();
             Regex();
         }
 
         private void Term()
         {
-            Console.WriteLine($"Term: {_regexParser.Peek}");
-            //if (!_regexParser.More())
-            //    return;
+            if (!_regexParser.More())
+                return;
 
-            switch (_regexParser.Peek.Value)
-            {
-                case "a":
-                case "b":
-                case "c":
-                case "d":
-                case "(":
-                    Factor();
-                    Term();
-                    break;
-                default:
-                    break;
-            }
+            Console.WriteLine($"Term: {_regexParser.Peek}");
+
+            if (!_regexParser.Peek.Value.IsTerminal() && _regexParser.Peek.Value != "(")
+                return;
+
+            Factor();
+            Term();
         }
 
         private void Factor()

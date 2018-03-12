@@ -24,14 +24,17 @@ namespace MyCompiler.ConsoleApp
                 var tokens = lexicalAnalyzer.LoadTokens(input).ToList();
                 sintaxAnalyzer.Check(tokens);
 
-
+                // ex: a|b
+                // ex: (a|b)*
+                // ex: ((a|b)*)
                 PrintTokens(tokens);
-                Console.ReadLine();
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
             }
+
+            Console.ReadLine();
         }
 
         private static void PrintTokens(IEnumerable<IToken<RegularExpressionGrammarClass>> tokens)
