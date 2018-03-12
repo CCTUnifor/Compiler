@@ -17,7 +17,7 @@ if( __name__ == "__main__"):
 
     sintaticAnalyzer = StA(tokens)
     graph = sintaticAnalyzer.analyze()
-    print('__________________PRINT__________________')
+    print('------------------PRINT------------------')
     graph.printTable()
     # print(str(graph.root))
     graph.printMatplotlib()

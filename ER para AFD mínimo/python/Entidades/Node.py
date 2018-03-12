@@ -49,7 +49,7 @@ class ThompsonGraph:
         self.cursor = self.root
     
     def makeNode(self):
-        node = ThompsonNode(str(self.id)+ "_" + str(self.countId))
+        node = ThompsonNode(str(self.id)+ "-" + str(self.countId))
         self.countId+=1
         self.node_list.append(node)
         return node
@@ -94,7 +94,8 @@ class ThompsonGraph:
         down = newGraph.addToken(None)
 
         newGraph.addSequence(thompsonGraph)
-        newGraph.cursor.addDestination(up, None)        
+        newGraph.cursor.addDestination(up, None)
+        newGraph.cursor = up  
 
         return newGraph
         
@@ -106,9 +107,11 @@ class ThompsonGraph:
 
         for i, node in enumerate(self.node_list):
             G.add_node(node.id, pos=(i, i))
+            print((node.id,(i,i)))
 
         for path in self.edge_list:
             G.add_edge(path.src.id, path.dest.id, weight=(path.value.value if path.value else "ɛ"))
+            print((path.src.id, path.dest.id, (path.value.value if path.value else "ɛ")))
 
         pos = nx.get_node_attributes(G,'pos')
         nx.draw(G,pos, with_labels=True)
@@ -116,6 +119,7 @@ class ThompsonGraph:
         labels = nx.get_edge_attributes(G,'weight')
         nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
         plt.show()
+        
     
     def printTable(self):
         gTable = [[0 for j in self.node_list] for i in self.node_list]
