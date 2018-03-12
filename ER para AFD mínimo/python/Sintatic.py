@@ -13,7 +13,7 @@ class SintaticAnalyzer:
         msg = ''
         try:
             msg = ('<' + txt + '> on token: ' + str(self.peek()) + ' on cursor: ' +  str(self.cursor))
-        except Exception as identifier:
+        except Exception :
             msg = ('<' + txt + '> on cursor: ' +  str(self.cursor))
 
         # for i in range(0, self.logCount):

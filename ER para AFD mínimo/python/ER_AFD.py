@@ -17,9 +17,10 @@ if( __name__ == "__main__"):
 
     sintaticAnalyzer = StA(tokens)
     graph = sintaticAnalyzer.analyze()
-    print('------------------PRINT------------------')
+    print('------------------MATRIZ-----------------')
     graph.printTable()
     # print(str(graph.root))
+    print('------------------GRAFO------------------')
     graph.printMatplotlib()
 
     # root = ERtoAFNE().convert(tokens)

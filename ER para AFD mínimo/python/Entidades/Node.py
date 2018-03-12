@@ -59,13 +59,11 @@ class ThompsonGraph:
         path = self.cursor.addDestination(newEnd, token)
         self.edge_list.append(path)
         self.cursor = newEnd
-        print(self.root)
+        # print(self.root)
         return newEnd
     
     def addSequence(self, thompsonGraph):
         oldRoot = thompsonGraph.root
-        inRoot = []
-        outRoot = []
 
         # self.cursor.paths += thompsonGraph.root.paths
         self.node_list += [x for x in thompsonGraph.node_list if x is not oldRoot]
@@ -91,27 +89,39 @@ class ThompsonGraph:
         up = newGraph.addToken(None)
 
         newGraph.cursor = newGraph.root
-        down = newGraph.addToken(None)
+        newGraph.addToken(None)
 
         newGraph.addSequence(thompsonGraph)
-        newGraph.cursor.addDestination(up, None)
-        newGraph.cursor = up  
+        newPath = newGraph.cursor.addDestination(up, None)
+        newGraph.cursor = up
+        newGraph.edge_list.append(newPath)
 
         return newGraph
         
     def repeatN(self, haveMinimun=False):
         pass
     
+    def rec(self, G, node, x, y):
+        G.add_node(node.id, pos=(x, y))
+
+        for path in node.paths:
+            # self.rec(G, path.dest, x+1,y+1)
+            pass
+
     def printMatplotlib(self):
         G=nx.Graph()
+        print('Nodes')
 
-        for i, node in enumerate(self.node_list):
-            G.add_node(node.id, pos=(i, i))
-            print((node.id,(i,i)))
+        self.rec(G, self.root, 1, 1)
 
-        for path in self.edge_list:
-            G.add_edge(path.src.id, path.dest.id, weight=(path.value.value if path.value else "ɛ"))
-            print((path.src.id, path.dest.id, (path.value.value if path.value else "ɛ")))
+        # for i, node in enumerate(self.node_list):
+        #     print((node.id,(i,i**3)))
+        #     G.add_node(node.id, pos=(i, i**3))
+        
+        # print('Edges')
+        # for path in self.edge_list:
+        #     print((path.src.id, path.dest.id, (path.value.value if path.value else "ɛ")))
+        #     G.add_edge(path.src.id, path.dest.id, weight=(path.value.value if path.value else "ɛ"))
 
         pos = nx.get_node_attributes(G,'pos')
         nx.draw(G,pos, with_labels=True)
