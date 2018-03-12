@@ -1,5 +1,5 @@
 from Entidades.Token import Token
-from Entidades.Node import ThompsonGraph Graph
+from Entidades.Node import ThompsonGraph as Graph
 
 
 class SintaticAnalyzer:
@@ -26,9 +26,9 @@ class SintaticAnalyzer:
         # print(self.cursor)
         return self.input[self.cursor]
 
-    def eat(self, token):
+    def eat(self, token:str):
         print('EATING {' + token + '}')
-        if(self.peek().value is token):
+        if(not self.empty() and self.peek().value is token):
             result = self.peek()
             self.cursor += 1
             return result
@@ -65,7 +65,8 @@ class SintaticAnalyzer:
         if(not self.empty()):
             if(self.peek().ttype is Token.OR):
                 self.eat('|')
-                graph = graph.addChoice(self.regex())
+                graph = graph.addChoice(self.regex(), self.thompsonCount)
+                self.thompsonCount+=1
 
             else:
                 self.raiseException('|', str(self.peek()))
@@ -122,7 +123,7 @@ class SintaticAnalyzer:
         self.raiseException("<base>", "Ɛ")
             
 
-    def character(self):
+    def character(self, graph):
         self.log('character')
         if(self.peek().ttype is Token.WORD or self.peek().ttype is Token.NUMBER):
             graph.addToken(self.next()) # consome caractéres
