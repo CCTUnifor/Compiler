@@ -25,6 +25,6 @@ namespace MyCompiler.Core.Models
             => Value += value;
 
         public override string ToString()
-            => $"{Value} - {GrammarClass}";
+            => $"'{Value}'";
     }
 }

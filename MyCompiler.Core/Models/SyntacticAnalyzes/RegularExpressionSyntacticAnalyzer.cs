@@ -1,9 +1,8 @@
-using System;
 using System.Collections.Generic;
 using MyCompiler.Core.Enums.RegularExpression;
+using MyCompiler.Core.Exceptions;
 using MyCompiler.Core.Extensions;
 using MyCompiler.Core.Interfaces;
-using MyCompiler.Core.Models.LexicalAnalyzer;
 
 namespace MyCompiler.Core.Models.SyntacticAnalyzes
 {
@@ -17,27 +16,29 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
 
             if (_regexParser.More())
                 Regex();
+            else
+                throw new CompilationException("Empty tokens!");
+
+            if (_regexParser.More())
+                throw new CompilationException($"Still has an token => {_regexParser}");
+
+            _regexParser.PrintEvents();
         }
 
         private void Regex()
         {
-            Console.WriteLine($"Regex: {_regexParser.Peek}");
             Term();
 
             if (!_regexParser.More() || _regexParser.Peek.GrammarClass != RegularExpressionGrammarClass.Or)
                 return;
-            _regexParser.Next();
+
+            _regexParser.Eat("|");
             Regex();
         }
 
         private void Term()
         {
-            if (!_regexParser.More())
-                return;
-
-            Console.WriteLine($"Term: {_regexParser.Peek}");
-
-            if (!_regexParser.Peek.Value.IsTerminal() && _regexParser.Peek.Value != "(")
+            if (!_regexParser.More() || !_regexParser.Peek.Value.IsTerminal() && _regexParser.Peek.Value != "(")
                 return;
 
             Factor();
@@ -46,8 +47,6 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
 
         private void Factor()
         {
-            Console.WriteLine($"Factor: {_regexParser.Peek}");
-
             Base();
             if (_regexParser.More() && _regexParser.Peek.GrammarClass == RegularExpressionGrammarClass.Repeat)
                 _regexParser.Next();
@@ -55,24 +54,16 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
 
         private void Base()
         {
-            Console.WriteLine($"Base: {_regexParser.Peek}");
-
-            if (RegularExpressionLexicalAnalyzer.Terminal.Contains(_regexParser.Peek.Value))
+            if (_regexParser.Peek.Value == "(")
             {
-                _regexParser.Next();
-                return;
+                _regexParser.Eat("(");
+                Regex();
+                _regexParser.Eat(")");
             }
-
-            if (_regexParser.Peek.Value != "(")
-                throw new Exception("Invalid");
-
-            _regexParser.Next();
-            Regex();
-
-            if (_regexParser.Peek.Value != ")")
-                throw new Exception("Invalid");
-
-            _regexParser.Next();
+            else if (_regexParser.Peek.Value.IsTerminal())
+                _regexParser.Next();
+            else
+                throw new CompilationException($"Expected: '(' or terminal; got: {_regexParser.Peek.Value}");
         }
     }
 }

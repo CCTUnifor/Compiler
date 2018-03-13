@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MyCompiler.Core.Enums.RegularExpression;
+using MyCompiler.Core.Exceptions;
 using MyCompiler.Core.Interfaces;
 using MyCompiler.Core.Models.LexicalAnalyzer;
 using MyCompiler.Core.Models.SyntacticAnalyzes;
@@ -22,16 +23,16 @@ namespace MyCompiler.ConsoleApp
                 var sintaxAnalyzer = new RegularExpressionSyntacticAnalyzer();
 
                 var tokens = lexicalAnalyzer.LoadTokens(input).ToList();
-                sintaxAnalyzer.Check(tokens);
-
-                // ex: a|b
-                // ex: (a|b)*
-                // ex: ((a|b)*)
                 PrintTokens(tokens);
+
+                sintaxAnalyzer.Check(tokens);
+            }
+            catch (CompilationException e)
+            {
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Console.WriteLine(e.Message);
             }
 
             Console.ReadLine();
@@ -40,7 +41,7 @@ namespace MyCompiler.ConsoleApp
         private static void PrintTokens(IEnumerable<IToken<RegularExpressionGrammarClass>> tokens)
         {
             Console.WriteLine("\n-----------------------------------------------------\n");
-            Console.WriteLine("Result: ");
+            Console.WriteLine("Tokens: ");
             foreach (var token in tokens)
                 Console.WriteLine($"{token.Value.PadRight(10)} - {token.GrammarClass}");
         }
