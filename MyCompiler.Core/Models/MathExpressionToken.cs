@@ -1,6 +1,4 @@
-﻿using System;
-using MyCompiler.Core.Enums;
-using MyCompiler.Core.Enums.MathExpression;
+﻿using MyCompiler.Core.Enums.MathExpression;
 using MyCompiler.Core.Interfaces;
 
 namespace MyCompiler.Core.Models
@@ -20,10 +18,16 @@ namespace MyCompiler.Core.Models
             Collumn = collumn;
         }
 
-        public bool SameGramarClassTo(IToken<MathExpressionGrammarClass> currentToken) 
+        public bool SameGramarClassTo(IToken<MathExpressionGrammarClass> currentToken)
             => GrammarClass == currentToken?.GrammarClass;
 
         void IToken<MathExpressionGrammarClass>.ConcatValue(string value)
             => Value += value;
+
+        public override bool Equals(object obj)
+        {
+            var x = (MathExpressionToken)obj;
+            return Value == x.Value && GrammarClass == x.GrammarClass && Line == x.Line && Collumn == x.Collumn;
+        }
     }
 }

@@ -1,6 +1,3 @@
-using System;
-using MyCompiler.Core.Enums;
-using MyCompiler.Core.Enums.MathExpression;
 using MyCompiler.Core.Enums.RegularExpression;
 using MyCompiler.Core.Interfaces;
 
@@ -21,10 +18,13 @@ namespace MyCompiler.Core.Models
             Collumn = collumn;
         }
 
-        public bool SameGramarClassTo(IToken<RegularExpressionGrammarClass> currentToken) 
+        public bool SameGramarClassTo(IToken<RegularExpressionGrammarClass> currentToken)
             => GrammarClass == currentToken?.GrammarClass;
 
         void IToken<RegularExpressionGrammarClass>.ConcatValue(string value)
             => Value += value;
+
+        public override string ToString()
+            => $"'{Value}'";
     }
 }
