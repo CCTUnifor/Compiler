@@ -39,16 +39,12 @@ class Builder:
     
     def build(self):
         subset = self.getNewSubset()
-        alphabetSets = {
-            'done': []
-            'undone':[]
-        }
+        
         while(True):
             self.recursiveFill(subset, self.cursor)
 
-            subset.alphabetSets
 
-            if (len(alphabetSets['undone']) is 0):
+            if (True):
                 break
 
     @staticmethod
