@@ -1,5 +1,6 @@
 from Lexical import LexicalAnalyzer as LxA
 from Sintatic import SintaticAnalyzer as StA
+import ThompsonPrinter as printer
 
 # http://matt.might.net/articles/parsing-regex-with-recursive-descent/
 # install Matplotlib
@@ -7,23 +8,17 @@ from Sintatic import SintaticAnalyzer as StA
 
 if( __name__ == "__main__"):
     # entry = '(e|d)+'
-    # entry = 'e*'
+    entry = 'a(e|d)*'
     # entry = '78d2 abc d 527000'
-    entry = 'a|b|c'
-    # entry= '(|c)*'
+    # entry = '(a|b)|c'
+    # entry= '(|c)*' # erro
     tokens = LxA.analyze(entry)
     for i in tokens:
         print(i)
 
     sintaticAnalyzer = StA(tokens)
     graph = sintaticAnalyzer.analyze()
-    print('--------------------MATRIZ--------------------')
-    graph.printTable()
-    # print(str(graph.root))
+
+    printer.printTable(graph)    
+    printer.printMatplotlib(graph)
     
-    graph.printMatplotlib()
-
-    # root = ERtoAFNE().convert(tokens)
-    # matrix = AFNEtoAFD().convert(root)
-
-    # print(tokens)

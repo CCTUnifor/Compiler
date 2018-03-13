@@ -1,7 +1,3 @@
-import networkx as nx
-import matplotlib.pyplot as plt
-
-
 class Path:
     def __init__(self, destination, value, source):
         self.src = source
@@ -99,63 +95,19 @@ class ThompsonGraph:
         return newGraph
         
     def repeatN(self, haveMinimun=False):
-        pass
+
+        newPath = self.cursor.addDestination(self.root, None)
+        self.edge_list.append(newPath)        
+
+        newBegining = self.makeNode()
+        newPath = newBegining.addDestination(self.root, None)
+        self.edge_list.append(newPath)        
+        self.root = newBegining
+
+        self.addToken(None)
+
+        if(not haveMinimun):
+            newPath = self.root.addDestination(self.cursor, None)
+            self.edge_list.append(newPath)        
     
-    def recursiveMatPlotLib(self, G, node, x, y):
-        G.add_node(node.id, pos=(x, y))
-        length = len(node.paths)
-        delta = int(length/2)
-        newX = x + 1
-        even = length%2 == 0
-
-        for i, path in enumerate(node.paths):
-            G.add_edge(node.id, path.dest.id, weight=(path.value.value if path.value else "ɛ"))
-            newY = y + (i -  delta)
-            if(even and newY is y):
-                newY += 1
-            self.recursiveMatPlotLib(G, path.dest, newX, newY)
-
-    def printMatplotlib(self):
-        G=nx.Graph()
-
-        self.recursiveMatPlotLib(G, self.root, 1, 5)
-
-        # print('Nodes')
-        # for i, node in enumerate(self.node_list):
-        #     print((node.id,(i,i**3)))
-        #     G.add_node(node.id, pos=(i, i**3))
-        
-        # print('Edges')
-        # for path in self.edge_list:
-        #     print((path.src.id, path.dest.id, (path.value.value if path.value else "ɛ")))
-        #     G.add_edge(path.src.id, path.dest.id, weight=(path.value.value if path.value else "ɛ"))
-
-        pos = nx.get_node_attributes(G,'pos')
-        nx.draw(G,pos, with_labels=True)
-
-        labels = nx.get_edge_attributes(G,'weight')
-        nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
-        plt.show()
-        
     
-    def printTable(self):
-        gTable = [[0 for j in self.node_list] for i in self.node_list]
-
-        for index, node in enumerate(self.node_list):
-            for path in node.paths:
-                destI = self.node_list.index(path.dest)
-                gTable[destI][index] = path.value.value if path.value else "ɛ"
-
-        firstLine = "|   " + "     "
-        for node in self.node_list:
-            firstLine += str(node.id).ljust(5, ' ')
-
-        print(firstLine + " |")
-
-        for i in range(0, len(gTable)):
-            line = "|    "
-            line += str(self.node_list[i].id).ljust(5, ' ')
-            for index, j in enumerate(gTable[i]):
-                txtValue = str(gTable[i][index]) if gTable[i][index] is not 0 else ' '
-                line += txtValue.ljust(5, ' ')
-            print(line + "|")
