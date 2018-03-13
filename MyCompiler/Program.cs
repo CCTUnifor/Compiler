@@ -27,7 +27,7 @@ namespace MyCompiler.ConsoleApp
 
                 sintaxAnalyzer.Check(tokens);
             }
-            catch (CompilationException e)
+            catch (CompilationException)
             {
             }
             catch (Exception e)
@@ -41,9 +41,13 @@ namespace MyCompiler.ConsoleApp
         private static void PrintTokens(IEnumerable<IToken<RegularExpressionGrammarClass>> tokens)
         {
             Console.WriteLine("\n-----------------------------------------------------\n");
+
             Console.WriteLine("Tokens: ");
             foreach (var token in tokens)
                 Console.WriteLine($"{token.Value.PadRight(10)} - {token.GrammarClass}");
+
+            Console.WriteLine("\n-----------------------------------------------------\n");
+
         }
     }
 }
