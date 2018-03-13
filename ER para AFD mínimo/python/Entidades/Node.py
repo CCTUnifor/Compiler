@@ -101,19 +101,26 @@ class ThompsonGraph:
     def repeatN(self, haveMinimun=False):
         pass
     
-    def rec(self, G, node, x, y):
+    def recursiveMatPlotLib(self, G, node, x, y):
         G.add_node(node.id, pos=(x, y))
+        length = len(node.paths)
+        delta = int(length/2)
+        newX = x + 1
+        even = length%2 == 0
 
-        for path in node.paths:
-            # self.rec(G, path.dest, x+1,y+1)
-            pass
+        for i, path in enumerate(node.paths):
+            G.add_edge(node.id, path.dest.id, weight=(path.value.value if path.value else "ɛ"))
+            newY = y + (i -  delta)
+            if(even and newY is y):
+                newY += 1
+            self.recursiveMatPlotLib(G, path.dest, newX, newY)
 
     def printMatplotlib(self):
         G=nx.Graph()
-        print('Nodes')
 
-        self.rec(G, self.root, 1, 1)
+        self.recursiveMatPlotLib(G, self.root, 1, 5)
 
+        # print('Nodes')
         # for i, node in enumerate(self.node_list):
         #     print((node.id,(i,i**3)))
         #     G.add_node(node.id, pos=(i, i**3))
@@ -149,5 +156,6 @@ class ThompsonGraph:
             line = "|    "
             line += str(self.node_list[i].id).ljust(5, ' ')
             for index, j in enumerate(gTable[i]):
-                line += str(gTable[i][index]).ljust(5, ' ')
+                txtValue = str(gTable[i][index]) if gTable[i][index] is not 0 else ' '
+                line += txtValue.ljust(5, ' ')
             print(line + "|")

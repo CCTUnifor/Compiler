@@ -9,7 +9,7 @@ if( __name__ == "__main__"):
     # entry = '(e|d)+'
     # entry = 'e*'
     # entry = '78d2 abc d 527000'
-    entry = 'a|b'
+    entry = 'a|b|c'
     # entry= '(|c)*'
     tokens = LxA.analyze(entry)
     for i in tokens:
@@ -17,10 +17,10 @@ if( __name__ == "__main__"):
 
     sintaticAnalyzer = StA(tokens)
     graph = sintaticAnalyzer.analyze()
-    print('------------------MATRIZ-----------------')
+    print('--------------------MATRIZ--------------------')
     graph.printTable()
     # print(str(graph.root))
-    print('------------------GRAFO------------------')
+    
     graph.printMatplotlib()
 
     # root = ERtoAFNE().convert(tokens)

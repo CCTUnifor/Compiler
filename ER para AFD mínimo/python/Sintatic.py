@@ -7,7 +7,7 @@ class SintaticAnalyzer:
         self.input = inputTokens
     
     def raiseException(self, expected, gotit):
-        raise Exception("Expected " + expected + " got: " + gotit + ' on cursor ' + str(self.cursor))
+        raise Exception("Expected: " + expected + " got: " + gotit + ' on cursor ' + str(self.cursor))
     
     def log(self, txt):
         msg = ''
@@ -33,7 +33,7 @@ class SintaticAnalyzer:
             self.cursor += 1
             return result
         else:
-            self.raiseException(str(self.peek), token)
+            self.raiseException(token, str(self.peek().value if not self.empty else "ɛ"))
 
     def next(self):
         token = self.peek()
@@ -68,6 +68,8 @@ class SintaticAnalyzer:
                 graph = graph.addChoice(self.regex(), self.thompsonCount)
                 self.thompsonCount+=1
 
+            elif(self.peek().value is ')'):
+                pass
             else:
                 self.raiseException('|', str(self.peek()))
         
