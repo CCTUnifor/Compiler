@@ -2,19 +2,22 @@ from Entidades.Node import ThompsonGraph
 
 
 class Subset:
-    def __init__(self, id, alphabet):
+    def __init__(self, fecho, id, alphabet):
+        self.fecho = fecho
         self.id = id
         self.states = []
-        self.alphabetSets = {}
+        self.semiFunction = {}
         for c in alphabet:
-            self.alphabetSets[c] = []
+            self.semiFunction[c] = []
 
 
 class Builder:
     def __init__(self, Graph: ThompsonGraph):
+        self.constructor(Graph)
+
+    def constructor(self, Graph: ThompsonGraph):
         self.graph = Graph
         self.alphabet = self.get_alphabet()
-        self.subsets = []
         self.subsetId = 65
         self.cursor = Graph.root
     
@@ -26,7 +29,7 @@ class Builder:
         
         return alphabet
     
-    def getNewSubset():
+    def getNewSubset(fecho):
         # Ascii code
         charId = str(unichr(self.subsetId))
         self.subsetId += 1
@@ -35,17 +38,48 @@ class Builder:
         elif(self.subsetId is 123):
             self.subsetId = 145
         
-        return Subset(charId, self.alphabet)
+        return Subset(fecho, charId, self.alphabet)
     
     def build(self):
-        subset = self.getNewSubset()
+        fechos = [[self.graph.root]]
+        doneFechos = []
+        subsets = []
         
-        while(True):
-            self.recursiveFill(subset, self.cursor)
+        while(len(fecho)):
+            fecho = fechos.pop()
+            doneFechos.append(fecho)
 
+            subset = self.getNewSubset(fecho)
+            subsets.append(subset)
 
-            if (True):
-                break
+            for node in fecho:
+                self.recursiveFill(subset, node)
+                
+            self.alreadyRunned(doneFechos, fechos, subset)
+
+        # pegar conjunto de subsets e retornar a matriz mínima
+
+    def alreadyRunned(self, doneFechos, fechos, subset):
+            semiFunction = subset.semiFunction
+            for setKey in semiFunction:
+                nextFecho = semiFunction[setKey]
+                
+                if(len(nextFecho)):
+                    inFecho = True
+
+                    for doneFecho in doneFechos:
+                        inFecho = True
+
+                        for node in nextFecho:
+                            if(node not in doneFecho):
+                                inFecho = False
+                                break
+
+                        if(inFecho):
+                            break
+
+                    if(not inFecho):
+                        fechos.append(len(semiFunction[setKey]))
 
     @staticmethod
     def recursiveFill(subset, node):
@@ -57,8 +91,7 @@ class Builder:
                     recursiveFill(subset, path.dest)
             else:
                 token = path.value
-                parei aqui: quando encontro um valor, devo adicionar o último estado de valor ou os dois estados?
-                # recursiveFillSemiFunction(subset, token.value, path.dest)
 
-                # alphabetSet = subset.alphabetSets[token.value]
-                # alphabetSet.append(path.dest)
+                alphabetSet = subset.alphabetSets[token.value]
+                if(path.dest in alphabetSet):
+                    alphabetSet.append(path.dest)

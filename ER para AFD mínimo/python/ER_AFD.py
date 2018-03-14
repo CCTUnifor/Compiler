@@ -1,6 +1,6 @@
 from Lexical import LexicalAnalyzer as LxA
 from Sintatic import SintaticAnalyzer as StA
-# from subsetsBuilder import Builder as SBuilder
+from subsetsBuilder import Builder as SBuilder
 import ThompsonPrinter as printer
 
 # http://matt.might.net/articles/parsing-regex-with-recursive-descent/
@@ -21,9 +21,9 @@ if( __name__ == "__main__"):
     graph = sintaticAnalyzer.analyze()
 
     printer.printTable(graph)    
-    printer.printMatplotlib(graph)
+    # printer.printMatplotlib(graph)
 
-    # sb = SBuilder(graph)
-    # sb.build()
+    sb = SBuilder(graph)
+    sb.build()
 
     
