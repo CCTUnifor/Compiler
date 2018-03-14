@@ -24,8 +24,8 @@ namespace MyCompiler.ConsoleApp
 
                 var tokens = lexicalAnalyzer.LoadTokens(input).ToList();
                 PrintTokens(tokens);
-
                 sintaxAnalyzer.Check(tokens);
+
             }
             catch (CompilationException)
             {

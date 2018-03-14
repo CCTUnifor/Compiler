@@ -83,9 +83,12 @@ namespace MyCompiler.Core.Models.GraphModels
 
         public void Print()
         {
+            Console.WriteLine("Thompson's Graph");
+
             var terminal = AllNodes(Root);
             foreach (var node in terminal)
                 Console.WriteLine($"[{node.Id}] = > {node.ToStringAdjacents()}");
+            Console.WriteLine("\n-----------------------------------------------------\n");
         }
 
         private static IEnumerable<Node> AllNodes(Node node)
