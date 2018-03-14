@@ -10,6 +10,31 @@ class Subset:
         for c in alphabet:
             self.semiFunction[c] = []
 
+    def __str__(self):
+        fecho = '('
+        for node in self.fecho:
+            fecho += node.id + ', '
+        fecho = fecho[:len(fecho)-2:] + ")"        
+
+        states = '('
+        for node in self.fecho:
+            states += node.id + ', '
+        states = states[:len(states)-2:] + ")"
+
+        semiFunctions = "\n    "
+        for sf in self.semiFunction:
+            sm = self.semiFunction[sf]
+            # if(len(sm)):
+            semiFunctions += "δ(" + self.id + ", " + sf + "): {"
+            for s in sm:
+                semiFunctions +=  s.id + ", "
+            semiFunctions = (semiFunctions[:len(semiFunctions)-2:] if semiFunctions[len(semiFunctions)-1] is not "{" else semiFunctions)  + "}    "
+
+        return ("Fecho-" + fecho 
+                + " = " + states
+                + " = "+self.id
+                + semiFunctions)
+
 
 class Builder:
     def __init__(self, Graph: ThompsonGraph):
@@ -29,9 +54,9 @@ class Builder:
         
         return alphabet
     
-    def getNewSubset(fecho):
+    def getNewSubset(self, fecho):
         # Ascii code
-        charId = str(unichr(self.subsetId))
+        charId = str(chr(self.subsetId))
         self.subsetId += 1
         if(self.subsetId is 91):
             self.subsetId = 97
@@ -45,7 +70,7 @@ class Builder:
         doneFechos = []
         subsets = []
         
-        while(len(fecho)):
+        while(len(fechos)):
             fecho = fechos.pop()
             doneFechos.append(fecho)
 
@@ -53,10 +78,13 @@ class Builder:
             subsets.append(subset)
 
             for node in fecho:
-                self.recursiveFill(subset, node)
+                Builder.recursiveFill(subset, node)
                 
             self.alreadyRunned(doneFechos, fechos, subset)
+        
 
+        for s in subsets:
+            print(s)
         # pegar conjunto de subsets e retornar a matriz mínima
 
     def alreadyRunned(self, doneFechos, fechos, subset):
@@ -88,10 +116,10 @@ class Builder:
         for path in node.paths:
             if(path.value is None):
                 if(path.dest not in subset.states):
-                    recursiveFill(subset, path.dest)
+                    Builder.recursiveFill(subset, path.dest)
             else:
                 token = path.value
 
-                alphabetSet = subset.alphabetSets[token.value]
+                alphabetSet = subset.semiFunction[token.value]
                 if(path.dest in alphabetSet):
                     alphabetSet.append(path.dest)
