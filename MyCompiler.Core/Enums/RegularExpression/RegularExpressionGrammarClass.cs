@@ -7,6 +7,7 @@ namespace MyCompiler.Core.Enums.RegularExpression
         Repeat,
         Plus,
         Or,
-        IsNotGrammarClass
+        IsNotGrammarClass,
+        Empty
     }
 }

@@ -3,6 +3,7 @@ using MyCompiler.Core.Enums.RegularExpression;
 using MyCompiler.Core.Exceptions;
 using MyCompiler.Core.Extensions;
 using MyCompiler.Core.Interfaces;
+using MyCompiler.Core.Models.GraphModels;
 using MyCompiler.Core.Models.LexicalAnalyzer;
 
 namespace MyCompiler.Core.Models.SyntacticAnalyzes
@@ -78,7 +79,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
             }
             else if (_regexParser.Peek.Value.IsTerminal())
             {
-                graph = new Graph();
+                graph = new Graph((RegularExpressionToken)_regexParser.Peek);
                 _regexParser.Next();
             }
             else
@@ -86,47 +87,5 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
 
             return graph;
         }
-    }
-
-    public interface IGraph
-    {
-        void AddSequence(IGraph sequenceGraph);
-        IGraph AddChoice(IGraph concatGraph);
-        bool IsEmpty { get; }
-        void RepeatN();
-        void RepeatPlus();
-    }
-
-    public class Graph : IGraph
-    {
-        public Node StartNode { get; }
-
-        public Graph()
-            => StartNode = new Node();
-
-        public void AddSequence(IGraph sequenceGraph)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public IGraph AddChoice(IGraph concatGraph)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public bool IsEmpty { get; }
-        public void RepeatN()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void RepeatPlus()
-        {
-            throw new System.NotImplementedException();
-        }
-    }
-
-    public class Node
-    {
     }
 }
