@@ -4,7 +4,6 @@ namespace MyCompiler.Core.Models.GraphModels
     {
         Node Root { get; }
         Node End { get; }
-        int NodeId { get; }
 
         Node AddToken(RegularExpressionToken token);
         IGraph AddSequence(IGraph sequenceGraph);
@@ -12,5 +11,6 @@ namespace MyCompiler.Core.Models.GraphModels
         bool IsEmpty { get; }
         void RepeatN();
         void RepeatPlus();
+        void Print();
     }
 }

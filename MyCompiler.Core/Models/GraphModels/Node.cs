@@ -20,6 +20,11 @@ namespace MyCompiler.Core.Models.GraphModels
         }
 
         public override string ToString()
-            => $"{Id}";
+            => $"[{Id}]";
+
+        public string ToStringAdjacents()
+        {
+            return string.Join(", ", AdjacentNodes);
+        }
     }
 }

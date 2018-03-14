@@ -1,10 +1,14 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace MyCompiler.Core.Models.GraphModels
 {
     public class Graph : IGraph
     {
         public Node Root { get; private set; }
         public Node End { get; private set; }
-        public int NodeId { get; private set; }
+        public static int NodeId { get; private set; }
         public bool IsEmpty { get; }
 
         public Graph()
@@ -75,6 +79,23 @@ namespace MyCompiler.Core.Models.GraphModels
         public void RepeatPlus()
         {
             throw new System.NotImplementedException();
+        }
+
+        public void Print()
+        {
+            var terminal = AllNodes(Root);
+            foreach (var node in terminal)
+                Console.WriteLine($"[{node.Id}] = > {node.ToStringAdjacents()}");
+        }
+
+        private static IEnumerable<Node> AllNodes(Node node)
+        {
+            var nodes = new List<Node> { node };
+
+            foreach (var adj in node.AdjacentNodes)
+                nodes.AddRange(AllNodes(adj));
+
+            return nodes.Distinct();
         }
     }
 }

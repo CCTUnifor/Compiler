@@ -11,6 +11,6 @@ namespace MyCompiler.Core.Models.GraphModels
         }
 
         public override string ToString()
-            => $"{Token}";
+            => $"[{Id}]{{{Token}}}";
     }
 }

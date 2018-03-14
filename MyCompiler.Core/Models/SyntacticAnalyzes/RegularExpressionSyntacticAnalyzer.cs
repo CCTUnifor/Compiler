@@ -12,19 +12,22 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
     {
         private RegularExpressionParserToken<RegularExpressionGrammarClass> _regexParser;
 
-        public void Check(IEnumerable<IToken<RegularExpressionGrammarClass>> tokens)
+        public IGraph Check(IEnumerable<IToken<RegularExpressionGrammarClass>> tokens)
         {
             _regexParser = new RegularExpressionParserToken<RegularExpressionGrammarClass>(tokens);
+            IGraph graph;
 
             if (_regexParser.More())
-                Regex();
+                graph = Regex();
             else
                 throw new CompilationException("Empty tokens!");
 
             if (_regexParser.More())
                 throw new CompilationException($"Still has an token => {_regexParser}");
 
-            _regexParser.PrintEvents();
+            //_regexParser.PrintEvents();
+            graph.Print();
+            return graph;
         }
 
         private IGraph Regex()
