@@ -107,7 +107,7 @@ class Builder:
                             break
 
                     if(not inFecho):
-                        fechos.append(len(semiFunction[setKey]))
+                        fechos.append(semiFunction[setKey])
 
     @staticmethod
     def recursiveFill(subset, node):
@@ -121,5 +121,5 @@ class Builder:
                 token = path.value
 
                 alphabetSet = subset.semiFunction[token.value]
-                if(path.dest in alphabetSet):
+                if(path.dest not in alphabetSet):
                     alphabetSet.append(path.dest)
