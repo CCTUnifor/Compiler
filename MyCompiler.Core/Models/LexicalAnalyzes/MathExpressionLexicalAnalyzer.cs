@@ -79,6 +79,11 @@ namespace MyCompiler.Core.Models.LexicalAnalyzer
             return tokens;
         }
 
+        public void PrintTokens(IEnumerable<IToken<MathExpressionGrammarClass>> tokens)
+        {
+            throw new NotImplementedException();
+        }
+
         private void HandleInitialState(string value)
         {
             if (value.IsDigit())
