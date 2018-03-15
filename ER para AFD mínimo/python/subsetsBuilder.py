@@ -1,5 +1,15 @@
 from Entidades.Node import ThompsonGraph
 
+class State:
+    def __init__(self, id, start=False, end=False):
+        self.id = id
+        self.start = start
+        self.end = end
+        self.StatesByKey = {}
+    
+    def __str__(self):
+        return str(self.id)
+      
 
 class Subset:
     def __init__(self, fecho, id, alphabet):
@@ -17,7 +27,7 @@ class Subset:
         fecho = fecho[:len(fecho)-2:] + ")"        
 
         states = '('
-        for node in self.fecho:
+        for node in self.states:
             states += node.id + ', '
         states = states[:len(states)-2:] + ")"
 
@@ -66,6 +76,16 @@ class Builder:
         return Subset(fecho, charId, self.alphabet)
     
     def build(self):
+        subsets = self.buildFechos()
+
+        matrix = self.buildMatriz(subsets)
+
+        self.reduceMatrix(matrix)
+
+        return matrix
+
+
+    def buildFechos(self):
         fechos = [[self.graph.root]]
         doneFechos = []
         subsets = []
@@ -81,11 +101,87 @@ class Builder:
                 Builder.recursiveFill(subset, node)
                 
             self.alreadyRunned(doneFechos, fechos, subset)
-        
 
+        print('\n')
         for s in subsets:
             print(s)
-        # pegar conjunto de subsets e retornar a matriz mínima
+            print('')
+
+        return subsets
+    
+    @staticmethod
+    def equalListOfNodes(semiFunction, fecho):
+        """SF equals fecho = True; not = False;"""
+        if(len(semiFunction) is not len(fecho)):
+            return False
+
+        for nodeSF in semiFunction:
+            if(nodeSF not in fecho):
+                return False
+        
+        return True
+            
+    def createState(self, matrix, subset):
+        for ste in matrix:
+            if(ste.id is subset.id):
+                return ste
+
+        start = self.graph.root in subset.states
+        end = self.graph.cursor in subset.states
+
+        state = State(subset.id, start=start, end=end)
+        matrix.append(state)
+
+        return state
+        
+    def buildMatriz(self, subsets):
+        matrix = []
+
+        for subset in subsets:
+            state = self.createState(matrix, subset) #State(subset.id, start=start, end=end)
+
+            for letter in self.alphabet:
+                semiFunction = subset.semiFunction[letter]
+                state.StatesByKey[letter] = None
+
+                if(len(semiFunction)):
+                    for fecho in subsets:
+                        # if(fecho is not subset):
+                        if(Builder.equalListOfNodes(semiFunction, fecho.fecho)):
+                            state.StatesByKey[letter] = self.createState(matrix, fecho)
+        
+        matrix.sort(key=lambda state: state.id)
+        
+        return matrix
+
+    def equalStates(st1, st2):
+        for key in st1.StatesByKey:
+            if(st1.StatesByKey[key] is not st2.StatesByKey[key]):
+                return False
+        
+        return True
+
+    def reduceMatrix(self, matrix):
+        similars = []
+        similarsReposition = []
+
+        for cursor in matrix:
+            if(cursor not in similars and cursor.end):
+                for similar in matrix:
+                    if(similar is not cursor and similar.end):
+                            if(Builder.equalStates(similar, cursor)):
+                                similars.append(similar)
+                                similarsReposition.append(cursor)
+
+        for i, similar in enumerate(similars):
+            matrix.remove(similar)
+
+            for state in matrix:
+                for key in state.StatesByKey:
+                    if(state.StatesByKey[key] is similar):
+                        state.StatesByKey[key] = similarsReposition[i]
+        
+        return matrix
 
     def alreadyRunned(self, doneFechos, fechos, subset):
             semiFunction = subset.semiFunction
@@ -95,7 +191,7 @@ class Builder:
                 if(len(nextFecho)):
                     inFecho = True
 
-                    for doneFecho in doneFechos:
+                    for doneFecho in doneFechos + fechos:
                         inFecho = True
 
                         for node in nextFecho:

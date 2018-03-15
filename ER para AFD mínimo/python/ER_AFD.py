@@ -9,8 +9,11 @@ import ThompsonPrinter as printer
 
 if( __name__ == "__main__"):
     # entry = '(e|d)+'
-    entry = 'e(e|d)*'
     # entry = '78d2 abc d 527000'
+    # entry = 'aaa*a'
+    # entry = 'e(e|d)*'
+    # entry = 'e(e|d)*'
+    entry = '(ba|bb)*|(ab|aa)*'
     # entry = '(a|b)|c'
     # entry= '(|c)*' # erro
     tokens = LxA.analyze(entry)
@@ -24,6 +27,8 @@ if( __name__ == "__main__"):
     # printer.printMatplotlib(graph)
 
     sb = SBuilder(graph)
-    sb.build()
+    matrix = sb.build()
+
+    printer.printMinimunMatrix(matrix)
 
     

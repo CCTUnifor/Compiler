@@ -38,7 +38,7 @@ def printMatplotlib(graph):
 def printTable(graph):
     """write on console the matrix of the graph informed"""
 
-    print('--------------------MATRIZ--------------------')
+    print('\n\n--------------------MATRIZ--------------------')
     gTable = [[0 for j in graph.node_list] for i in graph.node_list]
 
     for index, node in enumerate(graph.node_list):
@@ -59,3 +59,23 @@ def printTable(graph):
             txtValue = str(gTable[i][index]) if gTable[i][index] is not 0 else ' '
             line += txtValue.ljust(5, ' ')
         print(line + "|")
+
+def printMinimunMatrix(matrix):
+    print('')
+    header = "k\Σ"
+    body = ""
+    for i, state in enumerate(matrix):
+        body += state.id + "  "
+
+        for letter in state.StatesByKey:
+            if(i is 0):
+                header += "  |  " + letter
+            if(state.StatesByKey[letter] is None):
+                body += "  |  -"
+            else:
+                body += "  |  " + state.StatesByKey[letter].id
+
+        body += '\n'              
+
+    print(header)
+    print(body)
