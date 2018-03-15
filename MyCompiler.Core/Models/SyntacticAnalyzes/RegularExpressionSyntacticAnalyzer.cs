@@ -44,7 +44,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
         private IGraph Term()
         {
             IGraph graph = null;
-            if (!_regexParser.More() || !_regexParser.Peek.Value.IsTerminal() && _regexParser.Peek.Value != "(")
+            if (!_regexParser.More() || _regexParser.Peek.GrammarClass != RegularExpressionGrammarClass.Terminal && _regexParser.Peek.Value != "(")
                 return graph;
 
             graph = Factor();
@@ -80,7 +80,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
                 graph = Regex();
                 _regexParser.Eat(")");
             }
-            else if (_regexParser.Peek.Value.IsTerminal())
+            else if (_regexParser.Peek.GrammarClass == RegularExpressionGrammarClass.Terminal)
             {
                 graph = new Graph((RegularExpressionToken)_regexParser.Peek);
                 _regexParser.Next();

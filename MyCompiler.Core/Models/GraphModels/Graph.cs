@@ -75,7 +75,6 @@ namespace MyCompiler.Core.Models.GraphModels
         {
             RepeatPlus();
             Root.AddAdjacent(End, RegularExpressionToken.Blank);
-
         }
 
         public void RepeatPlus()
@@ -93,7 +92,7 @@ namespace MyCompiler.Core.Models.GraphModels
 
         public void Print()
         {
-            Console.WriteLine("Thompson's Graph");
+            Console.WriteLine("T    hompson's Graph");
 
             var terminal = AllNodes(Root);
             foreach (var node in terminal)

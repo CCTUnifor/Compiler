@@ -115,10 +115,10 @@ namespace MyCompiler.Core.Models.LexicalAnalyzer
 
         private void HandleState(RegularExpressionGrammarClass operation, string value, int line)
         {
-            if (LastToken == null || LastToken.GrammarClass != operation)
+            //if (LastToken == null || LastToken.GrammarClass != operation)
                 CreateToken(operation, value, line);
-            else if (LastToken.GrammarClass == operation)
-                ConcatToken(value);
+            //else if (LastToken.GrammarClass == operation)
+            //    ConcatToken(value);
         }
 
         private void CreateToken(RegularExpressionGrammarClass operation, string value, int line)
