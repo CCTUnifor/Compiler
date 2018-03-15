@@ -102,10 +102,10 @@ class Builder:
                 
             self.alreadyRunned(doneFechos, fechos, subset)
 
-        print('\n')
-        for s in subsets:
-            print(s)
-            print('')
+        # print('\n')
+        # for s in subsets:
+        #     print(s)
+        #     print('')
 
         return subsets
     

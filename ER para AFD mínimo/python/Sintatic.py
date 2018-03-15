@@ -16,10 +16,7 @@ class SintaticAnalyzer:
         except Exception :
             msg = ('<' + txt + '> on cursor: ' +  str(self.cursor))
 
-        # for i in range(0, self.logCount):
-        #     msg = ' ' +msg
-
-        print(msg)
+        # print(msg)
         self.logCount += 1
 
     def peek(self):
@@ -27,7 +24,7 @@ class SintaticAnalyzer:
         return self.input[self.cursor]
 
     def eat(self, token:str):
-        print('EATING {' + token + '}')
+        # print('EATING {' + token + '}')
         if(not self.empty() and self.peek().value is token):
             result = self.peek()
             self.cursor += 1

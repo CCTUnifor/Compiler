@@ -1,0 +1,6 @@
+78d2 abc d 527000
+(e|d)+
+aaa*a
+e(e|d)*
+(ba|bb)*|(ab|aa)*
+(a|b)|c
