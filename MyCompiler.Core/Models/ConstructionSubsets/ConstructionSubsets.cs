@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MyCompiler.Core.Enums.RegularExpression;
 using MyCompiler.Core.Models.GraphModels;
 
 namespace MyCompiler.Core.Models.ConstructionSubsets
@@ -55,6 +56,7 @@ namespace MyCompiler.Core.Models.ConstructionSubsets
                 else
                 {
                     _lock.AddNodeRef(adj);
+                    adj.Lock = _lock;
                     break;
                 }
             }
@@ -70,6 +72,57 @@ namespace MyCompiler.Core.Models.ConstructionSubsets
                 Console.WriteLine($"{_lock}");
 
             Console.WriteLine("\n-----------------------------------------------------\n");
+        }
+
+        public void PrintMatriz(IList<Lock> locks)
+        {
+            Console.WriteLine("Matriz");
+
+            var terminais = GetTerminais(Graph.Root);
+            PrintHeader(terminais);
+
+            foreach (var _lock in locks)
+            {
+                Console.Write($"{_lock.Id.ToString().PadRight(2)} | ");
+                foreach (var terminal in terminais)
+                {
+                    var node = _lock.NodeRef.Select(x => ((NodeAdjacent)x)).SingleOrDefault(y => y.Token.Value == terminal.Value);
+                    if (node != null)
+                        Console.Write(node.Lock.Id);
+                    else
+                        Console.Write("-");
+                    Console.Write(" | ");
+
+                }
+                Console.WriteLine();
+            }
+
+            Console.WriteLine("\n-----------------------------------------------------\n");
+        }
+
+        private static void PrintHeader(IEnumerable<RegularExpressionToken> terminais)
+        {
+            Console.Write($"{"   | "}");
+            foreach (var header in terminais)
+            {
+                Console.Write($"{header.Value} | ");
+            }
+            Console.WriteLine("");
+        }
+
+        private IEnumerable<RegularExpressionToken> GetTerminais(Node node)
+        {
+            var tokens = new List<RegularExpressionToken>();
+            if ((node as NodeAdjacent)?.Token.GrammarClass == RegularExpressionGrammarClass.Terminal)
+                tokens.Add(((NodeAdjacent)node).Token);
+
+            foreach (var adj in node.AdjacentNodesWithoutRepeat)
+            {
+                var c = GetTerminais(adj);
+                tokens.AddRange(c);
+            }
+
+            return tokens.GroupBy(x => x.Value).Select(x => x.First()).ToList();
         }
     }
 }

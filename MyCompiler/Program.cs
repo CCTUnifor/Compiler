@@ -23,7 +23,8 @@ namespace MyCompiler.ConsoleApp
                 var tokens = lexicalAnalyzer.LoadTokens(input);
                 var thompsonConstruction = sintaxAnalyzer.Check(tokens);
                 var locks = constructionSubsets.Generate(thompsonConstruction);
-
+                constructionSubsets.PrintMatriz(locks);
+                // a(a|b)*
             }
             catch (CompilationException)
             {

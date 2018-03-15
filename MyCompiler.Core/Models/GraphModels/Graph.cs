@@ -105,7 +105,7 @@ namespace MyCompiler.Core.Models.GraphModels
         {
             var nodes = new List<Node> { node };
 
-            foreach (var adj in node.AdjacentNodes.Where(x => !x.IsRepeat))
+            foreach (var adj in node.AdjacentNodesWithoutRepeat)
                 nodes.AddRange(AllNodes(adj));
 
             return nodes.Distinct();

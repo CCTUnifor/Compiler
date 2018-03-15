@@ -1,4 +1,5 @@
 using MyCompiler.Core.Enums.RegularExpression;
+using MyCompiler.Core.Models.ConstructionSubsets;
 
 namespace MyCompiler.Core.Models.GraphModels
 {
@@ -6,6 +7,7 @@ namespace MyCompiler.Core.Models.GraphModels
     {
         public RegularExpressionToken Token { get; set; }
         public bool IsBlank => Token.GrammarClass == RegularExpressionGrammarClass.Empty;
+        public Lock Lock { get; set; }
 
         public NodeAdjacent(Node node, RegularExpressionToken token, bool isRepeat) : base(node.Id, isRepeat)
         {
