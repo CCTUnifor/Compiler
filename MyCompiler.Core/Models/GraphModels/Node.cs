@@ -6,16 +6,18 @@ namespace MyCompiler.Core.Models.GraphModels
     {
         public readonly int Id;
         public ICollection<NodeAdjacent> AdjacentNodes { get; protected set; }
+        public bool IsRepeat { get; private set; }
 
-        public Node(int id)
+        public Node(int id, bool isRepeat = false)
         {
             Id = id;
             AdjacentNodes = new List<NodeAdjacent>();
+            IsRepeat = isRepeat;
         }
 
-        public void AddAdjacent(Node newEnd, RegularExpressionToken token)
+        public void AddAdjacent(Node newEnd, RegularExpressionToken token, bool isRepeat = false)
         {
-            var adj = new NodeAdjacent(newEnd, token);
+            var adj = new NodeAdjacent(newEnd, token, isRepeat);
             AdjacentNodes.Add(adj);
         }
 

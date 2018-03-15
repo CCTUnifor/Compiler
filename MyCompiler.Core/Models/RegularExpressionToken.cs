@@ -1,4 +1,4 @@
-using MyCompiler.Core.Enums.RegularExpression;
+﻿using MyCompiler.Core.Enums.RegularExpression;
 using MyCompiler.Core.Interfaces;
 
 namespace MyCompiler.Core.Models

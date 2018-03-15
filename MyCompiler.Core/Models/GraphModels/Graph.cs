@@ -73,12 +73,22 @@ namespace MyCompiler.Core.Models.GraphModels
 
         public void RepeatN()
         {
-            throw new System.NotImplementedException();
+            RepeatPlus();
+            Root.AddAdjacent(End, RegularExpressionToken.Blank);
+
         }
 
         public void RepeatPlus()
         {
-            throw new System.NotImplementedException();
+            var newRoot = CreateNewNode();
+            newRoot.AddAdjacent(Root, RegularExpressionToken.Blank);
+            End.AddAdjacent(Root, RegularExpressionToken.Blank, true);
+            Root = newRoot;
+
+            var newEnd = CreateNewNode();
+            End.AddAdjacent(newEnd, RegularExpressionToken.Blank);
+
+            End = newEnd;
         }
 
         public void Print()
@@ -95,7 +105,7 @@ namespace MyCompiler.Core.Models.GraphModels
         {
             var nodes = new List<Node> { node };
 
-            foreach (var adj in node.AdjacentNodes)
+            foreach (var adj in node.AdjacentNodes.Where(x => !x.IsRepeat))
                 nodes.AddRange(AllNodes(adj));
 
             return nodes.Distinct();

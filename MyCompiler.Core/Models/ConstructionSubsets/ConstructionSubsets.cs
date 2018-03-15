@@ -10,36 +10,56 @@ namespace MyCompiler.Core.Models.ConstructionSubsets
         public IGraph Graph { get; private set; }
         public static int LockId { get; private set; }
         public static int LockIncrement() => ++LockId;
+        private ICollection<Node> NodesFindeds;
 
         public IList<Lock> Generate(IGraph graph)
         {
             Graph = graph;
+            NodesFindeds = new List<Node>();
+
             var allLocks = FindAllLocks(Graph.Root);
             PrintAllLocks(allLocks);
 
             return allLocks.ToList();
         }
 
-        private static ICollection<Lock> FindAllLocks(Node node)
+        private ICollection<Lock> FindAllLocks(Node node)
         {
-            var locks = new List<Lock> { new Lock(LockIncrement(), FindLock(node)) };
+            NodesFindeds.Add(node);
 
-            foreach (var adj in node.AdjacentNodes)
-                locks.AddRange(FindAllLocks(adj));
+            var i = LockIncrement();
+            var locks = new List<Lock>();
+
+            var l = FindLock(node, i);
+            locks.Add(l);
+
+            foreach (var nodeRef in l.NodeRef.Where(x => !NodesFindeds.Contains(x)))
+                locks = locks.Concat(FindAllLocks(nodeRef)).ToList();
 
             return locks;
         }
 
-        private static ICollection<Node> FindLock(Node node)
+        private Lock FindLock(Node node, int i)
         {
-            var nodes = new List<Node>() { node };
+            var _lock = new Lock(i);
+            _lock.AddNode(node);
+
             foreach (var adj in node.AdjacentNodes)
             {
                 if (adj.IsBlank)
-                    nodes.AddRange(FindLock(adj));
+                {
+                    var _lockAux = FindLock(adj, i);
+                    _lock.AddRangeNode(_lockAux.Nodes);
+                    _lock.AddRangeNodeRef(_lockAux.NodeRef);
+                }
+                else
+                {
+                    _lock.AddNodeRef(adj);
+                    break;
+                }
             }
 
-            return nodes;
+            return _lock;
         }
 
         private static void PrintAllLocks(ICollection<Lock> allLocks)
