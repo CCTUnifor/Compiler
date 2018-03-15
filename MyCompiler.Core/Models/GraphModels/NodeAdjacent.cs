@@ -7,7 +7,8 @@ namespace MyCompiler.Core.Models.GraphModels
     {
         public RegularExpressionToken Token { get; set; }
         public bool IsBlank => Token.GrammarClass == RegularExpressionGrammarClass.Empty;
-        public Lock Lock { get; set; }
+        public bool IsTerminal => Token.GrammarClass == RegularExpressionGrammarClass.Terminal;
+        public Lock Lock { get; private set; }
 
         public NodeAdjacent(Node node, RegularExpressionToken token, bool isRepeat) : base(node.Id, isRepeat)
         {
@@ -17,5 +18,11 @@ namespace MyCompiler.Core.Models.GraphModels
 
         public override string ToString()
             => $"[{Id}]{{{Token}}}";
+
+        public void AddLock(Lock @lock)
+        {
+            if (Lock == null)
+                Lock = @lock;
+        }
     }
 }

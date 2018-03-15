@@ -56,7 +56,7 @@ namespace MyCompiler.Core.Models.ConstructionSubsets
                 else
                 {
                     _lock.AddNodeRef(adj);
-                    adj.Lock = _lock;
+                    adj.AddLock(_lock);
                     break;
                 }
             }
