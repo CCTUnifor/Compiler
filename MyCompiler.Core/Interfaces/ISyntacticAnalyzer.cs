@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using MyCompiler.Core.Models.GraphModels;
 
 namespace MyCompiler.Core.Interfaces
 {
     public interface ISyntacticAnalyzer<T>
     {
-        void Check(IEnumerable<IToken<T>> tokens);
+        IGraph Check(IEnumerable<IToken<T>> tokens);
     }
 }

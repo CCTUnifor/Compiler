@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using MyCompiler.Core.Enums.RegularExpression;
 using MyCompiler.Core.Exceptions;
-using MyCompiler.Core.Interfaces;
+using MyCompiler.Core.Models.ConstructionSubsets;
 using MyCompiler.Core.Models.LexicalAnalyzer;
 using MyCompiler.Core.Models.SyntacticAnalyzes;
 
@@ -21,13 +18,15 @@ namespace MyCompiler.ConsoleApp
                 //ILexicalAnalyzer<MathExpressionGrammarClass> lexicalAnalyzer = new MathExpressionLexicalAnalyzer();
                 var lexicalAnalyzer = new RegularExpressionLexicalAnalyzer();
                 var sintaxAnalyzer = new RegularExpressionSyntacticAnalyzer();
+                var constructionSubsets = new ConstructionSubsets();
 
-                var tokens = lexicalAnalyzer.LoadTokens(input).ToList();
-                PrintTokens(tokens);
-
-                sintaxAnalyzer.Check(tokens);
+                var tokens = lexicalAnalyzer.LoadTokens(input);
+                var thompsonConstruction = sintaxAnalyzer.Check(tokens);
+                var locks = constructionSubsets.Generate(thompsonConstruction);
+                constructionSubsets.PrintMatriz(locks);
+                // a(a|b)*
             }
-            catch (CompilationException e)
+            catch (CompilationException)
             {
             }
             catch (Exception e)
@@ -36,14 +35,6 @@ namespace MyCompiler.ConsoleApp
             }
 
             Console.ReadLine();
-        }
-
-        private static void PrintTokens(IEnumerable<IToken<RegularExpressionGrammarClass>> tokens)
-        {
-            Console.WriteLine("\n-----------------------------------------------------\n");
-            Console.WriteLine("Tokens: ");
-            foreach (var token in tokens)
-                Console.WriteLine($"{token.Value.PadRight(10)} - {token.GrammarClass}");
         }
     }
 }

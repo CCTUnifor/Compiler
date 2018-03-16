@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using MyCompiler.Core.Enums.RegularExpression;
 using MyCompiler.Core.Extensions;
@@ -83,11 +84,10 @@ namespace MyCompiler.Core.Models.LexicalAnalyzer
                 i++;
             }
 
+            PrintTokens(tokens);
             return tokens;
 
         }
-
-
 
         private void HandleInitialState(string value)
         {
@@ -115,10 +115,10 @@ namespace MyCompiler.Core.Models.LexicalAnalyzer
 
         private void HandleState(RegularExpressionGrammarClass operation, string value, int line)
         {
-            if (LastToken == null || LastToken.GrammarClass != operation)
+            //if (LastToken == null || LastToken.GrammarClass != operation)
                 CreateToken(operation, value, line);
-            else if (LastToken.GrammarClass == operation)
-                ConcatToken(value);
+            //else if (LastToken.GrammarClass == operation)
+            //    ConcatToken(value);
         }
 
         private void CreateToken(RegularExpressionGrammarClass operation, string value, int line)
@@ -131,6 +131,18 @@ namespace MyCompiler.Core.Models.LexicalAnalyzer
         {
             LastToken.ConcatValue(value);
             IsToAdd = false;
+        }
+
+        public void PrintTokens(IEnumerable<IToken<RegularExpressionGrammarClass>> tokens)
+        {
+            Console.WriteLine("\n-----------------------------------------------------\n");
+
+            Console.WriteLine("Tokens: ");
+            foreach (var token in tokens)
+                Console.WriteLine($"{token.Value.PadRight(10)} - {token.GrammarClass}");
+
+            Console.WriteLine("\n-----------------------------------------------------\n");
+
         }
     }
 }

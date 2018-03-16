@@ -1,4 +1,4 @@
-using MyCompiler.Core.Enums.RegularExpression;
+﻿using MyCompiler.Core.Enums.RegularExpression;
 using MyCompiler.Core.Interfaces;
 
 namespace MyCompiler.Core.Models
@@ -9,6 +9,7 @@ namespace MyCompiler.Core.Models
         public RegularExpressionGrammarClass GrammarClass { get; private set; }
         public int Line { get; private set; }
         public int? Collumn { get; private set; }
+        public static RegularExpressionToken Blank => new RegularExpressionToken("E", RegularExpressionGrammarClass.Empty, 0);
 
         public RegularExpressionToken(string value, RegularExpressionGrammarClass grammarClass, int line, int collumn = default)
         {
