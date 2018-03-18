@@ -1,0 +1,29 @@
+Programa → decl-sequencia
+
+(eliminar recursão à esquerda) decl-sequencia → decl-sequencia; declaracao | declaracao 
+
+(eliminar a regra da cadeia) declaracao → cond-decl | repet-decl | atrib-decl | leit-decl | escr-decl
+
+(resolver a ambiguidade) cond-decl -> if exp then decl-sequencia end | if exp then decl-sequencia else decl-sequencia end
+
+repet-decl → repeat decl-sequencia until exp
+
+atrib-decl → identificador := exp
+
+leit-decl → read identificador
+
+escr-decl → write exp
+
+exp → exp-simples comp-op exp-simples | exp-simples
+
+comp-op → < | =
+
+(eliminar recursão à esquerda) exp-simples → exp-simples soma termo | termo
+
+soma → + | -
+
+(eliminar recursão à esquerda) termo → termo mult fator | fator
+
+mult → + | /
+
+fator → (exp) | numero | identificador
