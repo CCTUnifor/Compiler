@@ -1,5 +1,6 @@
 from Entidades.Token import Token
 
+
 class LexicalAnalyzer:
     """Implementação de máquina de estados para reconher 
         Léxicamente uma Expressão Regular(ER)"""
@@ -10,6 +11,9 @@ class LexicalAnalyzer:
 
     def raiseException(self, character):
         lines = self.stream.split('\n')
+        print('--------------------------------------------------')
+        print(lines)
+        print('--------------------------------------------------')
         line = ''
         acum = 0
         counter = 0
@@ -22,8 +26,7 @@ class LexicalAnalyzer:
             counter += 1
         
 
-        raise Exception('Lexical error on character: ' + str(character) + ' on cursor: ' + str(self.cursor)
-                        + ' on line: ' + line)
+        raise Exception('Lexical error on character: ' + str(character) + ' on cursor: ' + str(self.cursor) + ' on line: "' + line + '"')
 
     def notEnded(self):
         return self.cursor <= len(self.stream)
@@ -35,6 +38,12 @@ class LexicalAnalyzer:
         self.tokens.append(token)
         self.cursor += 1
         return token
+
+    def identifyWord(self, token):
+        if(token.value in Token.RESERVEDWORD.values):
+            token.ttype = Token.RESERVEDWORD
+        else:
+            token.ttype = Token.IDENTIFICATOR
 
     def analyze(self):
         state = 1
@@ -62,14 +71,31 @@ class LexicalAnalyzer:
                 elif(character in Token.SPACE.values):
                     pass
 
-                elif(character.isalpha()):
-                    token = self.addToken(Token(character, Token.WORD))
+                elif(character in Token.SEMICOLON.values):
+                    token = self.addToken(Token(character, Token.SEMICOLON))
                     break
 
-                elif(character is '/'):
+                elif(character is '{'):
                     accumulator = Token(accumulator, Token.COMMENT)
                     accumulator.value = character
                     state = 3
+
+                elif(character.isalpha()):
+                    accumulator = Token(accumulator, Token.WORD)
+                    accumulator.value = character
+                    state = 4
+
+                elif(character is ':'):
+                    accumulator = Token(accumulator, Token.ATRIB)
+                    accumulator.value = character
+                    state = 5
+
+                elif(character in Token.SUM.values):
+                    token = self.addToken(Token(character, Token.SUM))
+                    break
+                elif(character in Token.PROD.values):
+                    token = self.addToken(Token(character, Token.PROD))
+                    break
 
                 else:
                     self.raiseException(character)
@@ -77,39 +103,48 @@ class LexicalAnalyzer:
             elif(state == 2):
                 if(character.isdigit()):
                     accumulator.value += character
-                    
+
                 else:
                     token = self.addToken(accumulator)
+                    self.cursor -= 1
+                    accumulator = None
                     break
             
             elif(state == 3):
-                if(character is '*'):
-                    accumulator.value += character
-                    state = 4
-                else:
-                    self.raiseException(character)
-            
-            elif(state == 4):
-                if(character is '*'):
-                    accumulator.value += character
-                    state = 5
-
-                else:
-                    accumulator.value += character
-
-            elif(state == 5):
-                accumulator.value += character
-                if(character is '/'):
+                if(character is '}'):
                     token = self.addToken(accumulator)
+                    accumulator = None
                     break
                 else:
-                    state = 4
+                    accumulator.value += character
+            
+            elif(state == 4):
+                if(character.isalpha()):
+                    accumulator.value += character
+                    
+                else:
+                    token = self.addToken(accumulator)
+                    self.cursor -= 1
+                    accumulator = None
+                    self.identifyWord(token)
+                    break
+            
+            elif(state == 5):
+                if(character is '='):
+                    accumulator.value += character
+                    token = self.addToken(accumulator)
+                    accumulator = None
+                    break
+                    
+                else:
+                    self.raiseException(accumulator)
 
             self.cursor += 1
 
         if(accumulator is not None):
             token = self.addToken(accumulator)
 
+        # do not return a comment
         if(token is not None and token.ttype is Token.COMMENT):
             return self.analyze()
 
