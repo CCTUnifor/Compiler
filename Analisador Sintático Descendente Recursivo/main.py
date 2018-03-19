@@ -17,8 +17,8 @@ if( __name__ == "__main__"):
 
         lexic = LxA(line)
 
-        print(lexic.getToken())
-        # while(lexic.notEnded()):
+        while(lexic.notEnded()):
+            print(lexic.getToken())
             
             
 

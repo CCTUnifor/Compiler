@@ -29,7 +29,7 @@ class LexicalAnalyzer:
         raise Exception('Lexical error on character: ' + str(character) + ' on cursor: ' + str(self.cursor) + ' on line: "' + line + '"')
 
     def notEnded(self):
-        return self.cursor <= len(self.stream)
+        return self.cursor < len(self.stream)
     
     def getToken(self):
         return self.analyze()
