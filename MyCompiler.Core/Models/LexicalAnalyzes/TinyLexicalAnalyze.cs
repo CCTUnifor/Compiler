@@ -17,6 +17,8 @@ namespace MyCompiler.Core.Models.LexicalAnalyzes
         public TinyToken LastToken => Tokens.LastOrDefault();
         private bool ToStop = true;
 
+        private int Tab = 0;
+
         public string[] ReserveWords => new[]
         {
             "write",
@@ -156,8 +158,9 @@ namespace MyCompiler.Core.Models.LexicalAnalyzes
 
         private void Handle(char character, TinyGrammar grammar)
         {
+            var c = LastToken != null && LastToken.Line == _countLine ? LastToken.Collumn + LastToken.Value.Length : 1;
             if (LastToken == null || LastToken.Grammar != grammar)
-                Tokens.Add(new TinyToken(_countLine, character, grammar));
+                Tokens.Add(new TinyToken(_countLine, c, character, grammar));
             else if (LastToken.Grammar == grammar)
                 LastToken.ConcatValue(character);
         }
