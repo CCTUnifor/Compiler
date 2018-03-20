@@ -43,6 +43,18 @@ namespace MyCompiler.TinyApp
         public ICollection<TinyToken> Tokens { get; set; }
         public TinyToken LastToken => Tokens.LastOrDefault();
         private bool ToStop;
+        public string[] ReserveWords => new[]
+        {
+            "write",
+            "read",
+            "if",
+            "then",
+            "else",
+            "end",
+            "repeat",
+            "until"
+        };
+
 
         public TinyLexicalAnalyze(string input)
         {
@@ -76,6 +88,36 @@ namespace MyCompiler.TinyApp
                         else
                             GoToInitialState();
                         break;
+                    case TinyStateType.SemiColon:
+                        if (IsSemiColon(character))
+                            Handle(character, TinyGrammar.SemiColon);
+                        else
+                            GoToInitialState();
+                        break;
+                    case TinyStateType.OpenComment:
+                        if (IsOpenComment(character))
+                            Handle(character, TinyGrammar.OpenComment);
+                        else
+                            GoToInitialState();
+                        break;
+                    case TinyStateType.CloseComment:
+                        if (IsCloseComment(character))
+                            Handle(character, TinyGrammar.CloseComment);
+                        else
+                            GoToInitialState();
+                        break;
+                    case TinyStateType.Attribution:
+                        if (IsAttribution(character))
+                            Handle(character, TinyGrammar.Attribution);
+                        else
+                            GoToInitialState();
+                        break;
+                    case TinyStateType.Space:
+                        if (IsSpace(character))
+                            Handle(character, TinyGrammar.Space);
+                        else
+                            GoToInitialState();
+                        break;
                     case TinyStateType.Final:
                         break;
                     default:
@@ -100,21 +142,39 @@ namespace MyCompiler.TinyApp
                 LastToken.ConcatValue(character);
             else
                 Tokens.Add(new TinyToken(character, grammar));
-            ToStop = true;
-        }
+            if (grammar == TinyGrammar.Letter && ReserveWords.Contains(LastToken.Value))
+                LastToken.ChangeGrammar(TinyGrammar.ReserveWord);
+            else
+                LastToken.ChangeGrammar(TinyGrammar.Identifier);
 
-        private TinyToken CreateToken()
-        {
-            throw new NotImplementedException();
+            ToStop = true;
         }
 
         private void HandleInitialState(char value)
         {
-            if (char.IsLetter(value))
+            if (IsLetter(value))
                 State = TinyStateType.Letter;
-            else if (char.IsDigit(value))
+            else if (IsDigit(value))
                 State = TinyStateType.Digit;
+            else if (IsSemiColon(value))
+                State = TinyStateType.SemiColon;
+            else if (IsOpenComment(value))
+                State = TinyStateType.OpenComment;
+            else if (IsCloseComment(value))
+                State = TinyStateType.CloseComment;
+            else if (IsAttribution(value))
+                State = TinyStateType.Attribution;
+            else if (IsSpace(value))
+                State = TinyStateType.Space;
         }
+
+        public bool IsLetter(char v) => char.IsLetter(v);
+        public bool IsDigit(char v) => char.IsDigit(v);
+        public bool IsSemiColon(char v) => v == ';';
+        public bool IsOpenComment(char v) => v == '{';
+        public bool IsCloseComment(char v) => v == '}';
+        public bool IsAttribution(char v) => v == ':';
+        public bool IsSpace(char v) => v == ' ';
     }
 
     public enum TinyStateType
@@ -122,27 +182,43 @@ namespace MyCompiler.TinyApp
         Initial,
         Final,
         Letter,
-        Digit
+        Digit,
+        SemiColon,
+        OpenComment,
+        CloseComment,
+        Attribution,
+        Space
     }
 
     public class TinyToken
     {
-        private string _value;
+        public string Value { get; private set; }
+
         public TinyGrammar Grammar { get; private set; }
 
         public TinyToken(char value, TinyGrammar grammar)
         {
-            _value = value.ToString();
+            Value = value.ToString();
             Grammar = grammar;
         }
 
         public void ConcatValue(char character)
-            => _value += character.ToString();
+            => Value += character.ToString();
+
+        public void ChangeGrammar(TinyGrammar newGrammarType)
+            => Grammar = newGrammarType;
     }
 
     public enum TinyGrammar
     {
         Letter,
-        Digit
+        Digit,
+        SemiColon,
+        OpenComment,
+        CloseComment,
+        Attribution,
+        Space,
+        ReserveWord,
+        Identifier
     }
 }
