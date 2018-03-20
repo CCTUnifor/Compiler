@@ -48,7 +48,7 @@ namespace MyCompiler.Core.Models.LexicalAnalyzes
             while (ContinueLoop())
             {
                 var character = _input[Cursor];
-                
+
                 switch (State)
                 {
                     case TinyStateType.Initial:
@@ -76,15 +76,9 @@ namespace MyCompiler.Core.Models.LexicalAnalyzes
                         else
                             GoToInitialState();
                         break;
-                    case TinyStateType.OpenComment:
-                        if (IsOpenComment(character))
-                            Handle(character, TinyGrammar.OpenComment);
-                        else
-                            GoToInitialState();
-                        break;
-                    case TinyStateType.CloseComment:
-                        if (IsCloseComment(character))
-                            Handle(character, TinyGrammar.CloseComment);
+                    case TinyStateType.Comment:
+                        if (IsComment(character))
+                            Handle(character, TinyGrammar.Comment);
                         else
                             GoToInitialState();
                         break;
@@ -100,6 +94,31 @@ namespace MyCompiler.Core.Models.LexicalAnalyzes
                         else
                             GoToInitialState();
                         break;
+                    case TinyStateType.Parentheses:
+                        if (IsParentheses(character))
+                            Handle(character, TinyGrammar.Parentheses);
+                        else
+                            GoToInitialState();
+                        break;
+                    case TinyStateType.Operator:
+                        if (IsOperator(character))
+                            Handle(character, TinyGrammar.Operator);
+                        else
+                            GoToInitialState();
+                        break;
+                    case TinyStateType.Prod:
+                        if (IsProd(character))
+                            Handle(character, TinyGrammar.Prod);
+                        else
+                            GoToInitialState();
+                        break;
+                    case TinyStateType.Sum:
+                        if (IsSum(character))
+                            Handle(character, TinyGrammar.Sum);
+                        else
+                            GoToInitialState();
+                        break;
+
                     case TinyStateType.Final:
                         break;
                     default:
@@ -107,6 +126,10 @@ namespace MyCompiler.Core.Models.LexicalAnalyzes
                 }
                 Cursor++;
             }
+
+            if (LastToken.Grammar == TinyGrammar.Space)
+                return GetNextToken();
+
 
             if (NextToReturn - 1 >= Tokens.Count)
                 return null;
@@ -147,23 +170,39 @@ namespace MyCompiler.Core.Models.LexicalAnalyzes
                 State = TinyStateType.Digit;
             else if (IsSemiColon(value))
                 State = TinyStateType.SemiColon;
-            else if (IsOpenComment(value))
-                State = TinyStateType.OpenComment;
-            else if (IsCloseComment(value))
-                State = TinyStateType.CloseComment;
+            else if (IsComment(value))
+                State = TinyStateType.Comment;
             else if (IsAttribution(value))
                 State = TinyStateType.Attribution;
             else if (IsSpace(value))
                 State = TinyStateType.Space;
+            else if (IsParentheses(value))
+                State = TinyStateType.Parentheses;
+            else if (IsOperator(value))
+                State = TinyStateType.Operator;
+            else if (IsProd(value))
+                State = TinyStateType.Prod;
+            else if (IsSum(value))
+                State = TinyStateType.Sum;
         }
 
         public bool IsLetter(char v) => char.IsLetter(v);
         public bool IsDigit(char v) => char.IsDigit(v);
         public bool IsSemiColon(char v) => v == ';';
-        public bool IsOpenComment(char v) => v == '{';
-        public bool IsCloseComment(char v) => v == '}';
-        public bool IsAttribution(char v) => v == ':';
+        public bool IsComment(char v) => Comment.Contains(v);
+        public bool IsAttribution(char v) => Attribution.Contains(v);
         public bool IsSpace(char v) => v == ' ';
+        public bool IsParentheses(char v) => Parentheses.Contains(v);
+        public bool IsOperator(char v) => Operator.Contains(v);
+        public bool IsSum(char v) => Sum.Contains(v);
+        public bool IsProd(char v) => Prod.Contains(v);
+
+        private readonly char[] Operator = new[] { '<', '=' };
+        private readonly char[] Parentheses = new[] { '(', ')' };
+        private readonly char[] Sum = new[] { '+', '-' };
+        private readonly char[] Comment = new[] { '{', '}' };
+        private readonly char[] Attribution = new[] { ':', '=' };
+        private readonly char[] Prod = new[] { '*', '/' };
 
         public bool Any()
             => Cursor < _input.Length;

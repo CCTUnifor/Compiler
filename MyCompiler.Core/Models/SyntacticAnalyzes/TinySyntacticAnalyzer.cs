@@ -18,7 +18,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
         {
             if (Peek == null)
                 throw new ExpectedException(c, "null");
-            if (c.ToString().ToLower() != Peek.Value.ToLower()) // TODO
+            if (c.ToLower() != Peek.Value.ToLower()) // TODO
                 throw new ExpectedException(c.ToString(), Peek.Value);
 
             Console.WriteLine($"++++++ EAT - {c} ++++++");
@@ -40,6 +40,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
         {
             Line = countLine;
             LexicalAnalyze = new TinyLexicalAnalyze(countLine, input);
+            LexicalAnalyze.GetNextToken();
             DeclSequencia();
         }
 
@@ -86,17 +87,14 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
 
         private void ReadDecl()
         {
-            Eat("write");
+            Eat("read");
             Exp();
         }
 
         private void WriteDecl()
         {
-            ExpSimple();
-            if (!HasNext() || Peek.Grammar != TinyGrammar.Sum) return;
-
-            CompOp();
-            ExpSimple();
+            Eat("write");
+            Exp();
         }
 
         private void Exp()
@@ -154,8 +152,8 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
                 Exp();
                 Eat(")");
             }
-            else if (Peek.Grammar == TinyGrammar.Number)
-                Eat(TinyGrammar.Number);
+            else if (Peek.Grammar == TinyGrammar.Digit)
+                Eat(TinyGrammar.Digit);
             else if (Peek.Grammar == TinyGrammar.Identifier)
                 Eat(TinyGrammar.Identifier);
             else

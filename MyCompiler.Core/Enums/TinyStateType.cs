@@ -7,9 +7,12 @@
         Letter,
         Digit,
         SemiColon,
-        OpenComment,
-        CloseComment,
         Attribution,
-        Space
+        Space,
+        Parentheses,
+        Operator,
+        Comment,
+        Prod,
+        Sum
     }
 }

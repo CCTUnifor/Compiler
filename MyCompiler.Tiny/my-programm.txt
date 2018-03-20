@@ -1,9 +1,3 @@
-{
-Exemplo de programa
-em TINY -
-fatorial
-}
-
 read x;
 if 0 < x then
     fact := 1;

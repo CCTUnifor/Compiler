@@ -9,14 +9,24 @@ namespace MyCompiler.TinyApp
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Write your Input: ");
-            var input = new StreamReader("my-programm.txt");
-            var tiny = new TinySyntacticAnalyzer();
-            var countLine = 0;
-            var line = "";
+            try
+            {
+                Console.WriteLine("Write your Input: ");
+                var input = new StreamReader("my-programm.txt");
+                var tiny = new TinySyntacticAnalyzer();
+                var countLine = 0;
+                var line = "";
 
-            while ((line = input.ReadLine()) != null)
-                tiny.Check(++countLine, line);
+                while ((line = input.ReadLine()) != null)
+                    tiny.Check(++countLine, line);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                //throw;
+            }
+
+            Console.ReadLine();
         }
     }
 }

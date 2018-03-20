@@ -5,8 +5,6 @@
         Letter,
         Digit,
         SemiColon,
-        OpenComment,
-        CloseComment,
         Attribution,
         Space,
         ReserveWord,
@@ -14,6 +12,7 @@
         Sum,
         Prod,
         Parentheses,
-        Number
+        Comment,
+        Operator
     }
 }
