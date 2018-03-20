@@ -100,7 +100,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
         private void Exp()
         {
             ExpSimple();
-            if (!HasNext() || Peek.Grammar != TinyGrammar.Sum) return;
+            if (!HasNext() || Peek.Grammar != TinyGrammar.Operator) return;
 
             CompOp();
             ExpSimple();
