@@ -10,6 +10,10 @@
         Attribution,
         Space,
         ReserveWord,
-        Identifier
+        Identifier,
+        Sum,
+        Prod,
+        Parentheses,
+        Number
     }
 }
