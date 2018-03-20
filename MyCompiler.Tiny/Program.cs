@@ -31,6 +31,8 @@ namespace MyCompiler.TinyApp
         public void Check()
         {
             var firsttoken = LexicalAnalyze.GetNextToken();
+            var second = LexicalAnalyze.GetNextToken();
+            var d = LexicalAnalyze.GetNextToken();
             throw new NotImplementedException();
         }
     }
@@ -38,11 +40,13 @@ namespace MyCompiler.TinyApp
     public class TinyLexicalAnalyze
     {
         private readonly string _input;
-        private int i { get; set; }
+        private int Cursor { get; set; }
+        private int NextToReturn { get; set; }
         public TinyStateType State { get; set; }
         public ICollection<TinyToken> Tokens { get; set; }
         public TinyToken LastToken => Tokens.LastOrDefault();
-        private bool ToStop;
+        private bool HasConcatanation = true;
+
         public string[] ReserveWords => new[]
         {
             "write",
@@ -63,18 +67,26 @@ namespace MyCompiler.TinyApp
             Tokens = new List<TinyToken>();
         }
 
+        private bool ContinueLoop()
+        {
+            return Cursor < _input.Length && HasConcatanation;
+        }
+
         public TinyToken GetNextToken()
         {
-            ToStop = false;
-            while (i < _input.Length && !ToStop)
+            NextToReturn++;
+            
+            HasConcatanation = true;
+
+            while (ContinueLoop())
             {
-                var character = _input[i];
+                var character = _input[Cursor];
 
                 switch (State)
                 {
                     case TinyStateType.Initial:
                         HandleInitialState(character);
-                        i--;
+                        Cursor--;
                         break;
                     case TinyStateType.Letter:
                         if (char.IsLetter(character))
@@ -123,31 +135,37 @@ namespace MyCompiler.TinyApp
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
-                i++;
+                Cursor++;
             }
 
-            return LastToken;
+            if (NextToReturn - 1 >= Tokens.Count)
+                return null;
 
+            return Tokens.ToList()[NextToReturn - 1];
         }
 
         private void GoToInitialState()
         {
-            i--;
+            Cursor--;
             State = TinyStateType.Initial;
+            Indentifier();
+            HasConcatanation = false;
         }
 
         private void Handle(char character, TinyGrammar grammar)
         {
-            if (LastToken != null && LastToken.Grammar == grammar)
-                LastToken.ConcatValue(character);
-            else
+            if (LastToken == null || LastToken.Grammar != grammar)
                 Tokens.Add(new TinyToken(character, grammar));
-            if (grammar == TinyGrammar.Letter && ReserveWords.Contains(LastToken.Value))
+            else if (LastToken.Grammar == grammar)
+                LastToken.ConcatValue(character);
+        }
+
+        private void Indentifier()
+        {
+            if (LastToken.Grammar == TinyGrammar.Letter && ReserveWords.Contains(LastToken.Value))
                 LastToken.ChangeGrammar(TinyGrammar.ReserveWord);
             else
                 LastToken.ChangeGrammar(TinyGrammar.Identifier);
-
-            ToStop = true;
         }
 
         private void HandleInitialState(char value)
