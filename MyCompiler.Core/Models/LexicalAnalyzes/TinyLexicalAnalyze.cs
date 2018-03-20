@@ -164,5 +164,8 @@ namespace MyCompiler.Core.Models.LexicalAnalyzes
         public bool IsCloseComment(char v) => v == '}';
         public bool IsAttribution(char v) => v == ':';
         public bool IsSpace(char v) => v == ' ';
+
+        public bool Any()
+            => Cursor < _input.Length;
     }
 }
