@@ -24,6 +24,6 @@ soma → + | -
 
 (eliminar recursão à esquerda) termo → termo mult fator | fator
 
-mult → + | /
+mult → * | /
 
 fator → (exp) | numero | identificador

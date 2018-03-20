@@ -6,6 +6,9 @@ class TokenType:
         self.id = ttype
         self.values = values
         self.name = name
+    
+    def __str__(self):
+        return self.name
 
 
 class Token:
@@ -15,25 +18,25 @@ class Token:
     WORD = TokenType(4, None, 'Word')
     COMMENT = TokenType(5, ['{', '}'], 'Comment')
     SEMICOLON = TokenType(6, [';'], 'Decl-sep')
-    IDENTIFICATOR = TokenType(7, None, 'Ide')
+    IDENTIFIER = TokenType(7, None, 'Identifier')
     RESERVEDWORD = TokenType(8, [
-        'if'    , 'IF',
-        'then'  , 'THEN',
-        'else'  , 'ELSE'
-        'end'   , 'END',
-        'repeat', 'REPEAT',
-        'until' , 'UNTIL',
-        'write' , 'WRITE',
-        'read'  , 'READ',
-    ], 'RESERVEDWORD')
+        'if'    ,
+        'then'  ,
+        'else'  ,
+        'end'   ,
+        'repeat',
+        'until' ,
+        'write' ,
+        'read'  ,
+    ], 'ReservedWord')
     SUM = TokenType(9, ['+', '-'], 'Sum')
     PROD = TokenType(10, ['*', '/'], 'Prod')
     ATRIB = TokenType(11, [':', '='], 'Atrib-decl')
     SPACE = TokenType(12, ['', ' ', '\n', os.linesep], 'Space')
 
     def __init__(self, value, ttype):
-        self.value = value
+        self.value = str(value).strip()
         self.ttype = ttype
     
     def __str__(self):
-        return str(self.value).ljust(10, ' ') + self.ttype.name
+        return str(self.value).ljust(10, ' ') + str(self.ttype)

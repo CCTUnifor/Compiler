@@ -17,13 +17,13 @@ if( __name__ == "__main__"):
 
         lexic = LxA(line)
 
-        while(lexic.notEnded()):
-            print(lexic.getToken())
+        # while(lexic.notEnded()):
+        #     print(lexic.getToken())
             
             
 
-        # SA = RDSintaticA(lexic)
-        # SA.parse()
+        SA = RDSintaticA(lexic)
+        SA.parse()
 
 
 

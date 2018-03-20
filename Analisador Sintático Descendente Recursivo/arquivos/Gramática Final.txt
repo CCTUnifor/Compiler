@@ -27,6 +27,6 @@ soma → + | -
 termo -> fator termo' | fator
 termo'-> mult fator termo' | mult fator
 
-mult → + | /
+mult → * | /
 
 fator → (exp) | numero | identificador

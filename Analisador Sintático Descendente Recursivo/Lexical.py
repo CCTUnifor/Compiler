@@ -43,7 +43,7 @@ class LexicalAnalyzer:
         if(token.value in Token.RESERVEDWORD.values):
             token.ttype = Token.RESERVEDWORD
         else:
-            token.ttype = Token.IDENTIFICATOR
+            token.ttype = Token.IDENTIFIER
 
     def analyze(self):
         state = 1
@@ -119,7 +119,7 @@ class LexicalAnalyzer:
                     accumulator.value += character
             
             elif(state == 4):
-                if(character.isalpha()):
+                if(character.isalpha() or character.isdigit()):
                     accumulator.value += character
                     
                 else:
