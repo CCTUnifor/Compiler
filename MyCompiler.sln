@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyCompiler.ConsoleApp", "MyCompiler\MyCompiler.ConsoleApp.csproj", "{14E9CCD2-B2D2-4AC4-BF43-E0299FE8DF70}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyCompiler.RegularExpressionApp", "MyCompiler\MyCompiler.RegularExpressionApp.csproj", "{14E9CCD2-B2D2-4AC4-BF43-E0299FE8DF70}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyCompiler.Core", "MyCompiler.Core\MyCompiler.Core.csproj", "{3AB1E7BF-6492-4A1A-9D0F-A844EBB311B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyCompiler.Tiny", "MyCompiler.Tiny\MyCompiler.Tiny.csproj", "{C71EC9FF-67CC-41CE-935C-64673C164F51}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyCompiler.TinyApp", "MyCompiler.Tiny\MyCompiler.TinyApp.csproj", "{C71EC9FF-67CC-41CE-935C-64673C164F51}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
