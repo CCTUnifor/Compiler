@@ -1,7 +1,7 @@
 ﻿using MyCompiler.Core.Enums.MathExpression;
 using MyCompiler.Core.Interfaces;
 
-namespace MyCompiler.Core.Models
+namespace MyCompiler.Core.Models.Tokens
 {
     public class MathExpressionToken : IToken<MathExpressionGrammarClass>
     {

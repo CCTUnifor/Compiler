@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MyCompiler.Core.Enums.RegularExpression;
 using MyCompiler.Core.Models.GraphModels;
+using MyCompiler.Core.Models.Tokens;
 
 namespace MyCompiler.Core.Models.ConstructionSubsets
 {

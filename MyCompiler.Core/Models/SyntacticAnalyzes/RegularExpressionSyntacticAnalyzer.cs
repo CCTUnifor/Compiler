@@ -5,6 +5,7 @@ using MyCompiler.Core.Extensions;
 using MyCompiler.Core.Interfaces;
 using MyCompiler.Core.Models.GraphModels;
 using MyCompiler.Core.Models.LexicalAnalyzer;
+using MyCompiler.Core.Models.Tokens;
 
 namespace MyCompiler.Core.Models.SyntacticAnalyzes
 {
