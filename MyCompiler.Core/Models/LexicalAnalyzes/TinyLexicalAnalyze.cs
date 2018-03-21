@@ -53,10 +53,11 @@ namespace MyCompiler.Core.Models.LexicalAnalyzes
             {
                 var character = _input[Cursor];
 
-                if (character == '\r' || character == '\n')
+                if (character == '\r' || character == '\n' || character == '\t')
                 {
                     Cursor++;
-                    _countLine++;
+                    if (character != '\t')
+                        _countLine++;
                     continue;
                 }
 
@@ -85,10 +86,13 @@ namespace MyCompiler.Core.Models.LexicalAnalyzes
                             GoToInitialState();
                         break;
                     case TinyStateType.Comment:
-                        if (IsComment(character))
-                            Handle(character, TinyGrammar.Comment);
-                        else
+                        Handle(character, TinyGrammar.Comment);
+
+                        if (character == '}')
+                        {
+                            Cursor++;
                             GoToInitialState();
+                        }
                         break;
                     case TinyStateType.Attribution:
                         if (IsAttribution(character))
@@ -140,6 +144,9 @@ namespace MyCompiler.Core.Models.LexicalAnalyzes
                 return null;
 
             Console.WriteLine(Tokens.ToList()[NextToReturn - 1]);
+            if (LastToken.Grammar == TinyGrammar.Comment)
+                return GetNextToken();
+
             return Tokens.ToList()[NextToReturn - 1];
         }
 
