@@ -158,7 +158,6 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
                 Eat(TinyGrammar.Identifier);
             else
                 throw new CompilationException($"in line :{Line} - <factor>");
-
         }
 
         private void TermLine()

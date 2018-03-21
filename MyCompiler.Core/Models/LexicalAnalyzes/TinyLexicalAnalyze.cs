@@ -8,14 +8,14 @@ namespace MyCompiler.Core.Models.LexicalAnalyzes
 {
     public class TinyLexicalAnalyze
     {
-        private readonly int _countLine;
+        private int _countLine { get; set; }
         private readonly string _input;
         private int Cursor { get; set; }
         private int NextToReturn { get; set; }
         public TinyStateType State { get; set; }
         public ICollection<TinyToken> Tokens { get; set; }
         public TinyToken LastToken => Tokens.LastOrDefault();
-        private bool HasConcatanation = true;
+        private bool ToStop = true;
 
         public string[] ReserveWords => new[]
         {
@@ -38,16 +38,27 @@ namespace MyCompiler.Core.Models.LexicalAnalyzes
         }
 
         private bool ContinueLoop()
-            => Cursor < _input.Length && HasConcatanation;
+            => Cursor < _input.Length && _input[Cursor] != ' ';
 
         public TinyToken GetNextToken()
         {
+            State = TinyStateType.Initial;
             NextToReturn++;
-            HasConcatanation = true;
+            ToStop = false;
 
-            while (ContinueLoop())
+            while (_input[Cursor] == ' ')
+                Cursor++;
+
+            while (ContinueLoop() && !ToStop)
             {
                 var character = _input[Cursor];
+
+                if (character == '\r' || character == '\n')
+                {
+                    Cursor++;
+                    _countLine++;
+                    continue;
+                }
 
                 switch (State)
                 {
@@ -59,10 +70,7 @@ namespace MyCompiler.Core.Models.LexicalAnalyzes
                         if (char.IsLetter(character))
                             Handle(character, TinyGrammar.Letter);
                         else
-                        {
                             GoToInitialState();
-                            Indentifier();
-                        }
                         break;
                     case TinyStateType.Digit:
                         if (char.IsDigit(character))
@@ -126,10 +134,7 @@ namespace MyCompiler.Core.Models.LexicalAnalyzes
                 }
                 Cursor++;
             }
-
-            if (LastToken.Grammar == TinyGrammar.Space)
-                return GetNextToken();
-
+            Indentifier();
 
             if (NextToReturn - 1 >= Tokens.Count)
                 return null;
@@ -142,8 +147,7 @@ namespace MyCompiler.Core.Models.LexicalAnalyzes
         {
             Cursor--;
             State = TinyStateType.Initial;
-            
-            HasConcatanation = false;
+            ToStop = true;
         }
 
         private void Handle(char character, TinyGrammar grammar)
@@ -158,7 +162,7 @@ namespace MyCompiler.Core.Models.LexicalAnalyzes
         {
             if (LastToken.Grammar == TinyGrammar.Letter && ReserveWords.Contains(LastToken.Value))
                 LastToken.ChangeGrammar(TinyGrammar.ReserveWord);
-            else
+            else if (LastToken.Grammar == TinyGrammar.Letter)
                 LastToken.ChangeGrammar(TinyGrammar.Identifier);
         }
 
