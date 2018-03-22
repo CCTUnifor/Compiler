@@ -8,8 +8,8 @@ namespace MyCompiler.Core.Models.LexicalAnalyzes
 {
     public class TinyLexicalAnalyze
     {
-        private int _countLine { get; set; }
         private readonly string _input;
+        public int Line { get; private set; }
         private int Cursor { get; set; }
         private int NextToReturn { get; set; }
         public TinyStateType State { get; set; }
@@ -29,9 +29,9 @@ namespace MyCompiler.Core.Models.LexicalAnalyzes
             "until"
         };
 
-        public TinyLexicalAnalyze(int countLine, string input)
+        public TinyLexicalAnalyze(string input)
         {
-            _countLine = countLine;
+            Line = 1;
             _input = input;
             State = TinyStateType.Initial;
             Tokens = new List<TinyToken>();
@@ -54,8 +54,9 @@ namespace MyCompiler.Core.Models.LexicalAnalyzes
                 {
                     Cursor++;
                     if (character == '\r')
-                        _countLine++;
-                    character = _input[Cursor];
+                        Line++;
+                    if (ContinueLoop())
+                        character = _input[Cursor];
                 }
 
                 switch (State)
@@ -156,9 +157,9 @@ namespace MyCompiler.Core.Models.LexicalAnalyzes
 
         private void Handle(char character, TinyGrammar grammar)
         {
-            var c = LastToken != null && LastToken.Line == _countLine ? LastToken.Collumn + LastToken.Value.Length : 1;
+            var c = LastToken != null && LastToken.Line == Line ? LastToken.Collumn + LastToken.Value.Length : 1;
             if (LastToken == null || LastToken.Grammar != grammar)
-                Tokens.Add(new TinyToken(_countLine, c, character, grammar));
+                Tokens.Add(new TinyToken(Line, c, character, grammar));
             else if (LastToken.Grammar == grammar)
                 LastToken.ConcatValue(character);
         }

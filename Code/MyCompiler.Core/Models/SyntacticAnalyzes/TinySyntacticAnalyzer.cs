@@ -11,14 +11,13 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
 
         public TinyToken Peek => LexicalAnalyze.LastToken;
         private bool HasNext() => LexicalAnalyze.Any();
-        private int Line { get; set; }
 
         private void Eat(string c)
         {
             if (Peek == null)
-                throw new ExpectedException(c, "null");
-            if (c.ToLower() != Peek.Value.ToLower()) // TODO
-                throw new ExpectedException(c.ToString(), Peek.Value);
+                throw new ExpectedException(c, "null", Peek.Line);
+            if (c.ToLower() != Peek.Value.ToLower())
+                throw new ExpectedException(c, Peek.Value, Peek.Line);
 
             //Console.WriteLine($"++++++ EAT - {c} ++++++");
             LexicalAnalyze.GetNextToken();
@@ -27,9 +26,9 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
         private void Eat(TinyGrammar c)
         {
             if (Peek == null)
-                throw new ExpectedException("c", "null");
+                throw new ExpectedException("c", "null", Peek.Line);
             if (c != Peek.Grammar)
-                throw new ExpectedException(c.ToString(), Peek.Grammar.ToString());
+                throw new ExpectedException(c.ToString(), Peek.Grammar.ToString(), Peek.Line);
 
             //Console.WriteLine($"++++++ EAT - {c} ++++++");
             LexicalAnalyze.GetNextToken();
@@ -37,8 +36,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
 
         public void Check(int countLine, string input)
         {
-            Line = countLine;
-            LexicalAnalyze = new TinyLexicalAnalyze(countLine, input);
+            LexicalAnalyze = new TinyLexicalAnalyze(input);
             LexicalAnalyze.GetNextToken();
             DeclSequencia();
         }
@@ -73,7 +71,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
                             RepetDecl();
                             break;
                         default:
-                            throw new ExpectedException("ReserveWord", Peek.Value);
+                            throw new ExpectedException("ReserveWord", Peek.Value, Peek.Line);
                     }
 
                     break;
@@ -81,7 +79,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
                     AtribDecl();
                     break;
                 default:
-                    throw new CompilationException($"in line :{Line} - <declaration>");
+                    throw new CompilationException($"in line :{Peek.Line} - <declaration>");
             }
         }
 
@@ -158,7 +156,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
             else if (Peek.Grammar == TinyGrammar.Identifier)
                 Eat(TinyGrammar.Identifier);
             else
-                throw new CompilationException($"in line {Line} - <factor>");
+                throw new CompilationException($"in line {Peek.Line} - <factor>");
         }
 
         private void TermLine()
