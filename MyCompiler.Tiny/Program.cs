@@ -25,7 +25,6 @@ namespace MyCompiler.TinyApp
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                //throw;
             }
 
             Console.ReadLine();
