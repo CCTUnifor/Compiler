@@ -1,5 +1,4 @@
-﻿using System;
-using MyCompiler.Core.Enums;
+﻿using MyCompiler.Core.Enums;
 using MyCompiler.Core.Exceptions;
 using MyCompiler.Core.Models.LexicalAnalyzes;
 using MyCompiler.Core.Models.Tokens;
@@ -21,7 +20,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
             if (c.ToLower() != Peek.Value.ToLower()) // TODO
                 throw new ExpectedException(c.ToString(), Peek.Value);
 
-            Console.WriteLine($"++++++ EAT - {c} ++++++");
+            //Console.WriteLine($"++++++ EAT - {c} ++++++");
             LexicalAnalyze.GetNextToken();
         }
 
@@ -32,7 +31,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
             if (c != Peek.Grammar)
                 throw new ExpectedException(c.ToString(), Peek.Grammar.ToString());
 
-            Console.WriteLine($"++++++ EAT - {c} ++++++");
+            //Console.WriteLine($"++++++ EAT - {c} ++++++");
             LexicalAnalyze.GetNextToken();
         }
 
@@ -159,7 +158,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
             else if (Peek.Grammar == TinyGrammar.Identifier)
                 Eat(TinyGrammar.Identifier);
             else
-                throw new CompilationException($"in line :{Line} - <factor>");
+                throw new CompilationException($"in line {Line} - <factor>");
         }
 
         private void TermLine()

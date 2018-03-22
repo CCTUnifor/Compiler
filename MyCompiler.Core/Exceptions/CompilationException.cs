@@ -6,7 +6,7 @@ namespace MyCompiler.Core.Exceptions
     {
         public CompilationException(string s) : base(s)
         {
-            Console.WriteLine($"** Compilation exception: {s}");
+            Console.WriteLine($"\n** Compilation exception: {s}");
         }
     }
 }

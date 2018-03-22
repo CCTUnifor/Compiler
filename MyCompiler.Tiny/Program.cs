@@ -10,13 +10,17 @@ namespace MyCompiler.TinyApp
         {
             try
             {
-                Console.WriteLine("Write your Input: ");
-                var input = new StreamReader("my-programm.txt");
+                var fileName = "my-programm.txt";
+                var input = new StreamReader(fileName);
                 var tiny = new TinySyntacticAnalyzer();
                 var countLine = 0;
 
-                //while ((line = ) != null)
-                tiny.Check(++countLine, input.ReadToEnd());
+                var example = input.ReadToEnd();
+                Console.WriteLine($"++++++ Example file: {fileName} +++++++\n");
+                Console.WriteLine(example);
+                Console.WriteLine("\n++++++ RESULT ++++++ \n");
+
+                tiny.Check(++countLine, example);
             }
             catch (Exception e)
             {

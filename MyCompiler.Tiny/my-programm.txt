@@ -3,7 +3,7 @@
 }
 
 read x;
-if 0 < x then
+if {testando comentario} 0 < x then
     fact := 1;
     repeat
         fact := fact*x;
