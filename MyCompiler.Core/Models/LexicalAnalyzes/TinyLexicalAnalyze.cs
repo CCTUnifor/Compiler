@@ -17,8 +17,6 @@ namespace MyCompiler.Core.Models.LexicalAnalyzes
         public TinyToken LastToken => Tokens.LastOrDefault();
         private bool ToStop = true;
 
-        private int Tab = 0;
-
         public string[] ReserveWords => new[]
         {
             "write",

@@ -11,16 +11,20 @@ namespace MyCompiler.TinyApp
             try
             {
                 var fileName = "my-programm.txt";
-                var input = new StreamReader(fileName);
                 var tiny = new TinySyntacticAnalyzer();
                 var countLine = 0;
 
-                var example = input.ReadToEnd();
-                Console.WriteLine($"++++++ Example file: {fileName} +++++++\n");
-                Console.WriteLine(example);
-                Console.WriteLine("\n++++++ RESULT ++++++ \n");
+                Console.WriteLine("# Tiny Grammar");
 
-                tiny.Check(++countLine, example);
+                var code = "";
+                var input = new StreamReader(fileName);
+                code = input.ReadToEnd();
+
+                Console.WriteLine($"++++++ Example file: {fileName} +++++++\n");
+                Console.WriteLine(code);
+
+                Console.WriteLine($"\n++++++ RESULT +++++++\n");
+                tiny.Check(++countLine, code);
             }
             catch (Exception e)
             {
