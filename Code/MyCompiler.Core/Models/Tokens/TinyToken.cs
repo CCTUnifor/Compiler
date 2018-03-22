@@ -26,6 +26,6 @@ namespace MyCompiler.Core.Models.Tokens
         public void ChangeGrammar(TinyGrammar newGrammarType)
             => Grammar = newGrammarType;
 
-        public override string ToString() => $"{{L: {Line} | C: {Collumn}}} {Value} - {{{Grammar}}}";
+        public override string ToString() => $"{{L: {Line} | C: {Collumn.ToString().PadRight(3)}}} {Grammar.ToString().PadRight(12)} - {Value}";
     }
 }
