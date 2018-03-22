@@ -47,10 +47,11 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
         private void DeclSequencia()
         {
             Declaration();
-            if (!HasNext() || Peek.Grammar != TinyGrammar.SemiColon) return;
-
-            Eat(";");
-            DeclSequencia();
+            if (HasNext() && Peek.Grammar == TinyGrammar.SemiColon)
+            {
+                Eat(";");
+                DeclSequencia();
+            }
         }
 
         private void Declaration()
@@ -88,7 +89,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
         private void ReadDecl()
         {
             Eat("read");
-            Exp();
+            Eat(TinyGrammar.Identifier);
         }
 
         private void WriteDecl()
@@ -100,10 +101,11 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
         private void Exp()
         {
             ExpSimple();
-            if (!HasNext() || Peek.Grammar != TinyGrammar.Operator) return;
-
-            CompOp();
-            ExpSimple();
+            if (HasNext() && Peek.Grammar == TinyGrammar.Operator)
+            {
+                CompOp();
+                ExpSimple();
+            }
         }
 
         private void CompOp()
@@ -133,7 +135,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
         {
             if (Peek.Value == "+")
                 Eat("+");
-            else 
+            else
                 Eat("-");
         }
 
@@ -172,7 +174,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
         {
             if (Peek.Value == "*")
                 Eat("*");
-            else 
+            else
                 Eat("/");
         }
 

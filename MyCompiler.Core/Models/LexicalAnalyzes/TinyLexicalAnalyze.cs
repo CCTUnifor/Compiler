@@ -38,16 +38,13 @@ namespace MyCompiler.Core.Models.LexicalAnalyzes
         }
 
         private bool ContinueLoop()
-            => Cursor < _input.Length && _input[Cursor] != ' ';
+            => Cursor < _input.Length;// && State == TinyStateType.Comment || _input[Cursor] != ' ';
 
         public TinyToken GetNextToken()
         {
             State = TinyStateType.Initial;
             NextToReturn++;
             ToStop = false;
-
-            while (_input[Cursor] == ' ')
-                Cursor++;
 
             while (ContinueLoop() && !ToStop)
             {
@@ -56,9 +53,9 @@ namespace MyCompiler.Core.Models.LexicalAnalyzes
                 if (character == '\r' || character == '\n' || character == '\t')
                 {
                     Cursor++;
-                    if (character != '\t')
+                    if (character == '\r')
                         _countLine++;
-                    continue;
+                    character = _input[Cursor];
                 }
 
                 switch (State)
@@ -144,7 +141,7 @@ namespace MyCompiler.Core.Models.LexicalAnalyzes
                 return null;
 
             Console.WriteLine(Tokens.ToList()[NextToReturn - 1]);
-            if (LastToken.Grammar == TinyGrammar.Comment)
+            if (LastToken.Grammar == TinyGrammar.Comment || LastToken.Grammar == TinyGrammar.Space)
                 return GetNextToken();
 
             return Tokens.ToList()[NextToReturn - 1];
@@ -183,14 +180,14 @@ namespace MyCompiler.Core.Models.LexicalAnalyzes
                 State = TinyStateType.SemiColon;
             else if (IsComment(value))
                 State = TinyStateType.Comment;
+            else if (IsOperator(value))
+                State = TinyStateType.Operator;
             else if (IsAttribution(value))
                 State = TinyStateType.Attribution;
             else if (IsSpace(value))
                 State = TinyStateType.Space;
             else if (IsParentheses(value))
                 State = TinyStateType.Parentheses;
-            else if (IsOperator(value))
-                State = TinyStateType.Operator;
             else if (IsProd(value))
                 State = TinyStateType.Prod;
             else if (IsSum(value))
