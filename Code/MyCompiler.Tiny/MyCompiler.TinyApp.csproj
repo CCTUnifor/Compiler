@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>netcoreapp2.0</TargetFramework>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <RuntimeIdentifiers>win10-x64;ubuntu.16.10-x64</RuntimeIdentifiers>
+        <ApplicationIcon>ico-55301_256.ico</ApplicationIcon>
+        <Win32Resource />
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\MyCompiler.Core\MyCompiler.Core.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="my-programm.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+</Project>
