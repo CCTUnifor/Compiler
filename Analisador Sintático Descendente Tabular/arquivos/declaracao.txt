@@ -1,0 +1,13 @@
+(eliminar a regra da cadeia) 
+    A -> B
+    B -> cd
+        (eliminar símbolos inúteis) 
+        A -> cd
+        B -> cd
+            A -> cd
+
+
+
+declaracao → cond-decl | repet-decl | atrib-decl | leit-decl | escr-decl
+
+declaracao → cond-decl | repet-decl | atrib-decl | leit-decl | escr-decl

@@ -1,0 +1,9 @@
+(eliminar recursão à esquerda)
+    A -> Aα|β
+        A -> βA' | β
+        A'-> αA'| α
+
+exp-simples → exp-simples soma termo | termo
+
+exp-simples -> termo exp-simples' | termo
+exp-simples'-> soma termo exp-simples' | soma termo
