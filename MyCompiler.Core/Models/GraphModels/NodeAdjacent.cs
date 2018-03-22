@@ -1,5 +1,6 @@
 using MyCompiler.Core.Enums.RegularExpression;
 using MyCompiler.Core.Models.ConstructionSubsets;
+using MyCompiler.Core.Models.Tokens;
 
 namespace MyCompiler.Core.Models.GraphModels
 {

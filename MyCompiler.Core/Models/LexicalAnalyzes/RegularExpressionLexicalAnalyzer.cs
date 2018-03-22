@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using MyCompiler.Core.Enums.RegularExpression;
 using MyCompiler.Core.Extensions;
 using MyCompiler.Core.Interfaces;
+using MyCompiler.Core.Models.Tokens;
 
 namespace MyCompiler.Core.Models.LexicalAnalyzer
 {

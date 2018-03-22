@@ -1,3 +1,5 @@
+using MyCompiler.Core.Models.Tokens;
+
 namespace MyCompiler.Core.Models.GraphModels
 {
     public interface IGraph

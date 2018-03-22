@@ -1,0 +1,58 @@
+programa       -> decl-sequencia
+decl-sequencia -> decl-sequencia `;` declaracao | declaracao
+declaracao     -> cond-decl | repet-decl | atrib-decl | leit-decl | escr-decl 
+cond-decl      -> `if` exp `then` decl-sequencia `end` | `if` exp `then` decl-sequencia `else` decl-sequencia `end`
+repet-decl     -> `repeat` decl-sequencia `until` exp
+atrib-decl     -> `identificador` `:=` exp
+leit-decl      -> `read` `identificador`
+escr-decl      -> `write` exp
+exp            -> exp-simples comp-op exp-simples | exp-simples
+comp-op        -> `<` | `=`
+exp-simples    -> exp-simples soma termo | termo
+soma           -> `+` | `-`
+termo          -> termo mult fator | fator
+mult           -> `*` | `/`
+fator          -> `(` exp `)` | numero | `identificador`
+
+
+// ja com a remocao da recursao a esquerda
+
+programa       -> decl-sequencia
+
+decl-sequencia  -> declaracao decl-sequencia`
+decl-sequencia` -> `;` declaracao decl-sequencia` | E
+
+declaracao     -> cond-decl | repet-decl | atrib-decl | leit-decl | escr-decl 
+cond-decl      -> `if` exp `then` decl-sequencia `end` | `if` exp `then` decl-sequencia `else` decl-sequencia `end`
+repet-decl     -> `repeat` decl-sequencia `until` exp
+atrib-decl     -> `identificador` `:=` exp
+leit-decl      -> `read` `identificador`
+escr-decl      -> `write` exp
+exp            -> exp-simples comp-op exp-simples | exp-simples
+comp-op        -> `<` | `=`
+
+exp-simples    -> termo exp-simples`
+exp-simples`   -> soma termo exp-simples` | E
+
+soma           -> `+` | `-`
+
+termo           -> fator termo`
+termo`          -> mult fator termo` | E
+
+mult           -> `*` | `/`
+fator          -> `(` exp `)` | numero | `identificador`
+
+
+// remocao da recursao a esquerda
+
+*decl-sequencia -> decl-sequencia `;` declaracao | declaracao
+decl-sequencia  -> declaracao decl-sequencia`
+decl-sequencia` -> `;` declaracao decl-sequencia` | E
+
+*exp-simples    -> exp-simples soma termo | termo
+exp-simples     -> termo exp-simples`
+exp-simples`    -> soma termo exp-simples` | E
+
+*termo          -> termo mult fator | fator
+termo           -> fator termo`
+termo`          -> mult fator termo` | E
