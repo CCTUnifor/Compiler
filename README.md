@@ -6,7 +6,7 @@
         * Token = `Code/MyCompiler.Core/Models/Tokens/TinyToken.cs` 
         * Lexical Analyze = `Code/MyCompiler.Core/Models/LexicalAnalyzes/TinyLexicalAnalyze.cs` 
         * Syntactic Analyze = `Code/MyCompiler.Core/Models/SyntacticAnalyzes/TinySyntacticAnalyzer.cs` 
-    * Tiny
+    * Regular Expression (Thompson)
         * Startup = `Code/MyCompiler/Program.cs` 
         * Token = `Code/MyCompiler.Core/Models/Tokens/RegularExpressionToken.cs` 
         * Lexical Analyze = `Code/MyCompiler.Core/Models/LexicalAnalyzes/RegularExpressionLexicalAnalyzer.cs` 
