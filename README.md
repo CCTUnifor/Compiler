@@ -1,12 +1,18 @@
 # File Manager explanation
-* The folder `Compiler/` contains the project (code)
-    * Startup = `Compiler/MyCompiler.Tiny/Program.cs` 
-    * Code example txt = `Compiler/MyCompiler.Tiny/my-programm.txt` 
-    * Tiny Token = `Compiler/MyCompiler.Core/Models/Tokens/TinyToken.cs` 
-    * Tiny Lexical Analyze = `Compiler/MyCompiler.Core/Models/LexicalAnalyzes/TinyLexicalAnalyze.cs` 
-    * Tiny Syntactic Analyze = `Compiler/MyCompiler.Core/Models/SyntacticAnalyzes/TinySyntacticAnalyzer.cs` 
-* The folder `TinyApp/` contains the executable
-
-# How to run without Visual Studio
-> 1. Execute the `TinyApp/MyCompiler.TinyApp.exe`.
-> 1. The code example `TinyApp/my-programm.txt`.
+* The folder `Code/` contains the project (code)
+    * Tiny
+        * Startup = `Code/MyCompiler.Tiny/Program.cs` 
+        * Code example txt = `Code/MyCompiler.Tiny/my-programm.txt` 
+        * Token = `Code/MyCompiler.Core/Models/Tokens/TinyToken.cs` 
+        * Lexical Analyze = `Code/MyCompiler.Core/Models/LexicalAnalyzes/TinyLexicalAnalyze.cs` 
+        * Syntactic Analyze = `Code/MyCompiler.Core/Models/SyntacticAnalyzes/TinySyntacticAnalyzer.cs` 
+    * Tiny
+        * Startup = `Code/MyCompiler/Program.cs` 
+        * Token = `Code/MyCompiler.Core/Models/Tokens/RegularExpressionToken.cs` 
+        * Lexical Analyze = `Code/MyCompiler.Core/Models/LexicalAnalyzes/RegularExpressionLexicalAnalyzer.cs` 
+        * Syntactic Analyze = `Code/MyCompiler.Core/Models/SyntacticAnalyzes/RegularExpressionSyntacticAnalyzer.cs` 
+* The folder `Executables/` contains the executable
+    * Tiny `Executables/TinyApp`
+        * .exe `Executables/TinyApp/MyCompiler.TinyApp.exe`
+    * Regular Expression (Thompson) `Executables/RegularExpressionApp`
+        * .exe `Executables/RegularExpressionApp/MyCompiler.RegularExpressionApp.exe`

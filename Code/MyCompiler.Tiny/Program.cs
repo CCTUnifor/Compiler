@@ -1,0 +1,37 @@
+﻿using System;
+using System.IO;
+using MyCompiler.Core.Models.SyntacticAnalyzes;
+
+namespace MyCompiler.TinyApp
+{
+    public class Program
+    {
+        static void Main(string[] args)
+        {
+            try
+            {
+                var fileName = "my-programm.txt";
+                var tiny = new TinySyntacticAnalyzer();
+                var countLine = 0;
+
+                Console.WriteLine("# Tiny Grammar");
+
+                var code = "";
+                var input = new StreamReader(fileName);
+                code = input.ReadToEnd();
+
+                Console.WriteLine($"++++++ Example file: {fileName} +++++++\n");
+                Console.WriteLine(code);
+
+                Console.WriteLine($"\n++++++ RESULT +++++++\n");
+                tiny.Check(++countLine, code);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            Console.ReadLine();
+        }
+    }
+}

@@ -1,7 +1,0 @@
-{
-  "profiles": {
-    "MyCompiler.TinyApp": {
-      "commandName": "Project"
-    }
-  }
-}
