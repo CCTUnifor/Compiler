@@ -1,28 +1,34 @@
 import sys
-from Lexical import LexicalAnalyzer as LxA
-from Sintatic import RecursiveDescendentSintaticAnalyzer as RDSintaticA
+from Grammar import Grammar
 
 # http://matt.might.net/articles/parsing-regex-with-recursive-descent/
 # install Matplotlib
 # install networkx
 
-if( __name__ == "__main__"):
-    file_name = "arquivos/teste.txt"
+# if( __name__ == "__main__"):
+file_name = "arquivos/Gramática Final.txt"
 
-    if(len(sys.argv) > 1):
-        file_name = str(sys.argv[1])
+if(len(sys.argv) > 1):
+    file_name = str(sys.argv[1])
 
-    with open(file_name, "r") as file_obj:
-        line = file_obj.read()
+file_obj = open(file_name, "r")
 
-        lexic = LxA(line)
+fileTxt = file_obj.read()
+g = Grammar(fileTxt)
 
-        for token in lexic.getAllTokens(includeComments=False):
-            print(token)
+# print(g.matched)
+# print(g.NonTerminals)
+# print(g.Alphabet)
+# print(g.StartSimbol)
+# print(g.Premises)
 
-        # SA = RDSintaticA(lexic)
-        # SA.parse()
+g.makeTerms()
+print(g.getTerms())
+    
+
+    # SA = RDSintaticA(lexic)
+    # SA.parse()
 
 
 
-    file_obj.close()
+file_obj.close()

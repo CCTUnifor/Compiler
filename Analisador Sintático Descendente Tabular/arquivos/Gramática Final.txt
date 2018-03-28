@@ -1,32 +1,37 @@
-Programa → decl-sequencia
+N = {Programa,decl-sequencia,declaracao,cond-decl,repet-decl,atrib-decl,leit-decl,escr-decl,exp,comp-op,exp-simples,exp-simples',soma,termo,termo',mult,fator}
+Alf = {;,if,then,else,end,repeat,until,:=,identificador,read,write,<,=,+,-,*,/,(,),numero}
+S = {Programa}
+P = {
+    Programa -> decl-sequencia
 
-decl-sequencia -> declaracao decl-sequencia' | declaracao
-decl-sequencia'-> ;declaracao decl-sequencia'| ;declaracao
+    decl-sequencia -> declaracao decl-sequencia' | declaracao
+    decl-sequencia'-> ;declaracao decl-sequencia'| ;declaracao
 
-(eliminar a regra da cadeia) declaracao → cond-decl | repet-decl | atrib-decl | leit-decl | escr-decl 
+    declaracao -> cond-decl | repet-decl | atrib-decl | leit-decl | escr-decl 
 
-(resolver a ambiguidade) cond-decl -> if exp then decl-sequencia end | if exp then decl-sequencia else decl-sequencia end 
+    cond-decl -> if exp then decl-sequencia end | if exp then decl-sequencia else decl-sequencia end
 
-repet-decl → repeat decl-sequencia until exp
+    repet-decl -> repeat decl-sequencia until exp
 
-atrib-decl → identificador := exp
+    atrib-decl -> identificador := exp
 
-leit-decl → read identificador
+    leit-decl -> read identificador
 
-escr-decl → write exp
+    escr-decl -> write exp
 
-exp → exp-simples comp-op exp-simples | exp-simples
+    exp -> exp-simples comp-op exp-simples | exp-simples
 
-comp-op → < | =
+    comp-op -> < | =
 
-exp-simples -> termo exp-simples' | termo
-exp-simples'-> soma termo exp-simples' | soma termo
+    exp-simples -> termo exp-simples' | termo
+    exp-simples'-> soma termo exp-simples' | soma termo
 
-soma → + | -
+    soma -> + | -
 
-termo -> fator termo' | fator
-termo'-> mult fator termo' | mult fator
+    termo -> fator termo' | fator
+    termo'-> mult fator termo' | mult fator
 
-mult → * | /
+    mult -> * | /
 
-fator → (exp) | numero | identificador
+    fator -> (exp) | numero | identificador
+}
