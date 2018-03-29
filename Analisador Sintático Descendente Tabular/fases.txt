@@ -1,4 +1,4 @@
-1. reconhecer a gramática inserida
+ok 1. reconhecer a gramática inserida
 2. aplicar o first
 3. aplicar o follow
 4. montar a tabela

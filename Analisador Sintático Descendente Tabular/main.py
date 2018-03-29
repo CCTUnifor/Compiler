@@ -6,7 +6,8 @@ from Grammar import Grammar
 # install networkx
 
 # if( __name__ == "__main__"):
-file_name = "arquivos/Gramática Final.txt"
+file_name = "arquivos/Gramática Tiny.txt"
+# file_name = "arquivos/Gramática ETF.txt"
 
 if(len(sys.argv) > 1):
     file_name = str(sys.argv[1])
@@ -22,9 +23,10 @@ g = Grammar(fileTxt)
 # print(g.StartSimbol)
 # print(g.Premises)
 
-g.makeTerms()
-for term in g.getTerms():
-    print(term)
+g.build_grammar_matrix()
+for term in g.get_terms():
+    print('_______________'+term.left+'_______________')
+    print(term.first)
     
     
 

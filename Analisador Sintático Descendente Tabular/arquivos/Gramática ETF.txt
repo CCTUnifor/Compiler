@@ -1,0 +1,10 @@
+N = {E,E',T,T',F}
+Alf = {+,-,*,/,(,),identificador,numero}
+S = {E}
+P = {
+    E -> T E'
+    E'-> + T E' | - T E' | epsilon
+    T -> F T'
+    T'-> * F T' | / F T' | epsilon
+    F -> ( E )|identificador|numero
+}

@@ -5,7 +5,7 @@ P = {
     Programa -> decl-sequencia
 
     decl-sequencia -> declaracao decl-sequencia' | declaracao
-    decl-sequencia'-> ;declaracao decl-sequencia'| ;declaracao
+    decl-sequencia'-> ; declaracao decl-sequencia'| ; declaracao
 
     declaracao -> cond-decl | repet-decl | atrib-decl | leit-decl | escr-decl 
 
@@ -33,5 +33,5 @@ P = {
 
     mult -> * | /
 
-    fator -> (exp) | numero | identificador
+    fator -> ( exp ) | numero | identificador
 }
