@@ -1,4 +1,4 @@
-N = {Programa,decl-sequencia,declaracao,cond-decl,repet-decl,atrib-decl,leit-decl,escr-decl,exp,comp-op,exp-simples,exp-simples',soma,termo,termo',mult,fator}
+N = {Programa,decl-sequencia,decl-sequencia',declaracao,cond-decl,repet-decl,atrib-decl,leit-decl,escr-decl,exp,comp-op,exp-simples,exp-simples',soma,termo,termo',mult,fator}
 Alf = {;,if,then,else,end,repeat,until,:=,identificador,read,write,<,=,+,-,*,/,(,),numero}
 S = {Programa}
 P = {

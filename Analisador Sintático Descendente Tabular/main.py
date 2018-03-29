@@ -23,7 +23,9 @@ g = Grammar(fileTxt)
 # print(g.Premises)
 
 g.makeTerms()
-print(g.getTerms())
+for term in g.getTerms():
+    print(term)
+    
     
 
     # SA = RDSintaticA(lexic)
