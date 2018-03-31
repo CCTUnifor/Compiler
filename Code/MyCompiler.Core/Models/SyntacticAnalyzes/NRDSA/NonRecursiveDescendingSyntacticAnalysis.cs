@@ -69,7 +69,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
 
         private First First(Term term)
         {
-            First f = Firsts.SingleOrDefault(x => x.NonTerminal == term.Caller);
+            var f = Firsts.SingleOrDefault(x => x.NonTerminal == term.Caller);
 
             foreach (var s in term.Productions)
             {
@@ -78,34 +78,35 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
 
                 if (nonTerminas.IsTerminal())
                     f = AddFirst(term, nonTerminas);
-                else if (firstElement.IsTerminal() || firstElement.IsEmpty())
+                else
+                if (firstElement.IsTerminal() || firstElement.IsEmpty())
                     f = AddFirst(term, firstElement.ToString());
                 else
                 {
-                    var termDerivated = Terms.SingleOrDefault(x => x.Caller.Value == firstElement);
-                    f = AddFirst(term, First(termDerivated).RemoveEmpty());
+                    var termDerivated = GetTermByElement(firstElement);
+                    f.AddTerminal(First(termDerivated).RemoveEmpty().Terminals);
 
-                    var allProctionsIsEmpty = true;
-                    foreach (var nonTerminal in nonTerminas.Remove(0, 1))
+                    var c = nonTerminas.Select(GetTermByElement).ToList();
+                    for (var i = 1; i < nonTerminas.Length; i++)
                     {
-                        var termDerivated2 = Terms.SingleOrDefault(x => x.Caller.Value == nonTerminal);
+                        var X1 = GetTermByElement(nonTerminas[i - 1]);
+                        var X2 = GetTermByElement(nonTerminas[i]);
 
-                        if (nonTerminal.IsTerminal())
-                            allProctionsIsEmpty = false;
-
-                        if (termDerivated2?.AnyEmptyProduction() ?? false)
+                        if (X1.AnyEmptyProduction())
                         {
-                            allProctionsIsEmpty = false;
-                            f = AddFirst(term, First(termDerivated2).RemoveEmpty());
+                            if (X2 != null)
+                                f.AddTerminal(First(X2).RemoveEmpty().Terminals);
                         }
                     }
-                    if (allProctionsIsEmpty)
-                        Firsts.SingleOrDefault(x => x.NonTerminal == term.Caller).AddTerminal("ε".ToTerminal());
+                    if (c.All(x => x?.AnyEmptyProduction() ?? false))
+                        f.AddTerminal("ε".ToTerminal());
                 }
             }
 
             return f;
         }
+
+        private Term GetTermByElement(char firstElement) => Terms.SingleOrDefault(x => x.Caller.Value == firstElement);
 
         private Follow Follow(Term term)
         {

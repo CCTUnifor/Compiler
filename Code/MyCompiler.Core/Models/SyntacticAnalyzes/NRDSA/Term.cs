@@ -15,6 +15,6 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
 
         public override string ToString() => $"{Caller} -> {string.Join(" | ", Productions)}";
 
-        public bool AnyEmptyProduction() => Productions.Any(x => x.IsEmpty());
+        public bool AnyEmptyProduction() => Productions.Any(x => x.Trim().IsEmpty());
     }
 }
