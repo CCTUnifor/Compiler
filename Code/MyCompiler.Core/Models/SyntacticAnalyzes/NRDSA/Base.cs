@@ -23,6 +23,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
 
         public void AddTerminal(ICollection<Terminal> firstTerminals)
         {
+            if (firstTerminals == null) return;
             foreach (var terminal in firstTerminals)
                 AddTerminal(terminal);
         }
