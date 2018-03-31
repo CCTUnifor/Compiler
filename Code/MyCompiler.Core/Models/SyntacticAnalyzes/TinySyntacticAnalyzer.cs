@@ -34,7 +34,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
             LexicalAnalyze.GetNextToken();
         }
 
-        public void Check(int countLine, string input)
+        public void Parser(int countLine, string input)
         {
             LexicalAnalyze = new TinyLexicalAnalyze(input);
             LexicalAnalyze.GetNextToken();

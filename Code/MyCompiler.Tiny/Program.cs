@@ -24,7 +24,7 @@ namespace MyCompiler.TinyApp
                 Console.WriteLine(code);
 
                 Console.WriteLine($"\n++++++ RESULT +++++++\n");
-                tiny.Check(++countLine, code);
+                tiny.Parser(++countLine, code);
             }
             catch (Exception e)
             {
