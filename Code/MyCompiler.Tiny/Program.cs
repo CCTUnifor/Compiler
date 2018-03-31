@@ -8,6 +8,8 @@ namespace MyCompiler.TinyApp
     {
         static void Main(string[] args)
         {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+
             try
             {
                 var fileName = "my-programm.txt";

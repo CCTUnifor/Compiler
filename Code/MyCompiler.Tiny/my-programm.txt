@@ -1,4 +1,4 @@
-x;
+read x;
 if {testando comentario} 0 < x then
     fact := 1;
     repeat

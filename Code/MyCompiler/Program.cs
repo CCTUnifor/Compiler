@@ -10,6 +10,8 @@ namespace MyCompiler.RegularExpressionApp
     {
         private static void Main(string[] args)
         {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+
             try
             {
                 Console.WriteLine("Write your Input: ");

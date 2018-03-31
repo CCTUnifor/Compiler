@@ -37,7 +37,7 @@ namespace MyCompiler.Core.Models.ConstructionSubsets
                 x.Add($"{node.Id}");
 
             foreach (var node in NodeRef)
-                y.Add($"    &({Id}, {((NodeAdjacent)node).Token.Value}) => {{ {node.Id} }}");
+                y.Add($"    lock ε({Id}, {((NodeAdjacent)node).Token.Value}) => {{ {node.Id} }}");
 
             return $"lock({Id}) => {{ {string.Join(", ", x)} }}\n" +
                     $"{string.Join("    ", y)}";

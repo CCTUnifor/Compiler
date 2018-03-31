@@ -9,7 +9,7 @@ namespace MyCompiler.Core.Models.Tokens
         public RegularExpressionGrammarClass GrammarClass { get; private set; }
         public int Line { get; private set; }
         public int? Collumn { get; private set; }
-        public static RegularExpressionToken Blank => new RegularExpressionToken("E", RegularExpressionGrammarClass.Empty, 0);
+        public static RegularExpressionToken Blank => new RegularExpressionToken("ε", RegularExpressionGrammarClass.Empty, 0);
 
         public RegularExpressionToken(string value, RegularExpressionGrammarClass grammarClass, int line, int collumn = default)
         {
