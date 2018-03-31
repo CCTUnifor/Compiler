@@ -1,11 +1,19 @@
 import re
 
-
-class Term:
-    RE = r'\s*(.+)\s*->\s*(.+)\s*'
+class TermUnit:
     TERMINAL = 'TERMINAL'
     NONTERMINAL = 'NON-TERMINAL'
     EMPTY = 'EMPTY'
+
+    def __init__(self, firstType, firstText):
+        self.type = firstType
+        self.text = firstText
+
+    def __str__(self):
+        return str(self.text)
+
+class Term:
+    RE = r'\s*(.+)\s*->\s*(.+)\s*'
 
     def __init__(self, left, text):
         self.left = left
@@ -16,7 +24,10 @@ class Term:
         self.follow = []
     
     def __str__(self):
-        return self.left + " -> " + str(self.right)
+        return self.left + " -> " + str([[j.text for j in i] for i in self.right])
+    
+    def strFirst(self):
+        return self.left + " -> " + str([i.text for i in self.first])
 
 
 class Grammar:
@@ -50,7 +61,7 @@ class Grammar:
     def term_is_empty(self, term):
         for stream in term.right:
             for item in stream:
-                if(item['type'] is Term.EMPTY):
+                if(item.type is TermUnit.EMPTY):
                     return True
 
         return False
@@ -59,18 +70,18 @@ class Grammar:
     def remove_empty(term_first):
         retorno = []
         for item in term_first:
-            if(item['type'] is not Term.EMPTY):
+            if(item.type is not TermUnit.EMPTY):
                 retorno.append(item)
         
         return retorno
 
     def first(self, stream):
         for item in stream:
-            if(item['type'] is Term.TERMINAL or item['type'] is Term.EMPTY):
+            if(item.type is TermUnit.TERMINAL or item.type is TermUnit.EMPTY):
                 return [item]
 
-            elif(item['type'] is Term.NONTERMINAL):
-                term = self.get_term(item['text'])
+            elif(item.type is TermUnit.NONTERMINAL):
+                term = self.get_term(item.text)
                 if(self.term_is_empty(term)):
                     continue
                 else:
@@ -97,66 +108,36 @@ class Grammar:
         if(leftHand not in self.NonTerminals):
             raise Exception('Não terminal '+leftHand+' não foi definido em N')
     
-    def add_stream(self, termo, rightHand):
+    def rank_stream(self, termo, rightHand):
         streamArray = []
-        accumulator = ''
-        length = len(rightHand)
 
         stream = rightHand.split(' ')
         for item in stream:
             if(item is ''):
                 continue
             elif(item in self.Alphabet):
-                streamArray.append({'type':Term.TERMINAL, 'text':item})
+                streamArray.append(TermUnit(TermUnit.TERMINAL, item))
 
             elif(item in self.NonTerminals):
-                streamArray.append({'type':Term.NONTERMINAL, 'text':item})
+                streamArray.append(TermUnit(TermUnit.NONTERMINAL, item))
 
             elif(item == Grammar.EMPTY):
-                streamArray.append({'type':Term.EMPTY, 'text':item})
+                streamArray.append(TermUnit(TermUnit.EMPTY, item))
             
             else:
                 raise Exception(item + " is not in N or Alf")
-        # for i, charr in enumerate(rightHand):
-        #     accumulator += charr
-
-        #     if(charr is ' '):
-        #         accumulator = ''
-
-        #     if(accumulator in self.Alphabet):
-        #         if(i+1 < length):
-        #             if((accumulator + rightHand[i+1]) in self.Alphabet):
-        #                 continue
-
-        #         streamArray.append({'type':Term.TERMINAL, 'text':accumulator})
-        #         accumulator = ''
-
-        #     elif(accumulator in self.NonTerminals):
-        #         if(i+1 < length):
-        #             if((accumulator + rightHand[i+1]) in self.NonTerminals):
-        #                 continue
-
-        #         streamArray.append({'type':Term.NONTERMINAL, 'text':accumulator})
-        #         accumulator = ''
-            
-        #     elif(accumulator == Grammar.EMPTY):
-        #         streamArray.append({'type':Term.EMPTY, 'text':accumulator})
-        #         accumulator = ''
-                
-        # if(accumulator is not ''):
-        #     raise Exception(accumulator + " is not in N or Alf")
 
         termo.right.append(streamArray)
 
-    def add_term(self, leftHand, rightHand, premise):
+    def rank_term(self, leftHand, rightHand, premise):
         term = Term(leftHand, premise)
         if(rightHand.find('|') >= 0):
             ors = rightHand.split('|')
             for orOption in ors:
-                self.add_stream(term, orOption.strip())
+                self.rank_stream(term, orOption.strip())
                 # term.right.append(orOption.strip())
         else:
-            self.add_stream(term, rightHand)
+            self.rank_stream(term, rightHand)
             # term.right.append(rightHand)
 
                 
@@ -174,7 +155,7 @@ class Grammar:
 
             self.validate_left(leftHand)
 
-            self.add_term(leftHand, rightHand, premise)
+            self.rank_term(leftHand, rightHand, premise)
 
     def get_terms(self):
         if(len(self.Terms) is 0):

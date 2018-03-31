@@ -1,0 +1,7 @@
+N = {E,B}
+Alf = {a,b}
+S = {E}
+P = {
+    E -> B a
+    B -> b | epsilon
+}
