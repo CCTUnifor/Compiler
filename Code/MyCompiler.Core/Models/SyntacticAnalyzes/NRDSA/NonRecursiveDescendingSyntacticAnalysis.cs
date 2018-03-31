@@ -24,7 +24,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
         {
             GenerateTerms();
             GenerateFirst();
-            GenerateFollows();
+            //GenerateFollows();
         }
 
         private void GenerateTerms()
@@ -56,11 +56,13 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
         {
             Follows.First().AddFinalSymble();
 
-            for (var i = Terms.Count - 1; i < Terms.Count; i--)
-            {
-                var term = Terms.ToList()[i];
+            //for (var i = Terms.Count - 1; i < Terms.Count; i--)
+            //{
+            //    var term = Terms.ToList()[i];
+            //    Follow(term);
+            //}
+            foreach (var term in Terms)
                 Follow(term);
-            }
 
             PrintFollows();
         }
@@ -69,7 +71,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
         {
             First f = Firsts.SingleOrDefault(x => x.NonTerminal == term.Caller);
 
-            foreach (var s in term.Derivations)
+            foreach (var s in term.Productions)
             {
                 var nonTerminas = s.Trim();
                 var firstElement = nonTerminas.FirstOrDefault();
@@ -81,15 +83,24 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
                 else
                 {
                     var termDerivated = Terms.SingleOrDefault(x => x.Caller.Value == firstElement);
-                    f = AddFirst(term, First(termDerivated));
+                    f = AddFirst(term, First(termDerivated).RemoveEmpty());
 
+                    var allProctionsIsEmpty = true;
                     foreach (var nonTerminal in nonTerminas.Remove(0, 1))
                     {
-                        termDerivated = Terms.SingleOrDefault(x => x.Caller.Value == nonTerminal);
+                        var termDerivated2 = Terms.SingleOrDefault(x => x.Caller.Value == nonTerminal);
 
-                        if (termDerivated?.Derivations.FirstOrDefault().IsEmpty() ?? false)
-                            f = AddFirst(term, First(termDerivated));
+                        if (nonTerminal.IsTerminal())
+                            allProctionsIsEmpty = false;
+
+                        if (termDerivated2?.AnyEmptyProduction() ?? false)
+                        {
+                            allProctionsIsEmpty = false;
+                            f = AddFirst(term, First(termDerivated2).RemoveEmpty());
+                        }
                     }
+                    if (allProctionsIsEmpty)
+                        Firsts.SingleOrDefault(x => x.NonTerminal == term.Caller).AddTerminal("ε".ToTerminal());
                 }
             }
 
@@ -100,32 +111,26 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
         {
             Follow f = Follows.SingleOrDefault(x => x.NonTerminal == term.Caller);
 
-            foreach (var y in term.Derivations)
+            foreach (var y in term.Productions)
             {
-                var derivation = y.Trim();
+                var production = y.Trim();
 
-                //if (derivation.Length == 3 && derivation[0].IsTerminal() && derivation[1].IsNonTerminal() && derivation[2].IsTerminal()) // 2
-                //{
-                //    var followB = Follow(Terms.SingleOrDefault(x => x.Caller.Value == derivation[1]));
-
-                //    if (derivation[2].IsTerminal())
-                //        followB.AddTerminal(new Terminal(derivation[2]));
-                //    else
-                //        followB.AddTerminal(Firsts.SingleOrDefault(x => x.NonTerminal.Value == derivation[2])?.Terminals);
-
-                //}
-                if (derivation.Length >= 2 && derivation[0].IsTerminal() && derivation[1].IsNonTerminal()) // 2
+                if (production.Length >= 2 && production[0].IsTerminal() && production[1].IsNonTerminal())
                 {
+                    var termB = Terms.SingleOrDefault(x => x.Caller.Value == production[1]);
+                    var followB = Follows.SingleOrDefault(x => x.NonTerminal == termB.Caller);
 
-                    var followA = Follows.SingleOrDefault(x => x.NonTerminal.Value == term.Caller.Value);
-                    var followB = Follow(Terms.SingleOrDefault(x => x.Caller.Value == derivation[1]));
-                    followB.AddTerminal(followA.Terminals);
-                    //followB.AddTerminal(Follow());
+
+                    if (production[2].IsTerminal())
+                        followB.AddTerminal(new Terminal(production[2]));
+                    else
+                        followB.AddTerminal(Firsts.SingleOrDefault(x => x.NonTerminal.Value == production[2])?.Terminals);
+                    //followB.AddTerminal(GetFirst());
                 }
 
             }
 
-            //f.AddFinalSymble();
+            f.Terminals.Remove("ε".ToTerminal());
             return f;
         }
 
