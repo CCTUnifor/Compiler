@@ -10,26 +10,21 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
         public string Grammar { get; }
         public ICollection<Term> Terms { get; private set; }
         public ICollection<First> Firsts { get; private set; }
+        public ICollection<Follow> Follows { get; private set; }
 
         public NonRecursiveDescendingSyntacticAnalysis(string grammar)
         {
             Grammar = grammar;
             Terms = new List<Term>();
             Firsts = new List<First>();
+            Follows = new List<Follow>();
         }
 
         public void Parser()
         {
             GenerateTerms();
             GenerateFirst();
-        }
-
-        private void GenerateFirst()
-        {
-            foreach (var term in Terms)
-                First(term);
-
-            PrintFirsts();
+            GenerateFollows();
         }
 
         private void GenerateTerms()
@@ -45,12 +40,35 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
                 Terms.Add(term);
 
                 InitializeFirst(term);
+                InitializeFollow(term);
             }
+        }
+
+        private void GenerateFirst()
+        {
+            foreach (var term in Terms)
+                First(term);
+
+            PrintFirsts();
+        }
+
+        private void GenerateFollows()
+        {
+            Follows.First().AddFinalSymble();
+
+            for (var i = Terms.Count - 1; i < Terms.Count; i--)
+            {
+                var term = Terms.ToList()[i];
+                Follow(term);
+            }
+
+            PrintFollows();
         }
 
         private First First(Term term)
         {
-            First f = null;
+            First f = Firsts.SingleOrDefault(x => x.NonTerminal == term.Caller);
+
             foreach (var s in term.Derivations)
             {
                 var nonTerminas = s.Trim();
@@ -78,6 +96,39 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
             return f;
         }
 
+        private Follow Follow(Term term)
+        {
+            Follow f = Follows.SingleOrDefault(x => x.NonTerminal == term.Caller);
+
+            foreach (var y in term.Derivations)
+            {
+                var derivation = y.Trim();
+
+                //if (derivation.Length == 3 && derivation[0].IsTerminal() && derivation[1].IsNonTerminal() && derivation[2].IsTerminal()) // 2
+                //{
+                //    var followB = Follow(Terms.SingleOrDefault(x => x.Caller.Value == derivation[1]));
+
+                //    if (derivation[2].IsTerminal())
+                //        followB.AddTerminal(new Terminal(derivation[2]));
+                //    else
+                //        followB.AddTerminal(Firsts.SingleOrDefault(x => x.NonTerminal.Value == derivation[2])?.Terminals);
+
+                //}
+                if (derivation.Length >= 2 && derivation[0].IsTerminal() && derivation[1].IsNonTerminal()) // 2
+                {
+
+                    var followA = Follows.SingleOrDefault(x => x.NonTerminal.Value == term.Caller.Value);
+                    var followB = Follow(Terms.SingleOrDefault(x => x.Caller.Value == derivation[1]));
+                    followB.AddTerminal(followA.Terminals);
+                    //followB.AddTerminal(Follow());
+                }
+
+            }
+
+            //f.AddFinalSymble();
+            return f;
+        }
+
         private First AddFirst(Term term, First first)
         {
             var _first = Firsts.SingleOrDefault(x => x.NonTerminal == term.Caller);
@@ -99,11 +150,26 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
                 Firsts.Add(new First(term.Caller, new List<Terminal>()));
         }
 
+        private void InitializeFollow(Term term)
+        {
+            if (Follows.All(x => x.NonTerminal != term.Caller))
+                Follows.Add(new Follow(term.Caller, new List<Terminal>()));
+        }
+
         private void PrintFirsts()
         {
             Console.WriteLine("++++++ Firsts ++++++\n");
             foreach (var first in Firsts)
                 Console.WriteLine(first);
+            Console.WriteLine("\n");
+        }
+
+        private void PrintFollows()
+        {
+            Console.WriteLine("++++++ Follows ++++++\n");
+            foreach (var follow in Follows)
+                Console.WriteLine(follow);
+            Console.WriteLine("\n");
         }
     }
 }
