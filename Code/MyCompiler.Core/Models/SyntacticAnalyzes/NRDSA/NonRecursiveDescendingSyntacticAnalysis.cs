@@ -33,7 +33,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
 
         private void GenerateTerms()
         {
-            var lines = Grammar.Split("\n");
+            var lines = Grammar.Split("\n").Select(x => x.Replace("\r", "")).ToArray();
             Terms = new List<Term>();
             Firsts = new List<First>();
             Follows = new List<Follow>();

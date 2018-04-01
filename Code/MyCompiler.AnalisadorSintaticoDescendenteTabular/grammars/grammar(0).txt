@@ -1,0 +1,5 @@
+E -> T X
+X -> + T X | - T X | ε
+T -> F Y
+Y -> * F Y | % F Y | ε
+F -> ( E ) | ide | num
