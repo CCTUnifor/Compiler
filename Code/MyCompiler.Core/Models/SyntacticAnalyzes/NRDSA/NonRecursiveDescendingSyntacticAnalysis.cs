@@ -12,12 +12,14 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
         public ICollection<First> Firsts { get; private set; }
         public ICollection<Follow> Follows { get; private set; }
 
+        public ICollection<NonTerminal> NonTerminals { get; private set; }
+        public List<Terminal> Terminals { get; private set; }
+        public Term[,] Table { get; private set; }
+
         public NonRecursiveDescendingSyntacticAnalysis(string grammar)
         {
             Grammar = grammar;
-            Terms = new List<Term>();
-            Firsts = new List<First>();
-            Follows = new List<Follow>();
+
         }
 
         public void Parser()
@@ -25,11 +27,17 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
             GenerateTerms();
             GenerateFirst();
             GenerateFollows();
+            GenerateTable();
         }
 
         private void GenerateTerms()
         {
             var lines = Grammar.Split("\n");
+            Terms = new List<Term>();
+            Firsts = new List<First>();
+            Follows = new List<Follow>();
+            NonTerminals = new List<NonTerminal>();
+            Terminals = new List<Terminal>();
 
             foreach (var line in lines)
             {
@@ -41,7 +49,27 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
 
                 InitializeFirst(term);
                 InitializeFollow(term);
+
+
+                NonTerminals.Add(caller);
             }
+
+            foreach (var term in Terms)
+            {
+                foreach (var termProduction in term.Productions)
+                {
+                    var re = termProduction.Trim();
+                    if (re.IsTerminal() && re != "ε")
+                        Terminals.Add(re.ToTerminal());
+                    else
+                    {
+                        var collection = from xc in re where xc.IsTerminal() && xc != ' ' && xc != 'ε' select xc.ToTerminal();
+                        Terminals.AddRange(collection);
+                    }
+                }
+            }
+            Terminals.Add('$'.ToTerminal());
+
         }
 
         private void GenerateFirst()
@@ -60,6 +88,42 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
                 Follow(term);
 
             PrintFollows();
+        }
+
+        private void GenerateTable()
+        {
+            Table = new Term[NonTerminals.Count, Terminals.Count];
+
+            foreach (var term in Terms)
+            {
+                var first = Firsts.Single(x => x.NonTerminal == term.Caller);
+                var nonTerminalIndex = NonTerminals.ToList().IndexOf(first.NonTerminal);
+                foreach (var terminal in first.Terminals)
+                {
+                    var terminalINdex = Terminals.ToList().IndexOf(terminal);
+                    if (terminalINdex >= 0)
+                        Table[nonTerminalIndex, terminalINdex] = term;
+
+                }
+            }
+
+            PrintTable();
+        }
+
+        private void PrintTable()
+        {
+            var tab = new ConsoleTable.ConsoleTable(Terminals.Select(x => x.Value).ToArray(), NonTerminals.Select(x => x.Value.ToString()).ToArray());
+            for (int i = 0; i < NonTerminals.Count; i++)
+            {
+                var zxc = new List<Term>();
+                for (int j = 0; j < Terminals.Count; j++)
+                {
+                    zxc.Add(Table[i, j]);
+                }
+                tab.AddRow(zxc.Select(x => x?.ToString() ?? "").ToArray());
+
+            }
+            tab.Write();
         }
 
         private First First(Term term)
@@ -103,73 +167,41 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
 
         private Term GetTermByElement(char firstElement) => Terms.SingleOrDefault(x => x.Caller.Value == firstElement);
 
-        private Follow Follow(Term term)
+        private Follow Follow(Term termChoosed)
         {
-            var currentFollow = Follows.Single(x => x.NonTerminal == term.Caller);
-
-            foreach (var y in term.Productions)
+            var currentFollow = Follows.Single(x => x.NonTerminal == termChoosed.Caller);
+            var allTermsCurrent = Terms.Where(term1 => term1.Productions.Any(term1Production => term1Production.Contains(termChoosed.Caller.Value.ToString()))).ToList();
+            foreach (var currentTerm in allTermsCurrent)
             {
-                var production = y.Trim();
-
-                ICollection<int> cx = new List<int>();
-                for (var i = 0; i < production.Length; i++)
+                var productionsChosed = currentTerm.Productions.Where(x => x.Contains(termChoosed.Caller.Value));
+                foreach (var y in productionsChosed)
                 {
-                    if (production[i].IsNonTerminal())
-                        cx.Add(i);
-                }
+                    var production = y.Trim();
+                    var i = production.IndexOf(termChoosed.Caller.Value);
 
-                foreach (var currentNonTerminal in cx)
-                {
-                    var followB = Follows.Single(x => x.NonTerminal.Value == production[currentNonTerminal]);
-                    var followA = Follows.Single(x => x.NonTerminal == term.Caller);
+                    var followB = Follows.Single(x => x.NonTerminal.Value == production[i]);
+                    var followA = Follows.Single(x => x.NonTerminal == currentTerm.Caller);
 
-                    var aBb = currentNonTerminal > 0 && production[currentNonTerminal - 1].IsTerminal() && production.Length > currentNonTerminal + 1;
-                    var aB = currentNonTerminal > 0 && production[currentNonTerminal - 1].IsTerminal();
+                    var aBb = i > 0 && production.Length > i + 1;
+                    var aB = i > 0;
 
                     if (aBb) // 2 regra
                     {
-                        var firstb = Firsts.SingleOrDefault(x => x.NonTerminal.Value == production[currentNonTerminal + 1]);
+                        var firstb = Firsts.SingleOrDefault(x => x.NonTerminal.Value == production[i + 1]);
 
-                        if (production[currentNonTerminal + 1].IsTerminal())
-                            followB.AddTerminal(production[currentNonTerminal + 1].ToTerminal());
+                        if (production[i + 1].IsTerminal())
+                            followB.AddTerminal(production[i + 1].ToTerminal());
                         else
                             followB.AddTerminal(firstb?.RemoveEmpty().Terminals);
-
-                        if (firstb != null && firstb.Terminals.Contains("ε".ToTerminal()))
-                            followB.AddTerminal(followA.Terminals);
                     }
-                    else if (aB)
+                    if (aB) // 3
                     {
                         followB.AddTerminal(followA.Terminals);
                     }
                 }
-
-                //if (production.Length >= 2 && production[0].IsTerminal() && production[1].IsNonTerminal())
-                //{
-                //    var termB = Terms.SingleOrDefault(x => x.Caller.Value == production[1]);
-                //    var followB = Follows.SingleOrDefault(x => x.NonTerminal == termB.Caller);
-
-
-                //    if (production[2].IsTerminal())
-                //        followB.AddTerminal(new Terminal(production[2]));
-                //    else
-                //        followB.AddTerminal(Firsts.SingleOrDefault(x => x.NonTerminal.Value == production[2])?.Terminals);
-                //    //followB.AddTerminal(GetFirst());
-                //}
-
             }
 
-            //f.Terminals.Remove("ε".ToTerminal());
             return currentFollow;
-        }
-
-        private First AddFirst(Term term, string terminal)
-        {
-            var first = Firsts.Single(x => x.NonTerminal == term.Caller);
-
-            first.AddTerminal(terminal.ToTerminal());
-
-            return first;
         }
 
         private void InitializeFirst(Term term)
