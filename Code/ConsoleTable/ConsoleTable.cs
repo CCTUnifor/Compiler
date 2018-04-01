@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace ConsoleTable
@@ -36,31 +35,34 @@ namespace ConsoleTable
         {
             for (var i = 0; i < Rows.Count; i++)
             {
-                Console.Write($"|{RowsHeader[i].PadRight(3)} ");
+                Print($"|{RowsHeader[i].PadRight(3)} ");
                 for (var j = 0; j < CollumnsHeader.Length - 1; j++)
                 {
                     var value = string.IsNullOrEmpty(Rows[i][j]) ? ConsoleTableOptions.DefaultIfNull : Rows[i][j];
-                    Console.Write($"| {value.PadRight(ConsoleTableOptions.Pad)}");
+                    Print($"| {value.PadRight(ConsoleTableOptions.Pad)}");
                 }
-                Console.WriteLine("|");
+                PrintLine("|");
             }
         }
 
         private void WriteHeader()
         {
-            Console.Write($"| {CollumnsHeader[0].PadRight(3)}");
+            Print($"| {CollumnsHeader[0].PadRight(3)}");
 
             for (var i = 1; i < CollumnsHeader.Length; i++)
-                Console.Write($"| {CollumnsHeader[i].PadRight(ConsoleTableOptions.Pad)}");
+                Print($"| {CollumnsHeader[i].PadRight(ConsoleTableOptions.Pad)}");
 
-            Console.WriteLine("|");
+            PrintLine("|");
 
-            Console.Write($"|{"".PadRight(3 + 1, '-')}");
+            Print($"|{"".PadRight(3 + 1, '-')}");
             for (var i = 1; i < CollumnsHeader.Length; i++)
-                Console.Write($"|{"".PadRight(ConsoleTableOptions.Pad + 1, '-')}");
+                Print($"|{"".PadRight(ConsoleTableOptions.Pad + 1, '-')}");
 
-            Console.WriteLine("|");
+            PrintLine("|");
         }
+
+        private static void Print(string v) => Printable.Printable.Print(v);
+        private static void PrintLine(string v) => Printable.Printable.PrintLn(v);
     }
 
     public static class ConsoleTableOptions

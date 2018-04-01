@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyCompiler.AnalisadorSintat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleTable", "ConsoleTable\ConsoleTable.csproj", "{0EF14814-AF9E-45E4-9E1D-23007D3E53F0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Printable", "Printable\Printable.csproj", "{A644E674-7F3B-4416-8025-B8B1852A5CEC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{0EF14814-AF9E-45E4-9E1D-23007D3E53F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0EF14814-AF9E-45E4-9E1D-23007D3E53F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0EF14814-AF9E-45E4-9E1D-23007D3E53F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A644E674-7F3B-4416-8025-B8B1852A5CEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A644E674-7F3B-4416-8025-B8B1852A5CEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A644E674-7F3B-4416-8025-B8B1852A5CEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A644E674-7F3B-4416-8025-B8B1852A5CEC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

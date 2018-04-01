@@ -7,8 +7,4 @@
     <StartupObject />
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Printable\Printable.csproj" />
-  </ItemGroup>
-
 </Project>

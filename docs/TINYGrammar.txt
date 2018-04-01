@@ -1,58 +1,39 @@
-programa       -> decl-sequencia
-decl-sequencia -> decl-sequencia `;` declaracao | declaracao
-declaracao     -> cond-decl | repet-decl | atrib-decl | leit-decl | escr-decl 
-cond-decl      -> `if` exp `then` decl-sequencia `end` | `if` exp `then` decl-sequencia `else` decl-sequencia `end`
-repet-decl     -> `repeat` decl-sequencia `until` exp
-atrib-decl     -> `identificador` `:=` exp
-leit-decl      -> `read` `identificador`
-escr-decl      -> `write` exp
-exp            -> exp-simples comp-op exp-simples | exp-simples
-comp-op        -> `<` | `=`
-exp-simples    -> exp-simples soma termo | termo
-soma           -> `+` | `-`
-termo          -> termo mult fator | fator
-mult           -> `*` | `/`
-fator          -> `(` exp `)` | numero | `identificador`
+programa(A)       -> decl-sequencia
+decl-sequencia(B)  -> declaracao decl-sequencia`
+decl-sequencia`(D) -> `;` declaracao decl-sequencia` | E
+declaracao(C)     -> cond-decl | repet-decl | atrib-decl | leit-decl | escr-decl 
+cond-decl(E)      -> `if` exp `then` decl-sequencia `end` | `if` exp `then` decl-sequencia `else` decl-sequencia `end`
+
+repet-decl(F)     -> `repeat` decl-sequencia `until` exp
+atrib-decl(G)     -> `identificador` `:=` exp
+leit-decl(H)      -> `read` `identificador`
+escr-decl(I)      -> `write` exp
+exp(J)            -> exp-simples comp-op exp-simples | exp-simples
+comp-op(L)        -> `<` | `=`
+exp-simples(M)    -> termo exp-simples`
+exp-simples`(N)   -> soma termo exp-simples` | E
+soma(O)           -> `+` | `-`
+termo(P)           -> fator termo`
+termo`(Q)          -> mult fator termo` | E
+mult(R)           -> `*` | `/`
+fator(S)          -> `(` exp `)` | numero | `identificador`
 
 
-// ja com a remocao da recursao a esquerda
-
-programa       -> decl-sequencia
-
-decl-sequencia  -> declaracao decl-sequencia`
-decl-sequencia` -> `;` declaracao decl-sequencia` | E
-
-declaracao     -> cond-decl | repet-decl | atrib-decl | leit-decl | escr-decl 
-cond-decl      -> `if` exp `then` decl-sequencia `end` | `if` exp `then` decl-sequencia `else` decl-sequencia `end`
-repet-decl     -> `repeat` decl-sequencia `until` exp
-atrib-decl     -> `identificador` `:=` exp
-leit-decl      -> `read` `identificador`
-escr-decl      -> `write` exp
-exp            -> exp-simples comp-op exp-simples | exp-simples
-comp-op        -> `<` | `=`
-
-exp-simples    -> termo exp-simples`
-exp-simples`   -> soma termo exp-simples` | E
-
-soma           -> `+` | `-`
-
-termo           -> fator termo`
-termo`          -> mult fator termo` | E
-
-mult           -> `*` | `/`
-fator          -> `(` exp `)` | numero | `identificador`
-
-
-// remocao da recursao a esquerda
-
-*decl-sequencia -> decl-sequencia `;` declaracao | declaracao
-decl-sequencia  -> declaracao decl-sequencia`
-decl-sequencia` -> `;` declaracao decl-sequencia` | E
-
-*exp-simples    -> exp-simples soma termo | termo
-exp-simples     -> termo exp-simples`
-exp-simples`    -> soma termo exp-simples` | E
-
-*termo          -> termo mult fator | fator
-termo           -> fator termo`
-termo`          -> mult fator termo` | E
+A -> B
+B -> C D
+D -> ; C D | ε
+C -> E | F | G | H | I
+E -> if J then B end | if J then B else B end
+F -> repeat B until J
+G -> identificador := J
+H -> read identificador
+I -> write J
+J -> M L M | M
+L -> < | =
+M -> P N
+N -> O P N | ε
+O -> + | -
+P -> S Q
+Q -> R S Q | ε
+R -> * | /
+S -> (J) | numero | identificador

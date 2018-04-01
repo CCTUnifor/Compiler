@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MyCompiler.Core.Exceptions;
 using MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA;
 
 namespace MyCompiler.Core.Models.SyntacticAnalyzes
@@ -15,20 +16,20 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
         public ICollection<NonTerminal> NonTerminals { get; private set; }
         public List<Terminal> Terminals { get; private set; }
         public Term[,] Table { get; private set; }
+        private bool IsTerminal(string production) => Terminals.Any(x => x.Value == production);
 
-        public NonRecursiveDescendingSyntacticAnalysis(string grammar)
-        {
-            Grammar = grammar;
+        public NonRecursiveDescendingSyntacticAnalysis(string grammar) => Grammar = grammar;
 
-        }
-
-        public void Parser()
+        public void Parser(string input)
         {
             GenerateTerms();
             GenerateFirst();
             GenerateFollows();
             GenerateTable();
+            Analyse(input);
         }
+
+
 
         private void GenerateTerms()
         {
@@ -41,8 +42,8 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
 
             foreach (var line in lines)
             {
-                var caller = line.Split("->").FirstOrDefault()?.TrimEnd()[0].ToNonTerminal();
-                var called = line.Split("->").LastOrDefault()?.TrimStart();
+                var caller = line.Split("->").FirstOrDefault()?.Trim()[0].ToNonTerminal();
+                var called = line.Split("->").LastOrDefault()?.Trim();
 
                 var term = new Term(caller, called);
                 Terms.Add(term);
@@ -54,22 +55,24 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
                 NonTerminals.Add(caller);
             }
 
-            foreach (var term in Terms)
+            foreach (var line in lines)
             {
-                foreach (var termProduction in term.Productions)
-                {
-                    var re = termProduction.Trim();
-                    if (re.IsTerminal() && re != "ε")
-                        Terminals.Add(re.ToTerminal());
-                    else
-                    {
-                        var collection = from xc in re where xc.IsTerminal() && xc != ' ' && xc != 'ε' select xc.ToTerminal();
-                        Terminals.AddRange(collection);
-                    }
-                }
+                var called = line.Split("->").LastOrDefault()?.Trim();
+                var splited = SplitByNonTerminals(called);
+                Terminals.AddRange(splited.Select(x => x.ToTerminal()).Where(x => Terminals.All(y => y.Value != x.Value)));
             }
             Terminals.Add('$'.ToTerminal());
 
+        }
+
+        private string[] SplitByNonTerminals(string called)
+        {
+            var c = NonTerminals.Select(x => x.Value).ToList();
+            c.Add('ε');
+            c.Add('|');
+            c.Add(' ');
+
+            return called.Split(c.ToArray(), StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).Distinct().ToArray();
         }
 
         private void GenerateFirst()
@@ -93,6 +96,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
         private void GenerateTable()
         {
             Table = new Term[NonTerminals.Count, Terminals.Count];
+            Printable.Printable.IsToPrintInConsole = false;
 
             foreach (var term in Terms)
             {
@@ -101,13 +105,11 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
                 foreach (var termProduction in term.Productions)
                 {
                     var production = termProduction.Trim();
-                    First f = null;
-                    if (production.IsTerminal())
-                        f = new First(term.Caller, new List<Terminal> { production.ToTerminal() });
-                    else if (production[0].IsTerminal())
-                        f = new First(term.Caller, new List<Terminal> { production[0].ToTerminal() });
-                    else if (production.IsNonTerminal())
-                        f = Firsts.Single(x => x.NonTerminal.Value == production[0]);
+                    var first = production.Split(" ").First();
+
+                    var f = IsTerminal(first) || first == "ε"
+                        ? new First(term.Caller, new List<Terminal> { first.ToTerminal() })
+                        : Firsts.Single(x => x.NonTerminal.Value == first[0]);
 
                     foreach (var terminal in f.Terminals)
                     {
@@ -132,9 +134,57 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
             PrintTable();
         }
 
+        private void Analyse(string input)
+        {
+            var X = NonTerminals.First().Value.ToString();
+
+            var q = new Stack<string>();
+            q.Push("&");
+            q.Push(X.ToString());
+
+            var i = 0;
+            while (X != "&")
+            {
+                var f = input.Split(" ")[i];
+                var M = NonTerminals.Select(x => x.Value.ToString()).ToList().IndexOf(X);
+                var a = Terminals.Select(x => x.Value).ToList().IndexOf(f);
+
+
+                if (X == f)
+                {
+                    if (q.Peek() != X)
+                        throw new CompilationException($"Expeted: '{X}'; got '{q.Peek()}'");
+                    q.Pop();
+                    i++;
+                }
+                else if (Table[M, a] != null)
+                {
+                    if (q.Peek() != X)
+                        throw new CompilationException($"Expeted: '{X}'; got '{q.Peek()}'");
+
+                    q.Pop();
+                    var xc = Table[M, a];
+
+                    foreach (var production in xc.Productions)
+                    {
+                        for (var j = production.Split(" ").Length - 1; j >= 0; j--)
+                        {
+                            q.Push(production[j].ToString());
+                        }
+
+                    }
+                    //for (var j = xc.Productions.Length - 1; j >= 0; j--)
+                }
+                X = q.Peek();
+            }
+        }
+
         private void PrintTable()
         {
-            var tab = new ConsoleTable.ConsoleTable(Terminals.Select(x => x.Value).ToArray(), NonTerminals.Select(x => x.Value.ToString()).ToArray());
+            var collumnsHeader = Terminals.Select(x => x.Value).ToArray();
+            var rowsHeader = NonTerminals.Select(x => x.Value.ToString()).ToArray();
+
+            var tab = new ConsoleTable.ConsoleTable(collumnsHeader, rowsHeader);
             for (var i = 0; i < NonTerminals.Count; i++)
             {
                 var zxc = new List<Term>();
@@ -142,7 +192,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
                 {
                     zxc.Add(Table[i, j]);
                 }
-                tab.AddRow(zxc.Select(x => x?.ToString().Replace(" ", "") ?? "").ToArray());
+                tab.AddRow(zxc.Select(x => x?.ToString() ?? "").ToArray());
             }
 
             tab.Write();
@@ -155,20 +205,17 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
             foreach (var s in term.Productions)
             {
                 var production = s.Trim();
-                var firstElement = production.FirstOrDefault();
+                var firstElement = production.Split(" ").FirstOrDefault();
 
-                if (production.IsTerminal())
-                    currentFirst.AddTerminal(production.ToTerminal());
-                else
-                if (firstElement.IsTerminal() || firstElement.IsEmpty())
+                if (IsTerminal(firstElement) || firstElement.IsEmpty())
                     currentFirst.AddTerminal(firstElement.ToTerminal());
                 else
                 {
-                    var termDerivated = GetTermByElement(firstElement);
+                    var termDerivated = GetTermByElement(firstElement[0]);
                     currentFirst.AddTerminal(First(termDerivated).RemoveEmpty().Terminals);
 
                     var allTermsOfAllProductions = production.Select(GetTermByElement).ToList();
-                    for (var i = 1; i < production.Length; i++)
+                    for (var i = 1; i < production.Replace(" ", "").Length; i++)
                     {
                         var X1 = GetTermByElement(production[i - 1]);
                         var X2 = GetTermByElement(production[i]);
@@ -201,25 +248,32 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
                     var production = y.Trim();
                     var i = production.IndexOf(termChoosed.Caller.Value);
 
+                    var splited = production.Split(termChoosed.Caller.Value, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToArray();
+
+                    var aBb = splited.Length > 1;
+                    var aB = splited.Length > 0;
+
                     var followB = Follows.Single(x => x.NonTerminal.Value == production[i]);
                     var followA = Follows.Single(x => x.NonTerminal == currentTerm.Caller);
 
-                    var aBb = i > 0 && production.Length > i + 1;
-                    var aB = i > 0;
 
-                    if (aBb) // 2 regra
+                    if (aBb)
                     {
-                        var firstb = Firsts.SingleOrDefault(x => x.NonTerminal.Value == production[i + 1]);
+                        for (int j = 1; j < splited.Length; j++)
+                        {
+                            var firstb = Firsts.SingleOrDefault(x => x.NonTerminal.Value == splited.Last()[0]);
+                            var c = splited[j];
+                            var v = c.Split(" ").First();
 
-                        if (production[i + 1].IsTerminal())
-                            followB.AddTerminal(production[i + 1].ToTerminal());
-                        else
-                            followB.AddTerminal(firstb?.RemoveEmpty().Terminals);
+                            if (IsTerminal(v))
+                                followB.AddTerminal(v.ToTerminal());
+                            else
+                                followB.AddTerminal(firstb?.RemoveEmpty().Terminals);
+                        }
+
                     }
-                    if (aB) // 3
-                    {
+                    else if (aB)
                         followB.AddTerminal(followA.Terminals);
-                    }
                 }
             }
 
@@ -240,18 +294,18 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
 
         private void PrintFirsts()
         {
-            Console.WriteLine("++++++ Firsts ++++++\n");
+            Printable.Printable.PrintLn("++++++ Firsts ++++++\n");
             foreach (var first in Firsts)
-                Console.WriteLine(first);
-            Console.WriteLine("\n");
+                Printable.Printable.PrintLn(first);
+            Printable.Printable.PrintLn("\n");
         }
 
         private void PrintFollows()
         {
-            Console.WriteLine("++++++ Follows ++++++\n");
+            Printable.Printable.PrintLn("++++++ Follows ++++++\n");
             foreach (var follow in Follows)
-                Console.WriteLine(follow);
-            Console.WriteLine("\n");
+                Printable.Printable.PrintLn(follow);
+            Printable.Printable.PrintLn("\n");
         }
     }
 }
