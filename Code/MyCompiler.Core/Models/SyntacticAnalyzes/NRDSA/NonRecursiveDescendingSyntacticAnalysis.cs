@@ -29,8 +29,6 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
             Analyse(input);
         }
 
-
-
         private void GenerateTerms()
         {
             var lines = Grammar.Split("\n").Select(x => x.Replace("\r", "")).ToArray();
@@ -148,13 +146,18 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
             q.Push(X);
 
             var i = 0;
+            var count = 0;
+
             while (X != "&")
             {
-                Printable.Printable.PrintLn($"Stack: [{string.Join(", ", q)}]");
-
-                var f = input.Split(" ")[i];
+                var strings = input.Split(" ");
+                var f = strings[i];
                 var M = NonTerminals.Select(x => x.Value.ToString()).ToList().IndexOf(X);
                 var a = Terminals.Select(x => x.Value).ToList().IndexOf(f);
+
+                var restOfTheInput = strings.ToList();
+                restOfTheInput.RemoveRange(0, i);
+
 
                 if (a < 0)
                     throw new CompilationException($"The {f} doesn't exists in this grammar!");
@@ -165,6 +168,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
                         throw new CompilationException($"Expeted: '{X}'; got '{q.Peek()}'");
                     q.Pop();
                     i++;
+                    PrintRowStack(q, count, restOfTheInput, "Next");
                 }
                 else if (Table[M, a] != null)
                 {
@@ -173,6 +177,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
 
                     q.Pop();
                     var xc = Table[M, a];
+                    PrintRowStack(q, count, restOfTheInput, xc.ToString());
 
                     foreach (var production in xc.Productions)
                     {
@@ -186,14 +191,19 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
                 }
                 else
                     throw new CompilationException($"Stack: [{string.Join(", ", q)}] \nX: '{X}' ; f: '{f}'; \nM: '{M}'; a: '{a}';");
-                X = q.Peek();
-            }
 
-            Printable.Printable.PrintLn($"Stack: [{string.Join(", ", q)}]\n");
-            Printable.Printable.PrintLn($"Compile success!!");
+
+                X = q.Peek();
+                count++;
+            }
+            PrintRowStack(q, count, new List<string> { "$" }, "Accepted");
+            Printable.Printable.PrintLn("\nCompile success!!!!");
         }
 
-
+        private static void PrintRowStack(Stack<string> q, int count, List<string> restOfTheInput, string termString)
+        {
+            Printable.Printable.PrintLn($"[{count.ToString().PadRight(2)}] [{string.Join(", ", q).PadRight(25)}] [{string.Join(" ", restOfTheInput).PadRight(25)}] [{termString.PadRight(25)}]");
+        }
 
         private First First(Term term)
         {

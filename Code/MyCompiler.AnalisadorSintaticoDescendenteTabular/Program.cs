@@ -11,7 +11,6 @@ namespace MyCompiler.AnalisadorSintaticoDescendenteTabular
         {
             try
             {
-
                 Console.OutputEncoding = System.Text.Encoding.UTF8;
                 ConsoleTableOptions.Pad = 30;
                 ConsoleTableOptions.DefaultIfNull = "Error";
