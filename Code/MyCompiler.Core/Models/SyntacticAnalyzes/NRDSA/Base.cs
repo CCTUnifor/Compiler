@@ -27,5 +27,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
             foreach (var terminal in firstTerminals)
                 AddTerminal(terminal);
         }
+
+        public Term ToTerm() => new Term(NonTerminal, string.Join(" | ", Terminals));
     }
 }

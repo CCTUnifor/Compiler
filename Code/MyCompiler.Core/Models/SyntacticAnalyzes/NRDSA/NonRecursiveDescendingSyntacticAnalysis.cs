@@ -96,14 +96,36 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
 
             foreach (var term in Terms)
             {
-                var first = Firsts.Single(x => x.NonTerminal == term.Caller);
-                var nonTerminalIndex = NonTerminals.ToList().IndexOf(first.NonTerminal);
-                foreach (var terminal in first.Terminals)
-                {
-                    var terminalINdex = Terminals.ToList().IndexOf(terminal);
-                    if (terminalINdex >= 0)
-                        Table[nonTerminalIndex, terminalINdex] = term;
+                var i = NonTerminals.ToList().IndexOf(term.Caller);
 
+                foreach (var termProduction in term.Productions)
+                {
+                    var production = termProduction.Trim();
+                    First f = null;
+                    if (production.IsTerminal())
+                        f = new First(term.Caller, new List<Terminal> { production.ToTerminal() });
+                    else if (production[0].IsTerminal())
+                        f = new First(term.Caller, new List<Terminal> { production[0].ToTerminal() });
+                    else if (production.IsNonTerminal())
+                        f = Firsts.Single(x => x.NonTerminal.Value == production[0]);
+
+                    foreach (var terminal in f.Terminals)
+                    {
+                        var j = Terminals.ToList().IndexOf(terminal);
+                        var t = new Term(term.Caller, production);
+                        if (i >= 0 && j >= 0)
+                            Table[i, j] = t;
+                        else if (terminal.Value == "ε")
+                        {
+                            var follow = Follows.Single(x => x.NonTerminal == term.Caller);
+
+                            foreach (var followTerminal in follow.Terminals)
+                            {
+                                var followIndex = Terminals.ToList().IndexOf(followTerminal);
+                                Table[i, followIndex] = t;
+                            }
+                        }
+                    }
                 }
             }
 
@@ -113,16 +135,16 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
         private void PrintTable()
         {
             var tab = new ConsoleTable.ConsoleTable(Terminals.Select(x => x.Value).ToArray(), NonTerminals.Select(x => x.Value.ToString()).ToArray());
-            for (int i = 0; i < NonTerminals.Count; i++)
+            for (var i = 0; i < NonTerminals.Count; i++)
             {
                 var zxc = new List<Term>();
-                for (int j = 0; j < Terminals.Count; j++)
+                for (var j = 0; j < Terminals.Count; j++)
                 {
                     zxc.Add(Table[i, j]);
                 }
-                tab.AddRow(zxc.Select(x => x?.ToString() ?? "").ToArray());
-
+                tab.AddRow(zxc.Select(x => x?.ToString().Replace(" ", "") ?? "").ToArray());
             }
+
             tab.Write();
         }
 

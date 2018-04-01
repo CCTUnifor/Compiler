@@ -17,6 +17,17 @@ namespace MyCompiler.AnalisadorSintaticoDescendenteTabular
                 //              $"T -> FY\n" +
                 //              $"Y -> *FY | %FY | ε\n" +
                 //              $"F -> (D) | ide | num";
+                var grammar = "E -> TX\n" +
+                              "X -> +TX | ε\n" +
+                              "T -> FY\n" +
+                              "Y -> *FY | ε\n" +
+                              "F -> (E) | ide | num";
+
+                //var grammar = "E -> TE'\n" +
+                //              "E' -> +TE' | ε\n" +
+                //              "T -> FY\n" +
+                //              "Y -> *FY | ε\n" +
+                //              "F -> (E) | ide | num";
                 //var grammar = $"S -> XYZ\n" +
                 //              $"X -> aXb | ε\n" +
                 //              $"Y -> cYZcX | d\n" +
@@ -35,13 +46,16 @@ namespace MyCompiler.AnalisadorSintaticoDescendenteTabular
                 //              "T -> FY\n" +
                 //              "Y -> *FY | ε\n" +
                 //              "F -> (E) | id";
-                var grammar = "E -> TX\n" +
-                              "X -> vTX | ε\n" +
-                              "T -> FY\n" +
-                              "Y -> &FY | ε\n" +
-                              "F -> ¬F | id";
+                //var grammar = "E -> TX\n" +
+                //              "X -> vTX | ε\n" +
+                //              "T -> FY\n" +
+                //              "Y -> &FY | ε\n" +
+                //              "F -> ¬F | id";
 
                 PrintGrammar(grammar);
+
+                ConsoleTable.ConsoleTableOptions.Pad = 14;
+                ConsoleTable.ConsoleTableOptions.DefaultIfNull = "Error";
 
                 var syntacticAnalysis = new NonRecursiveDescendingSyntacticAnalysis(grammar);
                 syntacticAnalysis.Parser();
