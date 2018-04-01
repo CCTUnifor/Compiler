@@ -20,7 +20,8 @@ namespace MyCompiler.AnalisadorSintaticoDescendenteTabular
                 Printable.Printable.PrintLn("# Analisador Sintatico Descendente Tabular");
 
                 var grammar = SetGrammar();
-                var input = "( ide + ide )$";
+                var input = "( ide + ide ) $";
+                //var input = "x * ( ide + ide ) $";
 
                 PrintGrammar(grammar);
 
@@ -37,11 +38,11 @@ namespace MyCompiler.AnalisadorSintaticoDescendenteTabular
 
         private static string SetGrammar()
         {
-            return "E -> TX\n" +
-                   "X -> + TX | - TX | ε\n" +
-                   "T -> FY\n" +
-                   "Y -> * FY | % FY | ε\n" +
-                   "F -> ( X ) | ide | num";
+            return "E -> T X\n" +
+                   "X -> + T X | - T X | ε\n" +
+                   "T -> F Y\n" +
+                   "Y -> * F Y | % F Y | ε\n" +
+                   "F -> ( E ) | ide | num";
             //return "E -> TX\n" +
             //              "X -> +TX | ε\n" +
             //              "T -> FY\n" +

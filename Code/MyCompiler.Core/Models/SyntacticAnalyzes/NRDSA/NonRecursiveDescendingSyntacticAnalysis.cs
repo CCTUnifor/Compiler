@@ -134,21 +134,30 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
             PrintTable();
         }
 
+
+
         private void Analyse(string input)
         {
+            Printable.Printable.IsToPrintInConsole = true;
+            Printable.Printable.PrintLn($"++++++ Analyse the input: '{input}' ++++++\n");
+
             var X = NonTerminals.First().Value.ToString();
 
             var q = new Stack<string>();
             q.Push("&");
-            q.Push(X.ToString());
+            q.Push(X);
 
             var i = 0;
             while (X != "&")
             {
+                Printable.Printable.PrintLn($"Stack: [{string.Join(", ", q)}]");
+
                 var f = input.Split(" ")[i];
                 var M = NonTerminals.Select(x => x.Value.ToString()).ToList().IndexOf(X);
                 var a = Terminals.Select(x => x.Value).ToList().IndexOf(f);
 
+                if (a < 0)
+                    throw new CompilationException($"The {f} doesn't exists in this grammar!");
 
                 if (X == f)
                 {
@@ -167,36 +176,24 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
 
                     foreach (var production in xc.Productions)
                     {
-                        for (var j = production.Split(" ").Length - 1; j >= 0; j--)
+                        var productionSplited = production.Split(" ");
+                        for (var j = productionSplited.Length - 1; j >= 0; j--)
                         {
-                            q.Push(production[j].ToString());
+                            if (!productionSplited[j].IsEmpty())
+                                q.Push(productionSplited[j]);
                         }
-
                     }
-                    //for (var j = xc.Productions.Length - 1; j >= 0; j--)
                 }
+                else
+                    throw new CompilationException($"Stack: [{string.Join(", ", q)}] \nX: '{X}' ; f: '{f}'; \nM: '{M}'; a: '{a}';");
                 X = q.Peek();
             }
+
+            Printable.Printable.PrintLn($"Stack: [{string.Join(", ", q)}]\n");
+            Printable.Printable.PrintLn($"Compile success!!");
         }
 
-        private void PrintTable()
-        {
-            var collumnsHeader = Terminals.Select(x => x.Value).ToArray();
-            var rowsHeader = NonTerminals.Select(x => x.Value.ToString()).ToArray();
 
-            var tab = new ConsoleTable.ConsoleTable(collumnsHeader, rowsHeader);
-            for (var i = 0; i < NonTerminals.Count; i++)
-            {
-                var zxc = new List<Term>();
-                for (var j = 0; j < Terminals.Count; j++)
-                {
-                    zxc.Add(Table[i, j]);
-                }
-                tab.AddRow(zxc.Select(x => x?.ToString() ?? "").ToArray());
-            }
-
-            tab.Write();
-        }
 
         private First First(Term term)
         {
@@ -305,6 +302,29 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes
             Printable.Printable.PrintLn("++++++ Follows ++++++\n");
             foreach (var follow in Follows)
                 Printable.Printable.PrintLn(follow);
+            Printable.Printable.PrintLn("\n");
+        }
+
+        private void PrintTable()
+        {
+            Printable.Printable.PrintLn("++++++ Table ++++++\n");
+
+            var collumnsHeader = Terminals.Select(x => x.Value).ToArray();
+            var rowsHeader = NonTerminals.Select(x => x.Value.ToString()).ToArray();
+
+            var tab = new ConsoleTable.ConsoleTable(collumnsHeader, rowsHeader);
+            for (var i = 0; i < NonTerminals.Count; i++)
+            {
+                var zxc = new List<Term>();
+                for (var j = 0; j < Terminals.Count; j++)
+                {
+                    zxc.Add(Table[i, j]);
+                }
+                tab.AddRow(zxc.Select(x => x?.ToString() ?? "").ToArray());
+            }
+
+            tab.Write();
+
             Printable.Printable.PrintLn("\n");
         }
     }
