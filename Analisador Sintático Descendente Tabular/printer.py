@@ -11,7 +11,7 @@ def Grammar_Printer(g):
         print(term.strFollow())
     
 def Grammar_Table_Printer(s):
-    ljust = 20
+    ljust = 15
     # print('\n-------------------------TABLE-------------------------')
     # print(s.table)
     print()
@@ -41,6 +41,10 @@ def Grammar_Table_Printer(s):
         line = non_terminal.ljust(ljust)
 
         for terminal in s.table[non_terminal]:
-            line += str(s.table[non_terminal][terminal]).ljust(ljust)
+            value = s.table[non_terminal][terminal]
+            if(type(value) is tuple):
+                line += str(value[1]).ljust(ljust)
+            else:
+                line += str(value).ljust(ljust)
         
         print("|" + line + "|")

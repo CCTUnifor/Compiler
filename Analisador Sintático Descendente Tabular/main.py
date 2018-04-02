@@ -30,7 +30,7 @@ with io.open(input_file_name, "r", encoding='utf8') as file_obj:
     compileGrammarService = TableService(g)
     compileGrammarService.compile(fileTxt)
 
-    # printer.Grammar_Printer(g)
-    # printer.Grammar_Table_Printer(compileGrammarService)
+    printer.Grammar_Printer(g)
+    printer.Grammar_Table_Printer(compileGrammarService)
 
 
