@@ -11,9 +11,11 @@ class TableService:
 
     def __init__(self, grammar):
         self.grammar = grammar
-        self.table = {}
+        self.table = None
 
     def makeTable(self):
+        self.table = {}
+        
         for non_terminal in self.grammar.NonTerminals:
             self.table[non_terminal.text] = {TableService.STREAM_END_UNIT.text: self.ErrorString}
 
@@ -188,7 +190,11 @@ class TableService:
         for term in self.grammar.Terms:
             self.first(term)
     
-    def compile(self):
-        self.build_first()
-        self.build_follow()
-        self.build_table()
+    def compileGrammar(self):
+        if(self.table is None):
+            self.build_first()
+            self.build_follow()
+            self.build_table()            
+    
+    def compile(self, text):
+        self.compileGrammar()

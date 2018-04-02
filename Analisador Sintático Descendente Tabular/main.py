@@ -4,28 +4,33 @@ from Entidades.Grammar import Grammar
 from Services.GrammarTableService import TableService
 import printer
 
-"""
-"""
-file_name = "arquivos/Gramática Tiny.txt"
-file_name = "arquivos/gramaticas/Gramática EABCD.txt"
-file_name = "arquivos/gramaticas/Gramática EB.txt"
-file_name = "arquivos/gramaticas/Gramática SXYZ.txt"
-file_name = "arquivos/gramaticas/Gramática ETF.txt"
+input_file_directory = "arquivos/inputs/input "
+grammar_file_directory = "arquivos/gramaticas/Gramática "
 
-if(len(sys.argv) > 1):
-    file_name = str(sys.argv[1])
+grammar_name = "EABCD"
+grammar_name = "EB"
+grammar_name = "SXYZ"
+grammar_name = "Tiny"
+grammar_name = "ETF"
 
-file_obj = io.open(file_name, "r", encoding='utf8')
+grammar_file_name = grammar_file_directory + grammar_name
+input_file_name = input_file_directory + grammar_name
 
-fileTxt = file_obj.read()
-g = Grammar.Grammar(fileTxt)
+if(len(sys.argv) > 2):
+    grammar_name = str(sys.argv[1])
+    input_name = str(sys.argv[2])
 
-compileGrammarService = TableService(g)
-compileGrammarService.compile()
+with io.open(grammar_file_name, "r", encoding='utf8') as file_obj:
+    fileTxt = file_obj.read()
+    g = Grammar.Grammar(fileTxt)
+
+with io.open(input_file_name, "r", encoding='utf8') as file_obj:
+    fileTxt = file_obj.read()
+
+    compileGrammarService = TableService(g)
+    compileGrammarService.compile(fileTxt)
+
+    printer.Grammar_Printer(g)
+    printer.Grammar_Table_Printer(compileGrammarService)
 
 
-printer.Grammar_Printer(g)
-printer.Grammar_Table_Printer(compileGrammarService)
-
-
-file_obj.close()

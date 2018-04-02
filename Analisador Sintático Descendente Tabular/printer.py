@@ -11,7 +11,7 @@ def Grammar_Printer(g):
         print(term.strFollow())
     
 def Grammar_Table_Printer(s):
-    ljust = 21
+    ljust = 20
     # print('\n-------------------------TABLE-------------------------')
     # print(s.table)
     print()
