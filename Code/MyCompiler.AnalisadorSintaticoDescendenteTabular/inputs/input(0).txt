@@ -1,1 +1,9 @@
-( ide + ide ) $
+read ide ;
+if num < ide then
+    fact := num;
+    repeat
+        fact := fact * ide ;
+        ide := ide - num
+    until ide = num;
+    write fact
+end

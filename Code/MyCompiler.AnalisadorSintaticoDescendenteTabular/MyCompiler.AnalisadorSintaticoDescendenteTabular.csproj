@@ -13,7 +13,13 @@
     <None Update="grammars\grammar%280%29.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="grammars\grammar%281%29.txt">
+    <None Update="grammars\grammar(1).txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="grammars\_grammar(0).txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="grammars\grammar(03).txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="grammars\grammar%282%29.txt">

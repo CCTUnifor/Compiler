@@ -1,5 +1,18 @@
-E -> T X
-X -> + T X | - T X | ε
-T -> F Y
-Y -> * F Y | % F Y | ε
-F -> ( E ) | ide | num
+A -> B
+B -> C D
+D ->  ; C D | ε
+C -> E | F | G | H | I
+E -> if J then B end | if J then B else B end
+F -> repeat B until J
+G -> ide := J
+H -> read ide
+I -> write J
+J -> M L M | M
+L -> < | =
+M -> P N
+N -> O P N | ε
+O -> + | -
+P -> S Q
+Q -> R S Q | ε
+R -> * | /
+S -> ( J ) | numero | ide               

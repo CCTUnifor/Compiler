@@ -2,12 +2,13 @@
 using System.IO;
 using ConsoleTable;
 using MyCompiler.Core.Models.SyntacticAnalyzes;
+using MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA;
 
 namespace MyCompiler.AnalisadorSintaticoDescendenteTabular
 {
-    public class Program
+    public static class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             try
             {
@@ -19,11 +20,11 @@ namespace MyCompiler.AnalisadorSintaticoDescendenteTabular
                 //Printable.Printable.PrintLn("ε");
                 Printable.Printable.PrintLn("# Analisador Sintatico Descendente Tabular");
 
-                var grammarFile = "grammar(0).txt";
-                var inputFile = "input(0).txt";
+                const string grammarFile = "grammar(0).txt";
+                const string inputFile = "input(0).txt";
 
                 var grammar = Read($"grammars/{grammarFile}");
-                var input = Read($"inputs/{inputFile}");
+                var input = Read($"inputs/{inputFile}") + " $";
 
                 PrintGrammar(grammar);
                 PrintInput(input);
