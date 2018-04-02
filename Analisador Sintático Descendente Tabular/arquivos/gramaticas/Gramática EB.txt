@@ -1,7 +1,7 @@
 N = {E,B}
-Alf = {a,b}
+Sigma = {a,b}
 S = {E}
 P = {
     E -> B a
-    B -> b | epsilon
+    B -> b | ɛ
 }

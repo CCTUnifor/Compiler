@@ -1,5 +1,5 @@
 N = {Programa,decl-sequencia,decl-sequencia',declaracao,cond-decl,repet-decl,atrib-decl,leit-decl,escr-decl,exp,comp-op,exp-simples,exp-simples',soma,termo,termo',mult,fator}
-Alf = {;,if,then,else,end,repeat,until,:=,identificador,read,write,<,=,+,-,*,/,(,),numero}
+Sigma = {;,if,then,else,end,repeat,until,:=,ide,read,write,<,=,+,-,*,/,(,),num}
 S = {Programa}
 P = {
     Programa -> decl-sequencia
@@ -13,9 +13,9 @@ P = {
 
     repet-decl -> repeat decl-sequencia until exp
 
-    atrib-decl -> identificador := exp
+    atrib-decl -> ide := exp
 
-    leit-decl -> read identificador
+    leit-decl -> read ide
 
     escr-decl -> write exp
 
@@ -33,5 +33,5 @@ P = {
 
     mult -> * | /
 
-    fator -> ( exp ) | numero | identificador
+    fator -> ( exp ) | num | ide
 }

@@ -1,10 +1,10 @@
 N = {E,A,B,C,D}
-Alf = {a,b,c,d}
+Sigma = {a,b,c,d}
 S = {E}
 P = {
     E -> A B C D
-    A -> a | epsilon
-    B -> b | epsilon
-    C -> c | epsilon
-    D -> d | epsilon
+    A -> a | ɛ
+    B -> b | ɛ
+    C -> c | ɛ
+    D -> d | ɛ
 }
