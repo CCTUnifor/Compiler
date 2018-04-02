@@ -35,10 +35,10 @@ class Term:
     
     def strFirst(self):
         x = ("first("+self.left + ")").ljust(self.lFix)
-        return x + " => " + str([i.text for i in self.first])
+        return x + " => " + str(self.first)
 
     def strFollow(self):
         x = ("follow("+self.left + ")").ljust(self.lFix)
-        return x + " => " + str([i.text for i in self.follow])
+        return x + " => " + str(self.follow)
 
 
