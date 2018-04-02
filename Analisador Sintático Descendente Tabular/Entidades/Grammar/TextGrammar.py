@@ -54,19 +54,22 @@ class TextGrammar:
     def rank_term(self, leftHand, rightHand, premise):
         term = Term(leftHand, premise)
         
+        self.rank_stream(leftHand)
+        
         if(rightHand.find('|') >= 0):
             ors = rightHand.split('|')
             for orOption in ors:
-                self.rank_stream(term, orOption.strip())
+                term.right.append(self.rank_stream(orOption.strip()))
         else:
-            self.rank_stream(term, rightHand)
+            term.right.append(self.rank_stream(rightHand))
                 
         self.Terms.append(term)
     
-    def rank_stream(self, termo, rightHand):
+    def rank_stream(self, streamText):
         streamArray = []
 
-        stream = rightHand.split(' ')
+        stream = streamText.split(' ')
+
         for item in stream:            
             if(item is ''):
                 continue
@@ -90,7 +93,6 @@ class TextGrammar:
                         raise Exception(item + " is not in N or Sigma")
 
                     streamArray.append(unit)
-                    self.TermUnits.append(unit)
-                    
+                    self.TermUnits.append(unit)                    
 
-        termo.right.append(streamArray)
+        return streamArray

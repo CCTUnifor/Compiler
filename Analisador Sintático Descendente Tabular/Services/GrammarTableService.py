@@ -7,9 +7,40 @@ from Entidades.Grammar.TextGrammar import TextGrammar
 
 class TableService:
     STREAM_END_UNIT = TermUnit(TermUnit.STREAM_END, TermUnit.STREAM_END)
+    ErrorString = "Error"
 
     def __init__(self, grammar):
         self.grammar = grammar
+        self.table = {}
+
+    def makeTable(self):
+        for non_terminal in self.grammar.NonTerminals:
+            self.table[non_terminal.text] = {TableService.STREAM_END_UNIT.text: self.ErrorString}
+
+            for terminal in self.grammar.Alphabet:
+                self.table[non_terminal.text][terminal.text] = self.ErrorString            
+
+    def build_table(self):
+        self.makeTable()
+         
+        for term in self.grammar.Terms:
+            for stream in term.right:
+                termToStreamTuple = (term, stream)
+
+                streamFirst = self.first(stream)
+
+                for item in streamFirst:
+                    if(item.type is TermUnit.TERMINAL):
+                        self.table[term.left][item.text] = termToStreamTuple
+                
+                if(TextGrammar.EMPTY_UNIT in streamFirst):
+                    if(TableService.STREAM_END_UNIT in term.follow):
+                        self.table[term.left][TableService.STREAM_END_UNIT.text] = termToStreamTuple
+
+                    for item in term.follow:
+                        if(item.type is TermUnit.TERMINAL):
+                            self.table[term.left][item.text] = termToStreamTuple
+                    
                             
     def apply_follow_third_rule(self):
         """
@@ -160,3 +191,4 @@ class TableService:
     def compile(self):
         self.build_first()
         self.build_follow()
+        self.build_table()
