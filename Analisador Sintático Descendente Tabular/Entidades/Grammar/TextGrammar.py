@@ -65,6 +65,12 @@ class TextGrammar:
                 
         self.Terms.append(term)
     
+    def getUnit(self, item):
+        return next((x for x in self.TermUnits if x.text == item), None)
+    
+    def getUnits(self, item):
+        return [x for x in self.TermUnits if (x.text.find(item,0)+1)]
+    
     def rank_stream(self, streamText):
         streamArray = []
 
@@ -74,7 +80,7 @@ class TextGrammar:
             if(item is ''):
                 continue
             else:
-                unit = next((x for x in self.TermUnits if x.text == item), None)
+                unit = self.getUnit(item)
 
                 if(unit):
                     streamArray.append(unit)

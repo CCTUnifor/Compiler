@@ -3,6 +3,7 @@ from collections import deque
 from Entidades.Term import TermUnit
 from Entidades.Term import Term
 from Entidades.Grammar.TextGrammar import TextGrammar
+from Services.LexicAnalyzer import LexicAnalyzer
 
 
 class TableService:
@@ -198,3 +199,13 @@ class TableService:
     
     def compile(self, text):
         self.compileGrammar()
+
+        lxa = LexicAnalyzer(text, self.grammar)
+        
+        while(lxa.isNotDone()):
+            # print('getToken:')
+            print(lxa.getToken())
+            # raise Exception('--------------------------')
+        
+        # stack = [self.STREAM_END_UNIT, self.grammar.StartSimbol]
+

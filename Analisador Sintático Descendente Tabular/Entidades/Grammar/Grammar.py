@@ -16,4 +16,3 @@ class Grammar:
 
     def __str__(self):
         return str(self.textGrammar.Premises)
-# ɛ
