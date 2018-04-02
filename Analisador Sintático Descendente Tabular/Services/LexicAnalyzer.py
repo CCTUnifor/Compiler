@@ -19,9 +19,10 @@ class LexicAnalyzer:
 
     def __init__(self, text, grammar: Grammar):
         self.NSigma = grammar.Alphabet
+        self.STREAM_END_UNIT = grammar.STREAM_END_UNIT
 
-        self.text = " ".join(text.split('\n'))
-        print(self.text)
+        self.text = " ".join(text.split('\n')) + " " + TermUnit.STREAM_END
+        # print(self.text)
 
         self.cursor = 0
 
@@ -55,10 +56,10 @@ class LexicAnalyzer:
     @staticmethod
     def isWhiteSpace(string):
         string = string.strip()
-        return string is "" or string is " " or string is "\n"
+        return string is "" or string is " " or string is "\n" #or TermUnit.STREAM_END == string
     
     def isaBreak(self, string):
-        return LexicAnalyzer.isWhiteSpace(string) or not self.isNotLast()
+        return LexicAnalyzer.isWhiteSpace(string) or not self.isNotLast() or TermUnit.STREAM_END == string
     
     def isaDigitBreak(self, string):
         return self.isaBreak(string) or ((not string.isdigit()) and (not string.isalpha()))
@@ -143,16 +144,20 @@ class LexicAnalyzer:
                         raise Exception('variables can\'t start with numbers ON:' + accum)
                     if(not retorno):
                         raise Exception('this grammar don\'t accept numbers ON:' + accum)
-                    break
-                
+
+                elif(accum == TermUnit.STREAM_END):
+                    retorno = self.STREAM_END_UNIT
+
                 else:
                     retorno = self.getUnit("ide")
                     if(not retorno):
                         raise Exception('this grammar don\'t accept variables ON:' + accum)
-                    break
+
+                break
 
         retorno = Token(accum, retorno)
         self.tokens.append(retorno)
+
         return retorno
             # self.next()
 

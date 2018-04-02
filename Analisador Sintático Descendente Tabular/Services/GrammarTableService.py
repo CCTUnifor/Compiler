@@ -3,11 +3,11 @@ from collections import deque
 from Entidades.Term import TermUnit
 from Entidades.Term import Term
 from Entidades.Grammar.TextGrammar import TextGrammar
+from Entidades.Grammar.Grammar import Grammar
 from Services.LexicAnalyzer import LexicAnalyzer
 
 
-class TableService:
-    STREAM_END_UNIT = TermUnit(TermUnit.STREAM_END, TermUnit.STREAM_END)
+class TableService:    
     ErrorString = "Error"
 
     def __init__(self, grammar):
@@ -18,7 +18,7 @@ class TableService:
         self.table = {}
         
         for non_terminal in self.grammar.NonTerminals:
-            self.table[non_terminal.text] = {TableService.STREAM_END_UNIT.text: self.ErrorString}
+            self.table[non_terminal.text] = {Grammar.STREAM_END_UNIT.text: self.ErrorString}
 
             for terminal in self.grammar.Alphabet:
                 self.table[non_terminal.text][terminal.text] = self.ErrorString            
@@ -37,8 +37,8 @@ class TableService:
                         self.table[term.left][item.text] = termToStreamTuple
                 
                 if(TextGrammar.EMPTY_UNIT in streamFirst):
-                    if(TableService.STREAM_END_UNIT in term.follow):
-                        self.table[term.left][TableService.STREAM_END_UNIT.text] = termToStreamTuple
+                    if(Grammar.STREAM_END_UNIT in term.follow):
+                        self.table[term.left][Grammar.STREAM_END_UNIT.text] = termToStreamTuple
 
                     for item in term.follow:
                         if(item.type is TermUnit.TERMINAL):
@@ -113,7 +113,7 @@ class TableService:
         """
         S.follow = $
         """
-        self.grammar.StartSimbol.follow.add(self.STREAM_END_UNIT)
+        self.grammar.StartSimbol.follow.add(Grammar.STREAM_END_UNIT)
 
     def build_follow(self):
         """
@@ -203,9 +203,7 @@ class TableService:
         lxa = LexicAnalyzer(text, self.grammar)
         
         while(lxa.isNotDone()):
-            # print('getToken:')
             print(lxa.getToken())
-            # raise Exception('--------------------------')
         
-        # stack = [self.STREAM_END_UNIT, self.grammar.StartSimbol]
+        stack = [Grammar.STREAM_END_UNIT, self.grammar.StartSimbol]
 

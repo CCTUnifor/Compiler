@@ -3,7 +3,8 @@ from Entidades.Term import TermUnit
 
 
 class Grammar:
-
+    STREAM_END_UNIT = TermUnit(TermUnit.STREAM_END, TermUnit.STREAM_END)
+    
     def __init__(self, text):
         self.textGrammar = TextGrammar(text)
 
