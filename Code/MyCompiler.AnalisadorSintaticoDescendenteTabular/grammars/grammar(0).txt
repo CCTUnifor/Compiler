@@ -1,18 +1,18 @@
-A -> B
-B -> C D
-D ->  ; C D | ε
-C -> E | F | G | H | I
-E -> if J then B end | if J then B else B end
-F -> repeat B until J
-G -> ide := J
-H -> read ide
-I -> write J
-J -> M L M | M
-L -> < | =
-M -> P N
-N -> O P N | ε
-O -> + | -
-P -> S Q
-Q -> R S Q | ε
-R -> * | /
-S -> ( J ) | numero | ide               
+PROGRAMA       -> DECL-SEQUENCIA
+DECL-SEQUENCIA  -> DECLARACAO DECL-SEQUENCIA'
+DECL-SEQUENCIA' -> ; DECLARACAO DECL-SEQUENCIA' | ε
+DECLARACAO     -> COND-DECL | REPET-DECL | ATRIB-DECL | LEIT-DECL | ESCR-DECL 
+COND-DECL      -> if EXP then DECL-SEQUENCIA end | if EXP then DECL-SEQUENCIA else DECL-SEQUENCIA end
+REPET-DECL     -> repeat DECL-SEQUENCIA until EXP
+ATRIB-DECL     -> ide := EXP
+LEIT-DECL      -> read ide
+ESCR-DECL      -> write EXP
+EXP            -> EXP-SIMPLES COMP-OP EXP-SIMPLES | EXP-SIMPLES
+COMP-OP        -> < | =
+EXP-SIMPLES    -> TERMO EXP-SIMPLES'
+EXP-SIMPLES'   -> SOMA TERMO EXP-SIMPLES' | ε
+SOMA           -> + | -
+TERMO           -> FATOR TERMO'
+TERMO'          -> MULT FATOR TERMO' | ε
+MULT           -> * | /
+FATOR          -> ( EXP ) | num | ide

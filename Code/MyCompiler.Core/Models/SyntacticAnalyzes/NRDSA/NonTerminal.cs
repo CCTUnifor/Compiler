@@ -2,8 +2,8 @@
 {
     public class NonTerminal
     {
-        public char Value { get; private set; }
-        public NonTerminal(char value) => Value = value;
+        public string Value { get; private set; }
+        public NonTerminal(string value) => Value = value;
         public override string ToString() => $"{Value}";
     }
 }

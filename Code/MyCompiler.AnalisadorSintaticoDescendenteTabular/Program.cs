@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using ConsoleTable;
-using MyCompiler.Core.Models.SyntacticAnalyzes;
 using MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA;
 
 namespace MyCompiler.AnalisadorSintaticoDescendenteTabular
@@ -24,7 +23,7 @@ namespace MyCompiler.AnalisadorSintaticoDescendenteTabular
                 const string inputFile = "input(0).txt";
 
                 var grammar = Read($"grammars/{grammarFile}");
-                var input = Read($"inputs/{inputFile}") + " $";
+                var input = Read($"inputs/{inputFile}");
 
                 PrintGrammar(grammar);
                 PrintInput(input);

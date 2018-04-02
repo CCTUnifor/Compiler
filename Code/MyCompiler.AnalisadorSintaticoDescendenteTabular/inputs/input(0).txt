@@ -1,9 +1,9 @@
-read ide ;
-if num < ide then
-    fact := num;
+read x ;
+if 0 < x then
+    fact := 1;
     repeat
-        fact := fact * ide ;
-        ide := ide - num
-    until ide = num;
+        fact := fact * x ;
+        x := x - 1
+    until x = 0 ;
     write fact
 end

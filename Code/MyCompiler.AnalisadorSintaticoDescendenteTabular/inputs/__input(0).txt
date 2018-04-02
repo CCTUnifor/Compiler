@@ -1,1 +1,2 @@
-x ( ide + ide ) $
+( ide + ide )
+ide * ( ide + ide )
