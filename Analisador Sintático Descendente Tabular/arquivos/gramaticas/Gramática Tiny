@@ -1,4 +1,4 @@
-N = {Programa,decl-sequencia,decl-sequencia',declaracao,cond-decl,repet-decl,atrib-decl,leit-decl,escr-decl,exp,comp-op,exp-simples,exp-simples',soma,termo,termo',mult,fator}
+N = {Programa,decl-sequencia,decl-sequencia',declaracao,cond-decl,repet-decl,atrib-decl,leit-decl,escr-decl,exp,X,comp-op,exp-simples,exp-simples',soma,termo,termo',mult,fator}
 Sigma = {;,if,then,else,end,repeat,until,:=,ide,read,write,<,=,+,-,*,/,(,),num}
 S = {Programa}
 P = {
@@ -9,7 +9,7 @@ P = {
 
     declaracao -> cond-decl | repet-decl | atrib-decl | leit-decl | escr-decl 
 
-    cond-decl -> if exp then decl-sequencia end | if exp then decl-sequencia else decl-sequencia end
+    cond-decl -> if exp then decl-sequencia end
 
     repet-decl -> repeat decl-sequencia until exp
 
@@ -19,7 +19,8 @@ P = {
 
     escr-decl -> write exp
 
-    exp -> exp-simples comp-op exp-simples | exp-simples
+    exp -> exp-simples X
+    X -> comp-op exp-simples | ɛ
 
     comp-op -> < | =
 
