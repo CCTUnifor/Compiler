@@ -156,8 +156,8 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
         {
             if (Table[i, j] == null)
                 Table[i, j] = t;
-            //else
-            //    Table[i, j].AddProduction(t.Productions);
+            else
+                Table[i, j].AddProduction(t.Productions);
         }
 
         private void Analyse(string input)
@@ -167,7 +167,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
 
             PrintHeaderStack();
 
-            var lines = input.Split("\n").Select(x => x.Replace("\t", "").Replace("\r", "")).ToArray();
+            var lines = input.Split("\n").Select(x => x.Replace("\t", "").Replace("\r", "").Trim()).ToArray();
             lines[lines.Length - 1] = lines[lines.Length - 1] + " $";
 
             var count = 0;
@@ -179,7 +179,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
 
             for (var l = 0; l < lines.Length; l++)
             {
-                var line = lines[l].Trim();
+                var line = lines[l];
 
                 var i = 0;
                 var strings = line.Split(" ");
@@ -193,7 +193,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
                     var restOfTheInput = strings.ToList();
                     restOfTheInput.RemoveRange(0, i);
                     var lineString = $"Line: {l + 1} | Collumn: {i + 1}\n\n";
-                    if (count == 7)
+                    if (count == 48)
                         Console.WriteLine();
 
                     if (X == f || (X == "ide" && IsLetter(f)) || (X == "num" && IsNum(f)))
@@ -215,8 +215,14 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
 
                         q.Pop();
 
+                        if (xc.Productions.Length > 1)
+                            throw new CompilationException($"{lineString}Ambiguous grammar in \n{xc}");
+
+
+
                         foreach (var production in xc.Productions)
                         {
+
                             var productionSplited = production.Split(" ");
                             for (var j = productionSplited.Length - 1; j >= 0; j--)
                             {
@@ -279,7 +285,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
                         var X1 = GetTermByElement(elements[i - 1]);
                         var X2 = GetTermByElement(elements[i]);
 
-                        if (X1.AnyEmptyProduction())
+                        if (X1?.AnyEmptyProduction() ?? false)
                         {
                             if (X2 != null)
                                 currentFirst.AddTerminal(First(X2).RemoveEmpty().Terminals);
@@ -293,45 +299,49 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
             return currentFirst;
         }
 
-        private void Follow(Term termChoosed)
+        private Follow Follow(Term termChoosed)
         {
-            var allTermsCurrent = (from term in Terms let y = term.Productions.SelectMany(x => x.Split(" ").ToArray()).Select(x => x.Replace(" ", "")) from termProduction in y where termProduction == termChoosed.Caller.Value select term).ToList();
+            var followB = Follows.Single(x => x.NonTerminal.Value == termChoosed.Caller.Value);
+            if (followB.Done)
+                return followB;
 
-            foreach (var currentTerm in allTermsCurrent)
+            followB.Done = true;
+            var allTermsCalled = (from term in Terms let y = term.Productions.SelectMany(x => x.Split(" ").ToArray()).Select(x => x.Replace(" ", "")) from termProduction in y where termProduction == termChoosed.Caller.Value select term).Distinct().ToList();
+
+            foreach (var currentTerm in allTermsCalled)
             {
-                var productionsChosed = currentTerm.Productions.Where(x => x.Contains(termChoosed.Caller.Value)).ToArray();
+                var productionsChosed = currentTerm.Productions.Where(x => x.Split(" ").Any(y => y == termChoosed.Caller.Value)).ToArray();
                 foreach (var y in productionsChosed)
                 {
-
                     var production = y.Trim();
                     var splited = production.Split(termChoosed.Caller.Value, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToArray();
 
                     var aBb = splited.Length > 1;
                     var aB = splited.Length > 0;
 
-                    var followB = Follows.Single(x => x.NonTerminal.Value == termChoosed.Caller.Value);
                     var followA = Follows.Single(x => x.NonTerminal == currentTerm.Caller);
-                    if (followB.NonTerminal.Value == "TERMO'")
-                        Console.WriteLine();
+
                     if (aBb)
                     {
-                        for (int j = 1; j < splited.Length; j++)
+                        for (var j = 1; j < splited.Length; j++)
                         {
-                            var firstb = Firsts.SingleOrDefault(x => x.NonTerminal.Value == splited.Last());
-                            var c = splited[j];
-                            var v = c.Split(" ").First();
+                            var firstb = Firsts.SingleOrDefault(x => x.NonTerminal.Value == splited[j]);
+                            var c = splited[j].Split(" ").First();
 
-                            if (IsTerminal(v))
-                                followB.AddTerminal(v.ToTerminal());
+                            if (IsTerminal(c))
+                                followB.AddTerminal(c.ToTerminal());
                             else
                                 followB.AddTerminal(firstb?.RemoveEmpty().Terminals);
                         }
 
                     }
-                    else if (aB)
+
+                    if (aB)
                         followB.AddTerminal(followA.Terminals);
                 }
             }
+
+            return followB;
         }
 
         private void InitializeFirst(Term term)

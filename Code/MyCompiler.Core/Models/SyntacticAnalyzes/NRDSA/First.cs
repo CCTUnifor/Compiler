@@ -11,13 +11,6 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
         }
         public override string ToString() => $"first({NonTerminal}) => [{string.Join(", ", Terminals)}]";
 
-        public First RemoveEmpty()
-        {
-            var x = Terminals.ToList();
-            x.Remove("ε".ToTerminal());
-
-            var newFirst = new First(this.NonTerminal, x);
-            return newFirst;
-        }
+        public bool AnyEmpty() => Terminals.Any(x => x.Value == "ε");
     }
 }

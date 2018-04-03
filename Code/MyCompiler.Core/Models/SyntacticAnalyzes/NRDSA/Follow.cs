@@ -16,5 +16,6 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
                 Terminals.Add("$".ToTerminal());
         }
 
+        public bool Done { get; set; }
     }
 }
