@@ -11,6 +11,7 @@ class Grammar:
         self.Terms = self.textGrammar.get_terms()
 
         self.StartSimbol = self.textGrammar.getStartSimbol()
+        self.StartSimbolUnit = self.textGrammar.getStartSimbolUnit()
         
         self.Alphabet = [unit for unit in self.textGrammar.TermUnits if unit.type is TermUnit.TERMINAL]
         self.NonTerminals = [unit for unit in self.textGrammar.TermUnits if unit.type is TermUnit.NONTERMINAL]       

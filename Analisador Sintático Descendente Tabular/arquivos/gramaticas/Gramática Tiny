@@ -4,8 +4,8 @@ S = {Programa}
 P = {
     Programa -> decl-sequencia
 
-    decl-sequencia -> declaracao decl-sequencia' | declaracao
-    decl-sequencia'-> ; declaracao decl-sequencia'| ; declaracao
+    decl-sequencia -> declaracao decl-sequencia'
+    decl-sequencia'-> ; declaracao decl-sequencia'| ɛ
 
     declaracao -> cond-decl | repet-decl | atrib-decl | leit-decl | escr-decl 
 
@@ -23,13 +23,13 @@ P = {
 
     comp-op -> < | =
 
-    exp-simples -> termo exp-simples' | termo
-    exp-simples'-> soma termo exp-simples' | soma termo
+    exp-simples -> termo exp-simples'
+    exp-simples'-> soma termo exp-simples' | ɛ
 
     soma -> + | -
 
-    termo -> fator termo' | fator
-    termo'-> mult fator termo' | mult fator
+    termo -> fator termo'
+    termo'-> mult fator termo' | ɛ
 
     mult -> * | /
 

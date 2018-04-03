@@ -29,6 +29,7 @@ class TableService:
         for term in self.grammar.Terms:
             for stream in term.right:
                 termToStreamTuple = (term, stream)
+                # print(stream)
 
                 streamFirst = self.first(stream)
 
@@ -199,11 +200,51 @@ class TableService:
     
     def compile(self, text):
         self.compileGrammar()
-
+        historic = ''
         lxa = LexicAnalyzer(text, self.grammar)
+
+        stack = [Grammar.STREAM_END_UNIT, self.grammar.StartSimbolUnit]
+
+        # while(lxa.isNotDone()):
+        #     print(lxa.getToken())
         
-        while(lxa.isNotDone()):
-            print(lxa.getToken())
+        current = lxa.getToken()
+        while( len(stack) ):#current.unit.type is not TermUnit.STREAM_END):
+            hline = str(stack).ljust(50) + " " + str(current.value) + '\n'
+            historic += hline
+
+            top = stack.pop()
+            print(hline)
+
+            
+            if(top.type is TermUnit.TERMINAL or top.type is TermUnit.STREAM_END):
+                if(top.text == current.value):
+                    current = lxa.getToken()
+                
+                elif(top.text == 'ide'):
+                    current = lxa.getToken()
+
+                elif(top.text == 'num'):
+                    current = lxa.getToken()
+
+                else:
+                    raise Exception("Error on " + current.value + " at:")
+
+            else:
+                tupleCell = self.table[top.text][current.unit.text]
+
+                if(tupleCell != self.ErrorString):
+                    for term in tupleCell[1][::-1]:
+                        if(term.type is not TermUnit.EMPTY):
+                            stack.append(term)
+                
+                elif(current.unit.type is TermUnit.STREAM_END):
+                    raise Exception("Error: invalid file end")
+
+                else:
+                    raise Exception("Error on " + current.value + " at:")
         
-        stack = [Grammar.STREAM_END_UNIT, self.grammar.StartSimbol]
+        # print("Compiling succes for entry:\n"+ text)
+        return lxa.tokens, historic
+
 

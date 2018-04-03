@@ -104,22 +104,8 @@ class LexicAnalyzer:
                         continue
 
                     if(match):
-                        if(((accum.isalpha()) and self.isaDigitBreak(self.peekNext()))
-                            or 
-                            ((not accum.isalpha()) and self.isaOperandBreak(self.peekNext()))
-                            ):
-                            text = match.text
-
-                            if(not(text == "ide") or not(match == "num")):
-                                state = 2
-                                continue
-                        
-
-                else:
-                    if(match):
-                        text = match.text
-
-                        if(not(text == "ide") or not(match == "num")):
+                        # if(self.isaOperandBreak(self.peekNext()) or self.isaDigitBreak(self.peekNext())):
+                        if(not(match.text == "ide") or not(match.text == "num")):
                             state = 2
                             continue
                 

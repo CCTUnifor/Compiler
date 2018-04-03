@@ -1,0 +1,129 @@
+----------------------GRAMÁTICA-----------------------
+    Programa -> decl-sequencia
+
+    decl-sequencia -> declaracao decl-sequencia'
+    decl-sequencia'-> ; declaracao decl-sequencia'| ɛ
+
+    declaracao -> cond-decl | repet-decl | atrib-decl | leit-decl | escr-decl
+
+    cond-decl -> if exp then decl-sequencia end | if exp then decl-sequencia else decl-sequencia end
+
+    repet-decl -> repeat decl-sequencia until exp
+
+    atrib-decl -> ide := exp
+
+    leit-decl -> read ide
+
+    escr-decl -> write exp
+
+    exp -> exp-simples comp-op exp-simples | exp-simples
+
+    comp-op -> < | =
+
+    exp-simples -> termo exp-simples'
+    exp-simples'-> soma termo exp-simples' | ɛ
+
+    soma -> + | -
+
+    termo -> fator termo'
+    termo'-> mult fator termo' | ɛ
+
+    mult -> * | /
+
+    fator -> ( exp ) | num | ide
+
+-------------------------FIRST-------------------------
+first(Programa)      => {repeat, read, write, if, ide}
+first(decl-sequencia) => {repeat, read, write, if, ide}
+first(decl-sequencia') => {ɛ, ;}
+first(declaracao)    => {repeat, read, write, if, ide}
+first(cond-decl)     => {if}
+first(repet-decl)    => {repeat}
+first(atrib-decl)    => {ide}
+first(leit-decl)     => {read}
+first(escr-decl)     => {write}
+first(exp)           => {num, (, ide}
+first(comp-op)       => {<, =}
+first(exp-simples)   => {(, ide, num}
+first(exp-simples')  => {ɛ, +, -}
+first(soma)          => {+, -}
+first(termo)         => {(, ide, num}
+first(termo')        => {/, ɛ, *}
+first(mult)          => {/, *}
+first(fator)         => {(, ide, num}
+
+------------------------FOLLOW-------------------------
+follow(Programa)     => {$}
+follow(decl-sequencia) => {$, until, else, end}
+follow(decl-sequencia') => {$, until, else, end}
+follow(declaracao)   => {$, ;, until, else, end}
+follow(cond-decl)    => {$, ;, until, else, end}
+follow(repet-decl)   => {$, ;, until, else, end}
+follow(atrib-decl)   => {$, ;, until, else, end}
+follow(leit-decl)    => {$, ;, until, else, end}
+follow(escr-decl)    => {$, ;, until, else, end}
+follow(exp)          => {until, ), then, end, $, ;, else}
+follow(comp-op)      => {(, ide, num}
+follow(exp-simples)  => {until, ), <, then, =, end, $, ;, else}
+follow(exp-simples') => {until, ), <, then, =, end, $, ;, else}
+follow(soma)         => {(, ide, num}
+follow(termo)        => {+, until, -, ), <, then, =, end, $, ;, else}
+follow(termo')       => {+, until, -, ), <, then, =, end, $, ;, else}
+follow(mult)         => {(, ide, num}
+follow(fator)        => {/, ), <, then, =, end, else, +, until, -, $, ;, *}
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------TABLE----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+|                      $              ;              if             then           end            else           repeat         until          ide            :=             read           write          <              =              +              -              *              /              (              )              num            |
+|Programa       Error          Error          [decl-sequencia]Error          Error          Error          [decl-sequencia]Error          [decl-sequencia]Error          [decl-sequencia][decl-sequencia]Error          Error          Error          Error          Error          Error          Error          Error          Error          |
+|decl-sequencia Error          Error          [declaracao, decl-sequencia']Error          Error          Error          [declaracao, decl-sequencia']Error          [declaracao, decl-sequencia']Error          [declaracao, decl-sequencia'][declaracao, decl-sequencia']Error          Error          Error          Error          Error          Error    Error          Error          Error          |
+|declaracao     Error          Error          [cond-decl]    Error          Error          Error          [repet-decl]   Error          [atrib-decl]   Error          [leit-decl]    [escr-decl]    Error          Error          Error          Error          Error          Error          Error          Error          Error          |
+|decl-sequencia'[ɛ]            [;, declaracao, decl-sequencia']Error          Error          [ɛ]            [ɛ]            Error          [ɛ]            Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          |
+|cond-decl      Error          Error          [if, exp, then, decl-sequencia, else, decl-sequencia, end]Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error       Error          |
+|repet-decl     Error          Error          Error          Error          Error          Error          [repeat, decl-sequencia, until, exp]Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error|
+|atrib-decl     Error          Error          Error          Error          Error          Error          Error          Error          [ide, :=, exp] Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          |
+|leit-decl      Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          [read, ide]    Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          |
+|escr-decl      Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          [write, exp]   Error          Error          Error          Error          Error          Error          Error          Error          Error          |
+|exp            Error          Error          Error          Error          Error          Error          Error          Error          [exp-simples]  Error          Error          Error          Error          Error          Error          Error          Error          Error          [exp-simples]  Error          [exp-simples]  |
+|exp-simples    Error          Error          Error          Error          Error          Error          Error          Error          [termo, exp-simples']Error          Error          Error          Error          Error          Error          Error          Error          Error          [termo, exp-simples']Error          [termo, exp-simples']|
+|comp-op        Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          [<]            [=]            Error          Error          Error          Error          Error          Error          Error          |
+|termo          Error          Error          Error          Error          Error          Error          Error          Error          [fator, termo']Error          Error          Error          Error          Error          Error          Error          Error          Error          [fator, termo']Error          [fator, termo']|
+|exp-simples'   [ɛ]            [ɛ]            Error          [ɛ]            [ɛ]            [ɛ]            Error          [ɛ]            Error          Error          Error          Error          [ɛ]            [ɛ]            [soma, termo, exp-simples'][soma, termo, exp-simples']Error          Error          Error          [ɛ]            Error   |
+|soma           Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          [+]            [-]            Error          Error          Error          Error          Error          |
+|fator          Error          Error          Error          Error          Error          Error          Error          Error          [ide]          Error          Error          Error          Error          Error          Error          Error          Error          Error          [(, exp, )]    Error          [num]          |
+|termo'         [ɛ]            [ɛ]            Error          [ɛ]            [ɛ]            [ɛ]            Error          [ɛ]            Error          Error          Error          Error          [ɛ]            [ɛ]            [ɛ]            [ɛ]            [mult, fator, termo'][mult, fator, termo']Error          [ɛ]            Error          |
+|mult           Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          [*]            [/]            Error          Error          Error          |
+
+-------------------------LEXIC-------------------------
+read = (read)
+ide = (x)
+; = (;)
+if = (if)
+num = (0)
+< = (<)
+ide = (x)
+then = (then)
+ide = (fact)
+:= = (:=)
+num = (12)
+; = (;)
+repeat = (repeat)
+ide = (fact)
+:= = (:=)
+ide = (fact)
+* = (*)
+ide = (x)
+; = (;)
+ide = (x)
+:= = (:=)
+ide = (x)
+- = (-)
+num = (1)
+until = (until)
+ide = (x)
+= = (=)
+num = (0)
+; = (;)
+write = (write)
+ide = (fact)
+end = (end)
+$ = ($)

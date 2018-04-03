@@ -48,3 +48,13 @@ def Grammar_Table_Printer(s):
                 line += str(value).ljust(ljust)
         
         print("|" + line + "|")
+
+def LexicPrint(tokens):
+    print('\n-------------------------LEXIC-------------------------')
+    
+    for token in tokens:
+        print(token)
+
+def CompileHistoric(historic):
+    print('\n-----------------------HISTORIC-----------------------')
+    print(historic)

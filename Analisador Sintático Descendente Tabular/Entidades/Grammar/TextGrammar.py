@@ -25,6 +25,9 @@ class TextGrammar:
         for item in self.get_terms():
             if(item.left == self.StartSimbol):
                 return item
+
+    def getStartSimbolUnit(self):
+        return self.TermUnits[0]            
     
     def get_terms(self):
         if(len(self.Terms) is 0):

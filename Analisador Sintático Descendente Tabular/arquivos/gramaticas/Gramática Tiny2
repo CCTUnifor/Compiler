@@ -1,0 +1,14 @@
+N = {EXP,COMP-OP,EXP-SIMPLES,EXP-SIMPLES',SOMA,TERMO,TERMO',MULT,FATOR}
+Sigma = {<,=,+,-,*,/,(,),num,ide}
+S = {EXP}
+P = {
+    EXP            -> EXP-SIMPLES COMP-OP EXP-SIMPLES | EXP-SIMPLES
+    COMP-OP        -> < | =
+    EXP-SIMPLES    -> TERMO EXP-SIMPLES'
+    EXP-SIMPLES'   -> SOMA TERMO EXP-SIMPLES' | ε
+    SOMA           -> + | -
+    TERMO          -> FATOR TERMO'
+    TERMO'         -> MULT FATOR TERMO' | ε
+    MULT           -> * | /
+    FATOR          -> ( EXP ) | num | ide
+}
