@@ -23,27 +23,35 @@ class TableService:
             for terminal in self.grammar.Alphabet:
                 self.table[non_terminal.text][terminal.text] = self.ErrorString            
 
+    def passToTable(self, i, j, value):
+        actualValue = self.table[i][j]
+
+        if(actualValue == self.ErrorString):
+            self.table[i][j] = value
+        else:
+            raise Exception('Ambiguos grammar on '+ i + ' -> ' + j)
+
+
     def build_table(self):
         self.makeTable()
          
         for term in self.grammar.Terms:
             for stream in term.right:
                 termToStreamTuple = (term, stream)
-                # print(stream)
 
                 streamFirst = self.first(stream)
 
                 for item in streamFirst:
                     if(item.type is TermUnit.TERMINAL):
-                        self.table[term.left][item.text] = termToStreamTuple
+                        self.passToTable(term.left, item.text, termToStreamTuple)
                 
                 if(TextGrammar.EMPTY_UNIT in streamFirst):
                     if(Grammar.STREAM_END_UNIT in term.follow):
-                        self.table[term.left][Grammar.STREAM_END_UNIT.text] = termToStreamTuple
+                        self.passToTable(term.left, Grammar.STREAM_END_UNIT.text, termToStreamTuple)
 
                     for item in term.follow:
                         if(item.type is TermUnit.TERMINAL):
-                            self.table[term.left][item.text] = termToStreamTuple
+                            self.passToTable(term.left, item.text, termToStreamTuple)
                     
                             
     def apply_follow_third_rule(self):
