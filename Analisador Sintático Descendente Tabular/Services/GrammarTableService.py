@@ -222,8 +222,7 @@ class TableService:
             historic += hline
 
             top = stack.pop()
-            print(hline)
-
+            # print(hline)
             
             if(top.type is TermUnit.TERMINAL or top.type is TermUnit.STREAM_END):
                 if(top.text == current.value):
