@@ -19,7 +19,20 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
 
         public NonRecursiveDescendingSyntacticAnalysis(string grammar) => Grammar = grammar;
         private Term GetTermByElement(string firstElement) => Terms.SingleOrDefault(x => x.Caller.Value == firstElement);
-        private static void PrintRowStack(IEnumerable<string> q, int count, IEnumerable<string> restOfTheInput, string termString) => Printable.Printable.PrintLn($"[{count.ToString().PadRight(2)}] [{string.Join(", ", q).PadRight(25)}] [{string.Join(" ", restOfTheInput).PadRight(25)}] [{termString.PadRight(25)}]");
+
+        private static int stackCounterPad = 3;
+        private static int stackPad = 200;
+        private static int stackInputPad = 20;
+        private static int stackCalledPad = 50;
+
+        private static void PrintHeaderStack()
+            => Printable.Printable.PrintLn($"{" #".PadRight(stackCounterPad + 2)} {" Stack".PadRight(stackPad + 2)} {" Input".PadRight(stackInputPad + 2)} {" Term".PadRight(stackCalledPad + 2)}");
+        private static void PrintRowStack(IEnumerable<string> q, int count, IEnumerable<string> restOfTheInput, string termString)
+            => Printable.Printable.PrintLn($"[{count.ToString().PadRight(stackCounterPad)}] [{string.Join(", ", q).PadRight(stackPad)}] [{string.Join(" ", restOfTheInput).PadRight(stackInputPad)}] [{termString.PadRight(stackCalledPad)}]");
+        private ICollection<NonTerminal> GetNonTerminalsOrdered() => NonTerminals.OrderByDescending(x => x.Value.Length).ToList();
+        private int GetIndexNonTerminal(string X) => NonTerminals.Select(x => x.Value).ToList().IndexOf(X);
+        private bool IsNum(string s) => s.All(char.IsDigit);
+        private bool IsLetter(string s) => s.All(char.IsLetter);
 
         public void Parser(string input)
         {
@@ -49,8 +62,9 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
 
                 InitializeFirst(term);
                 InitializeFollow(term);
-                if (NonTerminals.All(x => x.Value != caller.Value))
-                    NonTerminals.Add(caller);
+                if (!NonTerminals.All(x => x.Value != caller.Value)) continue;
+
+                NonTerminals.Add(caller);
             }
 
             foreach (var line in lines)
@@ -65,13 +79,13 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
             Terminals.Add('$'.ToTerminal());
         }
 
+
         private IEnumerable<string> AllTerminals(string called)
         {
-            var c = NonTerminals.Select(x => x.Value).ToList();
+            var c = GetNonTerminalsOrdered().Select(x => x.Value).ToList();
             c.Add("ε");
             c.Add("|");
             c.Add(" ");
-            c = c.OrderByDescending(x => x.Length).ToList();
 
             return called.Split(c.ToArray(), StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).Distinct().ToArray();
         }
@@ -101,12 +115,14 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
 
             foreach (var term in Terms)
             {
-                var i = NonTerminals.ToList().IndexOf(term.Caller);
+                var A = GetIndexNonTerminal(term.Caller.Value);
 
                 foreach (var termProduction in term.Productions)
                 {
                     var production = termProduction.Trim();
                     var first = production.Split(" ").First();
+                    if (term.Caller.Value == "E'")
+                        Console.WriteLine();
 
                     var f = IsTerminal(first) || first == "ε"
                         ? new First(term.Caller, new List<Terminal> { first.ToTerminal() })
@@ -114,18 +130,19 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
 
                     foreach (var terminal in f.Terminals)
                     {
-                        var j = Terminals.ToList().IndexOf(terminal);
+                        var a = GetIndexTerminal(terminal.Value);
                         var t = new Term(term.Caller, production);
-                        if (i >= 0 && j >= 0)
-                            Table[i, j] = t;
+
+                        if (A >= 0 && a >= 0)
+                            PopulateTable(A, a, t);
                         else if (terminal.Value == "ε")
                         {
                             var follow = Follows.Single(x => x.NonTerminal == term.Caller);
 
                             foreach (var followTerminal in follow.Terminals)
                             {
-                                var followIndex = Terminals.ToList().IndexOf(followTerminal);
-                                Table[i, followIndex] = t;
+                                var b = GetIndexTerminal(followTerminal.Value);
+                                PopulateTable(A, b, t);
                             }
                         }
                     }
@@ -135,54 +152,68 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
             PrintInfo.PrintTable(Terminals, NonTerminals, Table);
         }
 
+        private void PopulateTable(int i, int j, Term t)
+        {
+            if (Table[i, j] == null)
+                Table[i, j] = t;
+            //else
+            //    Table[i, j].AddProduction(t.Productions);
+        }
+
         private void Analyse(string input)
         {
             Printable.Printable.IsToPrintInConsole = true;
             Printable.Printable.PrintLn($"++++++ Analyse the input: ++++++\n");
 
+            PrintHeaderStack();
+
             var lines = input.Split("\n").Select(x => x.Replace("\t", "").Replace("\r", "")).ToArray();
-            lines[lines.Length - 1] = lines[lines.Length - 1] + "&";
+            lines[lines.Length - 1] = lines[lines.Length - 1] + " $";
 
             var count = 0;
             var q = new Stack<string>();
             var X = NonTerminals.First().Value;
 
-            q.Push("&");
+            q.Push("$");
             q.Push(X);
 
             for (var l = 0; l < lines.Length; l++)
             {
-                var line = lines[l];
+                var line = lines[l].Trim();
 
                 var i = 0;
                 var strings = line.Split(" ");
 
-                while (X != "&" && i < strings.Length)
+                while (X != "$" && i < strings.Length)
                 {
                     var f = strings[i];
-                    var M = NonTerminals.Select(x => x.Value.ToString()).ToList().IndexOf(X);
-                    var a = Terminals.Select(x => x.Value).ToList().IndexOf(f);
+                    var M = GetIndexNonTerminal(X);
+                    var a = GetIndexTerminal(f);
 
                     var restOfTheInput = strings.ToList();
                     restOfTheInput.RemoveRange(0, i);
                     var lineString = $"Line: {l + 1} | Collumn: {i + 1}\n\n";
+                    if (count == 7)
+                        Console.WriteLine();
 
                     if (X == f || (X == "ide" && IsLetter(f)) || (X == "num" && IsNum(f)))
                     {
                         if (q.Peek() != X && (q.Peek() == "ide" && !IsLetter(X)) && q.Peek() == "num" && !IsNum(X))
                             throw new CompilationException($"{lineString}Expeted: '{X}'; got '{q.Peek()}'");
+                        PrintRowStack(q, count, restOfTheInput, "Next");
+
                         q.Pop();
                         i++;
-                        PrintRowStack(q, count, restOfTheInput, "Next");
                     }
-                    else if (Table[M, a] != null)
+                    else if (a >= 0 && Table[M, a] != null)
                     {
                         if (q.Peek() != X)
                             throw new CompilationException($"{lineString}Expeted: '{X}'; got '{q.Peek()}'");
+                        var xc = Table[M, a];
+
+                        PrintRowStack(q, count, restOfTheInput, xc.ToString());
 
                         q.Pop();
-                        var xc = Table[M, a];
-                        PrintRowStack(q, count, restOfTheInput, xc.ToString());
 
                         foreach (var production in xc.Productions)
                         {
@@ -208,9 +239,22 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
             Printable.Printable.PrintLn("\nCompile success!!!!");
         }
 
-        private bool IsNum(string s) => s.All(char.IsDigit);
+        private int GetIndexTerminal(string f)
+        {
+            if (f == "ε")
+                return -1;
 
-        private bool IsLetter(string s) => s.All(char.IsLetter);
+            var i = Terminals.Select(x => x.Value).ToList().IndexOf(f);
+            if (i >= 0)
+                return i;
+
+            if (IsLetter(f))
+                return GetIndexTerminal("ide");
+            if (IsNum(f))
+                return GetIndexTerminal("num");
+
+            return -1;
+        }
 
         private First First(Term term)
         {
@@ -251,31 +295,6 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
 
         private void Follow(Term termChoosed)
         {
-            //var allTermsCurrent = Terms.Where(term1 =>
-            //{
-            //    bool any = false;
-            //    foreach (var strings in term1.Productions.Select(x => x.Split(" "))
-            //        .Where(term1Production =>
-            //        {
-            //            bool contains = false;
-            //            var toString = termChoosed.Caller.Value;
-            //            foreach (var s in term1Production)
-            //            {
-            //                if (s == toString)
-            //                {
-            //                    contains = true;
-            //                    break;
-            //                }
-            //            }
-            //            return contains;
-            //        }))
-            //    {
-            //        any = true;
-            //        break;
-            //    }
-            //    return any;
-            //}).ToList();
-
             var allTermsCurrent = (from term in Terms let y = term.Productions.SelectMany(x => x.Split(" ").ToArray()).Select(x => x.Replace(" ", "")) from termProduction in y where termProduction == termChoosed.Caller.Value select term).ToList();
 
             foreach (var currentTerm in allTermsCurrent)
@@ -283,9 +302,8 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
                 var productionsChosed = currentTerm.Productions.Where(x => x.Contains(termChoosed.Caller.Value)).ToArray();
                 foreach (var y in productionsChosed)
                 {
-                    var production = y.Trim();
-                    var i = production.IndexOf(termChoosed.Caller.Value);
 
+                    var production = y.Trim();
                     var splited = production.Split(termChoosed.Caller.Value, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToArray();
 
                     var aBb = splited.Length > 1;
@@ -293,7 +311,8 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
 
                     var followB = Follows.Single(x => x.NonTerminal.Value == termChoosed.Caller.Value);
                     var followA = Follows.Single(x => x.NonTerminal == currentTerm.Caller);
-
+                    if (followB.NonTerminal.Value == "TERMO'")
+                        Console.WriteLine();
                     if (aBb)
                     {
                         for (int j = 1; j < splited.Length; j++)

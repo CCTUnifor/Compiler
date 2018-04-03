@@ -12,7 +12,7 @@ namespace MyCompiler.AnalisadorSintaticoDescendenteTabular
             try
             {
                 Console.OutputEncoding = System.Text.Encoding.UTF8;
-                ConsoleTableOptions.Pad = 30;
+                ConsoleTableOptions.Pad = 100;
                 ConsoleTableOptions.DefaultIfNull = "Error";
                 Printable.Printable.PathToSave = $"Logs/log{DateTime.Now.Millisecond}.txt";
 

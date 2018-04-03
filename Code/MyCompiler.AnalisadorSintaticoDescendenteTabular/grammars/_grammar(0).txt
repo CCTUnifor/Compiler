@@ -1,5 +1,18 @@
-E -> T X
-X -> + T X | - T X | ε
-T -> F Y
-Y -> * F Y | % F Y | ε
-F -> ( E ) | ide | num
+PROGRAMA       -> DECL-SEQUENCIA
+DECL-SEQUENCIA  -> DECLARACAO DECL-SEQUENCIA'
+DECL-SEQUENCIA' -> ; DECLARACAO DECL-SEQUENCIA' | ε
+DECLARACAO     -> COND-DECL | REPET-DECL | ATRIB-DECL | LEIT-DECL | ESCR-DECL 
+COND-DECL      -> if EXP then DECL-SEQUENCIA end | if EXP then DECL-SEQUENCIA else DECL-SEQUENCIA end
+REPET-DECL     -> repeat DECL-SEQUENCIA until EXP
+ATRIB-DECL     -> ide := EXP
+LEIT-DECL      -> read ide
+ESCR-DECL      -> write EXP
+EXP            -> EXP-SIMPLES COMP-OP EXP-SIMPLES | EXP-SIMPLES
+COMP-OP        -> < | =
+EXP-SIMPLES    -> TERMO EXP-SIMPLES'
+EXP-SIMPLES'   -> SOMA TERMO EXP-SIMPLES' | ε
+SOMA           -> + | -
+TERMO           -> FATOR TERMO'
+TERMO'          -> MULT FATOR TERMO' | ε
+MULT           -> * | /
+FATOR          -> ( EXP ) | num | ide

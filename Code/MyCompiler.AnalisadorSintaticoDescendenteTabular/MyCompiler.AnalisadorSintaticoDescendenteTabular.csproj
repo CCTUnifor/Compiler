@@ -6,13 +6,33 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="grammars\grammar%280%29.txt" />
+    <None Remove="grammars\_grammar%280%29.txt" />
+    <None Remove="inputs\input%280%29.txt" />
+    <None Remove="inputs\__input%280%29.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="grammars\grammar(0).txt" />
+    <EmbeddedResource Include="grammars\_grammar(0).txt" />
+    <EmbeddedResource Include="inputs\input(0).txt" />
+    <EmbeddedResource Include="inputs\__input(0).txt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\MyCompiler.Core\MyCompiler.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="grammars\grammar%280%29.txt">
+    <EmbeddedResource Update="grammars\grammar%280%29.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </EmbeddedResource>
+    <EmbeddedResource Update="inputs\input%280%29.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="grammars\grammar(1).txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -29,9 +49,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="grammars\grammar%284%29.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="inputs\input%280%29.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
