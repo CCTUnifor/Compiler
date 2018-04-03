@@ -1,14 +1,23 @@
-N = {EXP,COMP-OP,EXP-SIMPLES,EXP-SIMPLES',SOMA,TERMO,TERMO',MULT,FATOR}
-Sigma = {<,=,+,-,*,/,(,),num,ide}
-S = {EXP}
+N = {PROGRAMA,DECL-SEQUENCIA,DECL-SEQUENCIA',DECLARACAO,COND-DECL,X,X',REPET-DECL,ATRIB-DECL,LEIT-DECL,ESCR-DECL,EXP,E',T,T',F}
+Sigma = {;,if,then,else,end,repeat,until,:=,ide,read,write,<,=,+,-,*,/,(,),num}
+S = {PROGRAMA}
 P = {
-    EXP            -> EXP-SIMPLES COMP-OP EXP-SIMPLES | EXP-SIMPLES
-    COMP-OP        -> < | =
-    EXP-SIMPLES    -> TERMO EXP-SIMPLES'
-    EXP-SIMPLES'   -> SOMA TERMO EXP-SIMPLES' | ε
-    SOMA           -> + | -
-    TERMO          -> FATOR TERMO'
-    TERMO'         -> MULT FATOR TERMO' | ε
-    MULT           -> * | /
-    FATOR          -> ( EXP ) | num | ide
+
+    PROGRAMA       -> DECL-SEQUENCIA
+    DECL-SEQUENCIA  -> DECLARACAO DECL-SEQUENCIA'
+    DECL-SEQUENCIA' -> ; DECLARACAO DECL-SEQUENCIA' | ɛ
+    DECLARACAO     -> COND-DECL | REPET-DECL | ATRIB-DECL | LEIT-DECL | ESCR-DECL 
+    COND-DECL      -> X X' end
+    X  -> if EXP then DECL-SEQUENCIA
+    X' -> else  DECL-SEQUENCIA | ɛ
+
+    REPET-DECL     -> repeat DECL-SEQUENCIA until EXP
+    ATRIB-DECL     -> ide := EXP
+    LEIT-DECL      -> read ide
+    ESCR-DECL      -> write EXP
+    EXP -> T E'
+    E' -> + T E' | - T E' | < T E' | ɛ
+    T -> F T'
+    T' -> * F T' | / F T' | = F T' | ɛ
+    F -> ( EXP ) | ide | num
 }
