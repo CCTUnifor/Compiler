@@ -133,6 +133,8 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
                         var a = GetIndexTerminal(terminal.Value);
                         var t = new Term(term.Caller, production);
 
+                        if (A == 5 )
+                            Console.WriteLine("");
                         if (A >= 0 && a >= 0)
                             PopulateTable(A, a, t);
                         else if (terminal.Value == "ε")
@@ -193,7 +195,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
                     var restOfTheInput = strings.ToList();
                     restOfTheInput.RemoveRange(0, i);
                     var lineString = $"Line: {l + 1} | Collumn: {i + 1}\n\n";
-                    if (count == 48)
+                    if (count == 24)
                         Console.WriteLine();
 
                     if (X == f || (X == "ide" && IsLetter(f)) || (X == "num" && IsNum(f)))
@@ -218,15 +220,13 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
                         if (xc.Productions.Length > 1)
                             throw new CompilationException($"{lineString}Ambiguous grammar in \n{xc}");
 
-
-
                         foreach (var production in xc.Productions)
                         {
 
                             var productionSplited = production.Split(" ");
                             for (var j = productionSplited.Length - 1; j >= 0; j--)
                             {
-                                if (!productionSplited[j].IsEmpty())
+                                if (!productionSplited[j].IsEmpty() && !string.IsNullOrEmpty(productionSplited[j]))
                                     q.Push(productionSplited[j]);
                             }
                         }
@@ -302,10 +302,6 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
         private Follow Follow(Term termChoosed)
         {
             var followB = Follows.Single(x => x.NonTerminal.Value == termChoosed.Caller.Value);
-            if (followB.Done)
-                return followB;
-
-            followB.Done = true;
             var allTermsCalled = (from term in Terms let y = term.Productions.SelectMany(x => x.Split(" ").ToArray()).Select(x => x.Replace(" ", "")) from termProduction in y where termProduction == termChoosed.Caller.Value select term).Distinct().ToList();
 
             foreach (var currentTerm in allTermsCalled)
@@ -317,7 +313,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
                     var splited = production.Split(termChoosed.Caller.Value, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToArray();
 
                     var aBb = splited.Length > 1;
-                    var aB = splited.Length > 0;
+                    var aB = splited.Length == 1 || production.Split(" ").Length == 1;
 
                     var followA = Follows.Single(x => x.NonTerminal == currentTerm.Caller);
 
@@ -325,15 +321,19 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
                     {
                         for (var j = 1; j < splited.Length; j++)
                         {
-                            var firstb = Firsts.SingleOrDefault(x => x.NonTerminal.Value == splited[j]);
-                            var c = splited[j].Split(" ").First();
+                            var term = splited[j].Split(" ");
+                            var b = term.First();
 
-                            if (IsTerminal(c))
-                                followB.AddTerminal(c.ToTerminal());
+                            var firstb = Firsts.SingleOrDefault(x => x.NonTerminal.Value == b);
+
+                            if (IsTerminal(b))
+                                followB.AddTerminal(b.ToTerminal());
                             else
                                 followB.AddTerminal(firstb?.RemoveEmpty().Terminals);
-                        }
 
+                            //if (firstb?.AnyEmpty() ?? false)
+                            //    followB.AddTerminal(followA.Terminals);
+                        }
                     }
 
                     if (aB)

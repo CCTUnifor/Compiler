@@ -1,17 +1,15 @@
-PROGRAMA       -> DECL-SEQUENCIA
+PROGRAMA        -> DECL-SEQUENCIA
 DECL-SEQUENCIA  -> DECLARACAO DECL-SEQUENCIA'
 DECL-SEQUENCIA' -> ; DECLARACAO DECL-SEQUENCIA' | ε
-DECLARACAO     -> COND-DECL | REPET-DECL | ATRIB-DECL | LEIT-DECL | ESCR-DECL 
-COND-DECL      -> X X` end
-X  -> if EXP then DECL-SEQUENCIA
-X` -> else  DECL-SEQUENCIA | ε
-
-REPET-DECL     -> repeat DECL-SEQUENCIA until EXP
-ATRIB-DECL     -> ide := EXP
-LEIT-DECL      -> read ide
-ESCR-DECL      -> write EXP
-EXP -> T E'
-E' -> + T E' | - T E' | < T E' | ε
-T -> F T'
-T' -> * F T' | % F T' | = F T' | ε
-F -> ( EXP ) | ide | num
+DECLARACAO      -> COND-DECL | REPET-DECL | ATRIB-DECL | LEIT-DECL | ESCR-DECL 
+COND-DECL       -> if EXP then DECL-SEQUENCIA X` end
+X`              -> else  DECL-SEQUENCIA | ε
+REPET-DECL      -> repeat DECL-SEQUENCIA until EXP
+ATRIB-DECL      -> ide := EXP
+LEIT-DECL       -> read ide
+ESCR-DECL       -> write EXP
+EXP             -> T E'
+E'              -> + T E' | - T E' | < T E' | ε
+T               -> F T'
+T'              -> * F T' | % F T' | = F T' | ε
+F               -> ( EXP ) | ide | num
