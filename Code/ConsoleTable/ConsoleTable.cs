@@ -35,7 +35,7 @@ namespace ConsoleTable
         {
             for (var i = 0; i < Rows.Count; i++)
             {
-                Print($"|{RowsHeader[i].PadRight(3)} ");
+                Print($"|{RowsHeader[i].PadRight(ConsoleTableOptions.Pad / 3)} ");
                 for (var j = 0; j < CollumnsHeader.Length - 1; j++)
                 {
                     var value = string.IsNullOrEmpty(Rows[i][j]) ? ConsoleTableOptions.DefaultIfNull : Rows[i][j];
@@ -47,14 +47,14 @@ namespace ConsoleTable
 
         private void WriteHeader()
         {
-            Print($"| {CollumnsHeader[0].PadRight(3)}");
+            Print($"| {CollumnsHeader[0].PadRight(ConsoleTableOptions.Pad / 3)}");
 
             for (var i = 1; i < CollumnsHeader.Length; i++)
                 Print($"| {CollumnsHeader[i].PadRight(ConsoleTableOptions.Pad)}");
 
             PrintLine("|");
 
-            Print($"|{"".PadRight(3 + 1, '-')}");
+            Print($"|{"".PadRight(ConsoleTableOptions.Pad / 3 + 1, '-')}");
             for (var i = 1; i < CollumnsHeader.Length; i++)
                 Print($"|{"".PadRight(ConsoleTableOptions.Pad + 1, '-')}");
 

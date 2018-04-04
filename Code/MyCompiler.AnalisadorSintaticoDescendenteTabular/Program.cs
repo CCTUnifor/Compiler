@@ -1,26 +1,25 @@
 ﻿using System;
 using System.IO;
 using ConsoleTable;
-using MyCompiler.Core.Models.SyntacticAnalyzes;
+using MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA;
 
 namespace MyCompiler.AnalisadorSintaticoDescendenteTabular
 {
-    public class Program
+    public static class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             try
             {
                 Console.OutputEncoding = System.Text.Encoding.UTF8;
-                ConsoleTableOptions.Pad = 30;
+                ConsoleTableOptions.Pad = 60;
                 ConsoleTableOptions.DefaultIfNull = "Error";
                 Printable.Printable.PathToSave = $"Logs/log{DateTime.Now.Millisecond}.txt";
 
-                //Printable.Printable.PrintLn("ε");
-                Printable.Printable.PrintLn("# Analisador Sintatico Descendente Tabular");
+                Printable.Printable.PrintHeader("# Analisador Sintatico Descendente Tabular");
 
-                var grammarFile = "grammar(0).txt";
-                var inputFile = "input(0).txt";
+                const string grammarFile = "grammar(0).txt";
+                const string inputFile = "input(0).txt";
 
                 var grammar = Read($"grammars/{grammarFile}");
                 var input = Read($"inputs/{inputFile}");
@@ -41,7 +40,7 @@ namespace MyCompiler.AnalisadorSintaticoDescendenteTabular
 
         private static void PrintInput(string input)
         {
-            Printable.Printable.PrintLn("\n++++++ Input ++++++\n");
+            Printable.Printable.PrintHeader("Input");
             Printable.Printable.PrintLn(input);
             Printable.Printable.PrintLn("\n");
         }
@@ -56,7 +55,7 @@ namespace MyCompiler.AnalisadorSintaticoDescendenteTabular
 
         private static void PrintGrammar(string grammar)
         {
-            Printable.Printable.PrintLn("\n++++++ Grammar ++++++\n");
+            Printable.Printable.PrintHeader("Grammar");
             Printable.Printable.PrintLn(grammar);
         }
     }

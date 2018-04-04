@@ -7,6 +7,7 @@ namespace Printable
     {
         public static string PathToSave { get; set; }
         public static bool IsToPrintInConsole { get; set; } = true;
+        public static ConsoleColor ConsoleColorHeader { get; set; } = ConsoleColor.Yellow;
 
         public static void Print(object v)
         {
@@ -16,12 +17,33 @@ namespace Printable
                 PrintInFile(v);
         }
 
-        public static void PrintLn(object v)
+        public static void PrintLn(object value, ConsoleColor? v = null)
         {
+            if (v.HasValue)
+                Console.ForegroundColor = v.Value;
+
             if (IsToPrintInConsole)
-                Console.WriteLine(v);
+                Console.WriteLine(value);
             if (!string.IsNullOrEmpty(PathToSave))
-                PrintInFile(v, true);
+                PrintInFile(value, true);
+
+            if (v.HasValue)
+                Console.ResetColor();
+        }
+
+        public static void PrintHeader(string input)
+        {
+            Console.ForegroundColor = ConsoleColorHeader;
+            var notation = "#".PadRight(30, '#');
+            PrintLn($"\n{notation} {input} {notation}\n");
+            Console.ResetColor();
+        }
+
+        public static void PrintLnSuccess(object v)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            PrintLn($"\n{v}");
+            Console.ResetColor();
         }
 
         private static void PrintInFile(object v, bool printLn = false)
@@ -33,9 +55,9 @@ namespace Printable
             using (var file = File.AppendText(PathToSave))
             {
                 if (printLn)
-                    file.WriteLine(v.ToString());
+                    file.WriteLine(v);
                 else
-                    file.Write(v.ToString());
+                    file.Write(v);
             }
 
         }

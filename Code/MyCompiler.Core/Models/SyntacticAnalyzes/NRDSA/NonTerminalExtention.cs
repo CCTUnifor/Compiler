@@ -4,7 +4,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
 {
     public static class NonTerminalExtention
     {
-        public static NonTerminal ToNonTerminal(this char value) => new NonTerminal(value);
+        public static NonTerminal ToNonTerminal(this string value) => new NonTerminal(value);
         public static Terminal ToTerminal(this string value) => new Terminal(value);
         public static Terminal ToTerminal(this char value) => new Terminal(value);
 

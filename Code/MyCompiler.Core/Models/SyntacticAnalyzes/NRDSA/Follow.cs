@@ -15,6 +15,5 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
             if (Terminals.Select(x => x.Value).All(y => y != "$"))
                 Terminals.Add("$".ToTerminal());
         }
-
     }
 }

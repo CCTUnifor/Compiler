@@ -29,5 +29,13 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
         }
 
         public Term ToTerm() => new Term(NonTerminal, string.Join(" | ", Terminals));
+        public First RemoveEmpty()
+        {
+            var x = Terminals.ToList();
+            x.Remove("ε".ToTerminal());
+
+            var newFirst = new First(this.NonTerminal, x);
+            return newFirst;
+        }
     }
 }
