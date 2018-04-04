@@ -218,7 +218,7 @@ class TableService:
         
         current = lxa.getToken()
         while( len(stack) ):#current.unit.type is not TermUnit.STREAM_END):
-            hline = str(stack).ljust(50) + " " + str(current.value) + '\n'
+            hline = str(current.value).ljust(20) + " " + str(stack) + '\n'
             historic += hline
 
             top = stack.pop()
