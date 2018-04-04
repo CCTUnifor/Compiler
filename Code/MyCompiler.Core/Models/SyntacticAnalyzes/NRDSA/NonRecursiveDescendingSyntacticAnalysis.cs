@@ -21,7 +21,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
         private Term GetTermByElement(string firstElement) => Terms.SingleOrDefault(x => x.Caller.Value == firstElement);
 
         private static int stackCounterPad = 3;
-        private static int stackPad = 200;
+        private static int stackPad = 110;
         private static int stackInputPad = 20;
         private static int stackCalledPad = 50;
 
@@ -133,7 +133,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
                         var a = GetIndexTerminal(terminal.Value);
                         var t = new Term(term.Caller, production);
 
-                        if (A == 5 )
+                        if (A == 5)
                             Console.WriteLine("");
                         if (A >= 0 && a >= 0)
                             PopulateTable(A, a, t);
@@ -165,7 +165,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
         private void Analyse(string input)
         {
             Printable.Printable.IsToPrintInConsole = true;
-            Printable.Printable.PrintLn($"++++++ Analyse the input: ++++++\n");
+            Printable.Printable.PrintHeader("Analyse the input:");
 
             PrintHeaderStack();
 
@@ -238,11 +238,10 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
                     count++;
                 }
             }
+
             PrintRowStack(q, count, new List<string> { "$" }, "Accepted");
 
-
-
-            Printable.Printable.PrintLn("\nCompile success!!!!");
+            Printable.Printable.PrintLnSuccess("COMPILE SUCCESS CARAIO!!!!");
         }
 
         private int GetIndexTerminal(string f)
@@ -299,7 +298,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
             return currentFirst;
         }
 
-        private Follow Follow(Term termChoosed)
+        private void Follow(Term termChoosed)
         {
             var followB = Follows.Single(x => x.NonTerminal.Value == termChoosed.Caller.Value);
             var allTermsCalled = (from term in Terms let y = term.Productions.SelectMany(x => x.Split(" ").ToArray()).Select(x => x.Replace(" ", "")) from termProduction in y where termProduction == termChoosed.Caller.Value select term).Distinct().ToList();
@@ -310,18 +309,22 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
                 foreach (var y in productionsChosed)
                 {
                     var production = y.Trim();
+                    var elements = production.Split(" ");
+                    var c = elements.ToList().IndexOf(termChoosed.Caller.Value);
+
+
                     var splited = production.Split(termChoosed.Caller.Value, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToArray();
 
-                    var aBb = splited.Length > 1;
-                    var aB = splited.Length == 1 || production.Split(" ").Length == 1;
+                    var aBb = c + 1 < elements.Length;
+                    var aB = c < elements.Length;
 
                     var followA = Follows.Single(x => x.NonTerminal == currentTerm.Caller);
 
                     if (aBb)
                     {
-                        for (var j = 1; j < splited.Length; j++)
+                        foreach (var t in splited)
                         {
-                            var term = splited[j].Split(" ");
+                            var term = t.Split(" ");
                             var b = term.First();
 
                             var firstb = Firsts.SingleOrDefault(x => x.NonTerminal.Value == b);
@@ -331,17 +334,16 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
                             else
                                 followB.AddTerminal(firstb?.RemoveEmpty().Terminals);
 
-                            //if (firstb?.AnyEmpty() ?? false)
-                            //    followB.AddTerminal(followA.Terminals);
+                            if (firstb?.AnyEmpty() ?? false)
+                                followB.AddTerminal(followA.Terminals);
                         }
                     }
-
-                    if (aB)
+                    else if (aB)
                         followB.AddTerminal(followA.Terminals);
                 }
             }
 
-            return followB;
+            return;
         }
 
         private void InitializeFirst(Term term)

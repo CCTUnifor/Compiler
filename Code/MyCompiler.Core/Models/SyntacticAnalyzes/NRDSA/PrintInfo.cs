@@ -7,23 +7,23 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
     {
         public static void PrintFirsts(IEnumerable<First> Firsts)
         {
-            Printable.Printable.PrintLn("++++++ Firsts ++++++\n");
+            Printable.Printable.PrintHeader("Firsts");
             foreach (var first in Firsts)
-                Printable.Printable.PrintLn(first);
+                Printable.Printable.PrintLn(first.ToString());
             Printable.Printable.PrintLn("\n");
         }
 
         public static void PrintFollows(IEnumerable<Follow> Follows)
         {
-            Printable.Printable.PrintLn("++++++ Follows ++++++\n");
+            Printable.Printable.PrintHeader("Follows");
             foreach (var follow in Follows)
-                Printable.Printable.PrintLn(follow);
+                Printable.Printable.PrintLn(follow.ToString());
             Printable.Printable.PrintLn("\n");
         }
 
         public static void PrintTable(ICollection<Terminal> Terminals, ICollection<NonTerminal> NonTerminals, Term[,] Table)
         {
-            Printable.Printable.PrintLn("++++++ Table ++++++\n");
+            Printable.Printable.PrintHeader("Table");
 
             var collumnsHeader = Terminals.Select(x => x.Value).ToArray();
             var rowsHeader = NonTerminals.Select(x => x.Value.ToString()).ToArray();
