@@ -6,4 +6,4 @@ if ( 0 < x ) then
         x := x - 1 
     until x = 0 ;
     write fact
-end;
+end
