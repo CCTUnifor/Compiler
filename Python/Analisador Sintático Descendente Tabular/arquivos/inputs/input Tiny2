@@ -1,0 +1,11 @@
+
+
+read x;
+if 0<x then
+    fact := 12;
+    repeat
+        fact :=fact*x;
+        x := x - 1
+    until x = 0 ;
+    write fact
+end

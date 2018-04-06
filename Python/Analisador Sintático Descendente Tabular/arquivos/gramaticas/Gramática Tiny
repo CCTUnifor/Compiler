@@ -1,0 +1,38 @@
+N = {Programa,decl-sequencia,decl-sequencia',declaracao,cond-decl,repet-decl,atrib-decl,leit-decl,escr-decl,exp,X,comp-op,exp-simples,exp-simples',soma,termo,termo',mult,fator}
+Sigma = {;,if,then,else,end,repeat,until,:=,ide,read,write,<,=,+,-,*,/,(,),num}
+S = {Programa}
+P = {
+    Programa -> decl-sequencia
+
+    decl-sequencia -> declaracao decl-sequencia'
+    decl-sequencia'-> ; declaracao decl-sequencia'| ɛ
+
+    declaracao -> cond-decl | repet-decl | atrib-decl | leit-decl | escr-decl 
+
+    cond-decl -> if exp then decl-sequencia end
+
+    repet-decl -> repeat decl-sequencia until exp
+
+    atrib-decl -> ide := exp
+
+    leit-decl -> read ide
+
+    escr-decl -> write exp
+
+    exp -> exp-simples X
+    X -> comp-op exp-simples | ɛ
+
+    comp-op -> < | =
+
+    exp-simples -> termo exp-simples'
+    exp-simples'-> soma termo exp-simples' | ɛ
+
+    soma -> + | -
+
+    termo -> fator termo'
+    termo'-> mult fator termo' | ɛ
+
+    mult -> * | /
+
+    fator -> ( exp ) | num | ide
+}

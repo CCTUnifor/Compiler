@@ -1,0 +1,10 @@
+N = {E,A,B,C,D}
+Sigma = {a,b,c,d}
+S = {E}
+P = {
+    E -> A B C D
+    A -> a | ɛ
+    B -> b | ɛ
+    C -> c | ɛ
+    D -> d | ɛ
+}
