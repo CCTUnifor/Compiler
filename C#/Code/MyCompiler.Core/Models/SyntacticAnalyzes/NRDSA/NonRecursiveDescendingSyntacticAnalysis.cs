@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CCTUnifor.Logger;
+using MyCompiler.Core.Aspects;
 using MyCompiler.Core.Exceptions;
 
 namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
@@ -10,12 +11,12 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
     {
         private string Grammar { get; }
         private ICollection<Term> Terms { get; set; }
-        private ICollection<First> Firsts { get; set; }
-        private ICollection<Follow> Follows { get; set; }
+        public ICollection<First> Firsts { get; private set; }
+        public ICollection<Follow> Follows { get; private set; }
 
-        private ICollection<NonTerminal> NonTerminals { get; set; }
-        private List<Terminal> Terminals { get; set; }
-        private Term[,] Table { get; set; }
+        public ICollection<NonTerminal> NonTerminals { get; private set; }
+        public List<Terminal> Terminals { get; private set; }
+        public Term[,] Table { get; private set; }
         private bool IsTerminal(string production) => Terminals.Any(x => x.Value == production);
 
         public NonRecursiveDescendingSyntacticAnalysis(string grammar) => Grammar = grammar;
@@ -91,28 +92,26 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
             return called.Split(c.ToArray(), StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).Distinct().ToArray();
         }
 
+        [LogFirstAspect]
         private void GenerateFirst()
         {
             foreach (var term in Terms)
                 First(term);
-
-            PrintInfo.PrintFirsts(Firsts);
         }
 
+        [LogFollowAspect]
         private void GenerateFollows()
         {
             Follows.First().AddFinalSymble();
 
             foreach (var term in Terms)
                 Follow(term);
-
-            PrintInfo.PrintFollows(Follows);
         }
 
+        [LogTableAspect]
         private void GenerateTable()
         {
             Table = new Term[NonTerminals.Count, Terminals.Count];
-            Logger.IsToPrintInConsole = false;
 
             foreach (var term in Terms)
             {
@@ -122,8 +121,6 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
                 {
                     var production = termProduction.Trim();
                     var first = production.Split(" ").First();
-                    if (term.Caller.Value == "E'")
-                        Console.WriteLine();
 
                     var f = IsTerminal(first) || first == "ε"
                         ? new First(term.Caller, new List<Terminal> { first.ToTerminal() })
@@ -134,8 +131,6 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
                         var a = GetIndexTerminal(terminal.Value);
                         var t = new Term(term.Caller, production);
 
-                        if (A == 5)
-                            Console.WriteLine("");
                         if (A >= 0 && a >= 0)
                             PopulateTable(A, a, t);
                         else if (terminal.Value == "ε")
@@ -151,8 +146,6 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
                     }
                 }
             }
-
-            PrintInfo.PrintTable(Terminals, NonTerminals, Table);
         }
 
         private void PopulateTable(int i, int j, Term t)
@@ -163,11 +156,9 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
                 Table[i, j].AddProduction(t.Productions);
         }
 
+        [LogAnalyserAspect]
         private void Analyse(string input)
         {
-            Logger.IsToPrintInConsole = true;
-            Logger.PrintHeader("Analyse the input:");
-
             PrintHeaderStack();
 
             var lines = input.Split("\n").Select(x => x.Replace("\t", "").Replace("\r", "").Trim()).ToArray();
@@ -196,8 +187,6 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
                     var restOfTheInput = strings.ToList();
                     restOfTheInput.RemoveRange(0, i);
                     var lineString = $"Line: {l + 1} | Collumn: {i + 1}\n\n";
-                    if (count == 24)
-                        Console.WriteLine();
 
                     if (X == f || (X == "ide" && IsLetter(f)) || (X == "num" && IsNum(f)))
                     {
@@ -242,7 +231,6 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
 
             PrintRowStack(q, count, new List<string> { "$" }, "Accepted");
 
-            Logger.PrintLnSuccess("COMPILE SUCCESS CARAIO!!!!");
         }
 
         private int GetIndexTerminal(string f)
@@ -343,8 +331,6 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
                         followB.AddTerminal(followA.Terminals);
                 }
             }
-
-            return;
         }
 
         private void InitializeFirst(Term term)
