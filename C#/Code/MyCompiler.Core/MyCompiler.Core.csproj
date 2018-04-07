@@ -13,7 +13,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ConsoleTable\ConsoleTable.csproj" />
+    <PackageReference Include="CCTUnifor.ConsoleTable" Version="1.0.0" />
+    <PackageReference Include="CCTUnifor.Logger" Version="1.0.0" />
   </ItemGroup>
 
 </Project>

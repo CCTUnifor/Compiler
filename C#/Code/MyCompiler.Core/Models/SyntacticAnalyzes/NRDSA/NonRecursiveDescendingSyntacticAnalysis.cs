@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CCTUnifor.Logger;
 using MyCompiler.Core.Exceptions;
 
 namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
@@ -26,9 +27,9 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
         private static int stackCalledPad = 50;
 
         private static void PrintHeaderStack()
-            => Printable.Printable.PrintLn($"{" #".PadRight(stackCounterPad + 2)} {" Stack".PadRight(stackPad + 2)} {" Input".PadRight(stackInputPad + 2)} {" Term".PadRight(stackCalledPad + 2)}");
+            => Logger.PrintLn($"{" #".PadRight(stackCounterPad + 2)} {" Stack".PadRight(stackPad + 2)} {" Input".PadRight(stackInputPad + 2)} {" Term".PadRight(stackCalledPad + 2)}");
         private static void PrintRowStack(IEnumerable<string> q, int count, IEnumerable<string> restOfTheInput, string termString)
-            => Printable.Printable.PrintLn($"[{count.ToString().PadRight(stackCounterPad)}] [{string.Join(", ", q).PadRight(stackPad)}] [{string.Join(" ", restOfTheInput).PadRight(stackInputPad)}] [{termString.PadRight(stackCalledPad)}]");
+            => Logger.PrintLn($"[{count.ToString().PadRight(stackCounterPad)}] [{string.Join(", ", q).PadRight(stackPad)}] [{string.Join(" ", restOfTheInput).PadRight(stackInputPad)}] [{termString.PadRight(stackCalledPad)}]");
         private ICollection<NonTerminal> GetNonTerminalsOrdered() => NonTerminals.OrderByDescending(x => x.Value.Length).ToList();
         private int GetIndexNonTerminal(string X) => NonTerminals.Select(x => x.Value).ToList().IndexOf(X);
         private bool IsNum(string s) => s.All(char.IsDigit);
@@ -111,7 +112,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
         private void GenerateTable()
         {
             Table = new Term[NonTerminals.Count, Terminals.Count];
-            Printable.Printable.IsToPrintInConsole = false;
+            Logger.IsToPrintInConsole = false;
 
             foreach (var term in Terms)
             {
@@ -164,8 +165,8 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
 
         private void Analyse(string input)
         {
-            Printable.Printable.IsToPrintInConsole = true;
-            Printable.Printable.PrintHeader("Analyse the input:");
+            Logger.IsToPrintInConsole = true;
+            Logger.PrintHeader("Analyse the input:");
 
             PrintHeaderStack();
 
@@ -241,7 +242,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
 
             PrintRowStack(q, count, new List<string> { "$" }, "Accepted");
 
-            Printable.Printable.PrintLnSuccess("COMPILE SUCCESS CARAIO!!!!");
+            Logger.PrintLnSuccess("COMPILE SUCCESS CARAIO!!!!");
         }
 
         private int GetIndexTerminal(string f)

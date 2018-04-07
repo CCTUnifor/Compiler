@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
-using ConsoleTable;
+using CCTUnifor.ConsoleTable;
+using CCTUnifor.Logger;
 using MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA;
 
 namespace MyCompiler.AnalisadorSintaticoDescendenteTabular
@@ -14,9 +15,9 @@ namespace MyCompiler.AnalisadorSintaticoDescendenteTabular
                 Console.OutputEncoding = System.Text.Encoding.UTF8;
                 ConsoleTableOptions.Pad = 60;
                 ConsoleTableOptions.DefaultIfNull = "Error";
-                Printable.Printable.PathToSave = $"Logs/log{DateTime.Now.Millisecond}.txt";
+                Logger.PathToSave = $"Logs/log{DateTime.Now.Millisecond}.txt";
 
-                Printable.Printable.PrintHeader("# Analisador Sintatico Descendente Tabular");
+                Logger.PrintHeader("# Analisador Sintatico Descendente Tabular");
 
                 const string grammarFile = "grammar(0).txt";
                 const string inputFile = "input(0).txt";
@@ -32,7 +33,7 @@ namespace MyCompiler.AnalisadorSintaticoDescendenteTabular
             }
             catch (Exception e)
             {
-                Printable.Printable.PrintLn(e);
+                Logger.PrintLn(e);
             }
 
             Console.ReadLine();
@@ -40,9 +41,9 @@ namespace MyCompiler.AnalisadorSintaticoDescendenteTabular
 
         private static void PrintInput(string input)
         {
-            Printable.Printable.PrintHeader("Input");
-            Printable.Printable.PrintLn(input);
-            Printable.Printable.PrintLn("\n");
+            Logger.PrintHeader("Input");
+            Logger.PrintLn(input);
+            Logger.PrintLn("\n");
         }
 
         private static string Read(string path)
@@ -55,8 +56,8 @@ namespace MyCompiler.AnalisadorSintaticoDescendenteTabular
 
         private static void PrintGrammar(string grammar)
         {
-            Printable.Printable.PrintHeader("Grammar");
-            Printable.Printable.PrintLn(grammar);
+            Logger.PrintHeader("Grammar");
+            Logger.PrintLn(grammar);
         }
     }
 }

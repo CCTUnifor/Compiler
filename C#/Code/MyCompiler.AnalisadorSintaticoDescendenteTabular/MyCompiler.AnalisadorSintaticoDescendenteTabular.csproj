@@ -20,6 +20,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="CCTUnifor.ConsoleTable" Version="1.0.0" />
+    <PackageReference Include="CCTUnifor.Logger" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\MyCompiler.Core\MyCompiler.Core.csproj" />
   </ItemGroup>
 
