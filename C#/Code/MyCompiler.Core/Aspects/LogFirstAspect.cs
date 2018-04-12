@@ -1,5 +1,5 @@
 ﻿using CCTUnifor.Logger;
-using MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA;
+using MyCompiler.Core.Models.Generators;
 using PostSharp.Aspects;
 using PostSharp.Serialization;
 
@@ -10,9 +10,9 @@ namespace MyCompiler.Core.Aspects
     {
         public override void OnExit(MethodExecutionArgs args)
         {
-            var model = (NonRecursiveDescendingSyntacticAnalysis)args.Instance;
+            var model = (FirstGenerator)args.Instance;
             Logger.PrintHeader("Firsts");
-            foreach (var first in model.Firsts)
+            foreach (var first in model._firsts)
                 Logger.PrintLn(first.ToString());
             Logger.PrintLn("\n");
 

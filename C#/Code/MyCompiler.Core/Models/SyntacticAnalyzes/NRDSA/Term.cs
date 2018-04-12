@@ -1,27 +1,25 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using MyCompiler.Core.Models.Tokens;
 
 namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
 {
     public class Term
     {
-        public NonTerminal Caller { get; }
-        public string[] Productions { get; private set; }
+        public NonTerminalToken Caller { get; }
+        public IEnumerable<Production> Productions { get; private set; }
 
-        public Term(NonTerminal caller, string called)
+        public Term(NonTerminalToken caller, IEnumerable<Production> productions)
         {
             Caller = caller;
-            Productions = called.Split("|");
+            Productions = productions;
         }
 
         public override string ToString() => $"{Caller} -> {string.Join(" | ", Productions)}";
 
-        public bool AnyEmptyProduction() => Productions.Any(x => x.Trim().IsEmpty());
+        public bool AnyEmptyProduction() => Productions.SelectMany(x => x.Elements).Any(y => y.IsEmpty());
 
-        public void AddProduction(string[] tProductions) => Productions = Productions.Concat(tProductions).Distinct().ToArray();
-    }
-
-    public class Production
-    {
-        //public TYPE Type { get; set; }
+        public void AddProduction(IEnumerable<Production> productions) =>
+            Productions = Productions.Concat(productions).Distinct().ToArray();
     }
 }
