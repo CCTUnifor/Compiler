@@ -10,7 +10,14 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <LangVersion>7.1</LangVersion>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Models\SyntacticAnalyzes\NRDSA\NonTerminal.cs" />
+    <Compile Remove="Models\SyntacticAnalyzes\NRDSA\Terminal.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="CCTUnifor.ConsoleTable" Version="1.0.0" />

@@ -1,12 +1,13 @@
 ﻿using System.Linq;
+using MyCompiler.Core.Models.Tokens;
 
-namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
+namespace MyCompiler.Core.Extensions
 {
     public static class NonTerminalExtention
     {
-        public static NonTerminal ToNonTerminal(this string value) => new NonTerminal(value);
-        public static Terminal ToTerminal(this string value) => new Terminal(value);
-        public static Terminal ToTerminal(this char value) => new Terminal(value);
+        public static NonTerminalToken ToNonTerminal(this string value) => new NonTerminalToken(value);
+        public static TerminalToken ToTerminal(this string value) => new TerminalToken(value);
+        public static TerminalToken ToTerminal(this char value) => new TerminalToken(value.ToString());
 
         public static bool IsTerminal(this char c) => !IsNonTerminal(c);
         public static bool IsNonTerminal(this char c) => char.IsLetter(c) && char.IsUpper(c);
