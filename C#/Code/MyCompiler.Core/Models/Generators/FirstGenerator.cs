@@ -65,7 +65,7 @@ namespace MyCompiler.Core.Models.Generators
                     }
                     var all = productionElements.Select(GetTermByElement).ToList();
                     if (all.All(x => x?.AnyEmptyProduction() ?? false))
-                        currentFirst.AddTerminal(EmptyToken.CreateTerminal());
+                        currentFirst.AddTerminal(EmptyToken.ToTerminal());
                 }
             }
 

@@ -2,8 +2,10 @@
 {
     public class SpaceToken : Token
     {
-        public SpaceToken(string value) : base(value)
+        public SpaceToken() : base(" ")
         {
         }
+
+        public static Token Create() => new SpaceToken();
     }
 }

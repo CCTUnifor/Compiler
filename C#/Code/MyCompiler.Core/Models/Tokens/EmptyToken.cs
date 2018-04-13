@@ -2,11 +2,11 @@
 {
     public class EmptyToken : Token
     {
-        public EmptyToken(string value) : base(value)
+        public EmptyToken() : base("ε")
         {
         }
 
-        public static TerminalToken CreateTerminal()
+        public static TerminalToken ToTerminal()
             => new TerminalToken("ε");
     }
 }

@@ -15,6 +15,12 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
             Productions = productions;
         }
 
+        public Term(NonTerminalToken caller, Production production)
+        {
+            Caller = caller;
+            Productions = new List<Production> { production };
+        }
+
         public override string ToString() => $"{Caller} -> {string.Join(" | ", Productions)}";
 
         public bool AnyEmptyProduction() => Productions.SelectMany(x => x.Elements).Any(y => y.IsEmpty());

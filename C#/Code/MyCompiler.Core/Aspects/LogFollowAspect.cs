@@ -1,5 +1,5 @@
 ﻿using CCTUnifor.Logger;
-using MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA;
+using MyCompiler.Core.Models.Generators;
 using PostSharp.Aspects;
 using PostSharp.Serialization;
 
@@ -10,7 +10,7 @@ namespace MyCompiler.Core.Aspects
     {
         public override void OnExit(MethodExecutionArgs args)
         {
-            var model = (NonRecursiveDescendingSyntacticAnalysis)args.Instance;
+            var model = (FollowGenerator)args.Instance;
             Logger.PrintHeader("Follows");
             foreach (var follow in model.Follows)
                 Logger.PrintLn(follow.ToString());

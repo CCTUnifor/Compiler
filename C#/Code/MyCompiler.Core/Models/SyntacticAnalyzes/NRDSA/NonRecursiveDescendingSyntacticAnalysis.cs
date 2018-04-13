@@ -15,6 +15,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
 
         public ICollection<NonTerminalToken> NonTerminals { get; private set; }
         public ICollection<TerminalToken> Terminals { get; private set; }
+
         public Term[,] Table { get; private set; }
         //private bool IsTerminal(string production) => Terminals.Any(x => x.Value == production);
 
@@ -30,16 +31,14 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
         //private static void PrintRowStack(IEnumerable<string> q, int count, IEnumerable<string> restOfTheInput, string termString)
         //    => Logger.PrintLn($"[{count.ToString().PadRight(stackCounterPad)}] [{string.Join(", ", q).PadRight(stackPad)}] [{string.Join(" ", restOfTheInput).PadRight(stackInputPad)}] [{termString.PadRight(stackCalledPad)}]");
         //private ICollection<NonTerminalToken> GetNonTerminalsOrdered() => NonTerminals.OrderByDescending(x => x.Value.Length).ToList();
-        //private int GetIndexNonTerminal(string X) => NonTerminals.Select(x => x.Value).ToList().IndexOf(X);
-        //private bool IsNum(string s) => s.All(char.IsDigit);
-        //private bool IsLetter(string s) => s.All(char.IsLetter);
+
 
         public void Parser(string input)
         {
             HandleLines();
             Firsts = new FirstGenerator(Terms).GenerateFirsts();
-            Follows = new FollowGenerator(Terms).GenerateFollows();
-            GenerateTable();
+            Follows = new FollowGenerator(Terms, Firsts).GenerateFollows();
+            Table = new TableGenerator(Terms, NonTerminals, Terminals, Firsts, Follows).GenerateTable();
             Analyse(input);
         }
 
@@ -64,54 +63,6 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
 
         private string[] GetLines() => Grammar.GetLines().IgnoreEmptyOrNull();
 
-
-        [LogTableAspect]
-        private void GenerateTable()
-        {
-            //Table = new Term[nonTerminals.Count, Terminals.Count];
-
-            //foreach (var term in terms)
-            //{
-            //    var A = GetIndexNonTerminal(term.Caller.Value);
-
-            //    foreach (var termProduction in term.Productions)
-            //    {
-            //        var production = termProduction.Trim();
-            //        var first = production.Split(" ").First();
-
-            //        var f = IsTerminal(first) || first == "ε"
-            //            ? new First(term.Caller, new List<Terminal> { first.ToTerminal() })
-            //            : Firsts.Single(x => x.NonTerminal.Value == first);
-
-            //        foreach (var terminal in f.Terminals)
-            //        {
-            //            var a = GetIndexTerminal(terminal.Value);
-            //            var t = new Term(term.Caller, production);
-
-            //            if (A >= 0 && a >= 0)
-            //                PopulateTable(A, a, t);
-            //            else if (terminal.Value == "ε")
-            //            {
-            //                var follow = Follows.Single(x => x.NonTerminal == term.Caller);
-
-            //                foreach (var followTerminal in follow.Terminals)
-            //                {
-            //                    var b = GetIndexTerminal(followTerminal.Value);
-            //                    PopulateTable(A, b, t);
-            //                }
-            //            }
-            //        }
-            //    }
-            //}
-        }
-
-        //private void PopulateTable(int i, int j, Term t)
-        //{
-        //    if (Table[i, j] == null)
-        //        Table[i, j] = t;
-        //    else
-        //        Table[i, j].AddProduction(t.Productions);
-        //}
 
         [LogAnalyserAspect]
         private void Analyse(string input)
@@ -189,22 +140,5 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
             //PrintRowStack(q, count, new List<string> { "$" }, "Accepted");
 
         }
-
-        //private int GetIndexTerminal(string f)
-        //{
-        //    if (f == "ε")
-        //        return -1;
-
-        //    var i = Terminals.Select(x => x.Value).ToList().IndexOf(f);
-        //    if (i >= 0)
-        //        return i;
-
-        //    if (IsLetter(f))
-        //        return GetIndexTerminal("ide");
-        //    if (IsNum(f))
-        //        return GetIndexTerminal("num");
-
-        //    return -1;
-        //}
     }
 }

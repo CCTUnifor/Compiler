@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using MyCompiler.Core.Models.LexicalAnalyzer;
+using MyCompiler.Core.Models.Tokens;
 
 namespace MyCompiler.Core.Extensions
 {
@@ -37,5 +39,13 @@ namespace MyCompiler.Core.Extensions
 
         public static string[] GetProductions(this string value)
             => value.Split("|").Select(x => x.Trim()).ToArray();
+
+        public static IEnumerable<Token> RemoveSpacesTokens(this IEnumerable<Token> tokens)
+        {
+            var x = tokens.ToList();
+            x.RemoveAll(y => y == SpaceToken.Create());
+            return x;
+        }
     }
 }
+

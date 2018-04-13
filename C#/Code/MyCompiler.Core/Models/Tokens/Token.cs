@@ -15,7 +15,23 @@
         }
 
         public override string ToString() => $"{Value}";
+        public override bool Equals(object obj) => ((Token)obj).Value == Value;
+
+        protected bool Equals(Token other)
+        {
+            return string.Equals(Value, other.Value);
+        }
+
+        public override int GetHashCode()
+        {
+            return (Value != null ? Value.GetHashCode() : 0);
+        }
+
+        public static bool operator ==(Token token1, Token token2) => Equals(token1, token2);
+        public static bool operator !=(Token token1, Token token2) => !Equals(token1, token2);
 
         public TerminalToken ToTerminalToken() => new TerminalToken(Value);
+
+        public bool IsTerminal() => this is TerminalToken;
     }
 }

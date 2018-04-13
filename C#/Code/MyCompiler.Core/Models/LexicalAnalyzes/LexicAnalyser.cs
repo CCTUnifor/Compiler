@@ -62,7 +62,7 @@ namespace MyCompiler.Core.Models.LexicalAnalyzes
                         break;
 
                     case LexicAnalyserState.Space:
-                        token = new SpaceToken(Value);
+                        token = new SpaceToken();
                         CurrentIndex++;
                         break;
 
@@ -71,7 +71,7 @@ namespace MyCompiler.Core.Models.LexicalAnalyzes
                         CurrentIndex++;
                         break;
                     case LexicAnalyserState.Empty:
-                        token = new EmptyToken(Value);
+                        token = new EmptyToken();
                         CurrentIndex++;
                         break;
                     default:
