@@ -1,0 +1,9 @@
+N = {S,X,Y,Z}
+Sigma = {a,b,c,d,e,f}
+S = {S}
+P = {
+    S -> X Y Z
+    X -> a X b | ɛ
+    Y -> c Y Z c X | d 
+    Z -> e Z Y e | f
+}
