@@ -109,5 +109,3 @@ class ThompsonGraph:
         if(not haveMinimun):
             newPath = self.root.addDestination(self.cursor, None)
             self.edge_list.append(newPath)        
-    
-    

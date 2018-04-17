@@ -154,6 +154,7 @@ class Builder:
         
         return matrix
 
+    @staticmethod
     def equalStates(st1, st2):
         for key in st1.StatesByKey:
             if(st1.StatesByKey[key] is not st2.StatesByKey[key]):
