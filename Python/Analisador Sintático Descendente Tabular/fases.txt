@@ -1,6 +1,0 @@
-ok 1. reconhecer a gramática inserida
-ok 2. aplicar o first
-ok 3. aplicar o follow
-ok 4. montar a tabela
-ok 5. reconhecer cadeia - léxico
-ok 6. reconhecer cadeia - sintático

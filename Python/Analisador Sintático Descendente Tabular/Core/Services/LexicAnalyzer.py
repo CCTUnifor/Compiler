@@ -1,5 +1,5 @@
-from Entidades.Grammar.Grammar import Grammar
-from Entidades.Term import TermUnit
+from Core.Entities.Grammar import Grammar
+from Core.Entities.TermUnit import TermUnit
 
 
 class Token:

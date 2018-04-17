@@ -1,16 +1,16 @@
 import re
-from Entidades.Term import Term
-from Entidades.Term import TermUnit
+from Core.Entities.Premise import Premise
+from Core.Entities.Premise import TermUnit
 
 
-class TextGrammar:
+class TextToGrammar:
     EMPTY = 'ɛ'
     EMPTY_UNIT = TermUnit(TermUnit.EMPTY, EMPTY)
     RE = r'N\s*=\s*{\n*(.+)\n*}\s*\n*Sigma\s*=\s*{\n*(.+)\n*}\s*\n*S\s*=\s*{\n*(.+)\n*}\s*\n*P\s*=\s*{\n*((?:.*\n*)+)}\n*'
     
     def __init__(self, text):        
         self.text = text
-        self.matched = re.match(TextGrammar.RE, text)
+        self.matched = re.match(TextToGrammar.RE, text)
         self.separator = ','
 
         self.NonTerminals = self.matched.group(1).split(self.separator)
@@ -22,14 +22,14 @@ class TextGrammar:
         self.TermUnits = []
     
     def getStartSimbol(self):
-        for item in self.get_terms():
+        for item in self.get_premises():
             if(item.left == self.StartSimbol):
                 return item
 
     def getStartSimbolUnit(self):
         return self.TermUnits[0]            
     
-    def get_terms(self):
+    def get_premises(self):
         if(len(self.Terms) is 0):
             self.make_terms()
         
@@ -37,7 +37,7 @@ class TextGrammar:
     
     def make_terms(self):
         premises = self.Premises.split('\n')
-        patternObj = re.compile(Term.RE)
+        patternObj = re.compile(Premise.RE)
 
         for premise in premises:
             if(len(premise.strip()) is 0): continue
@@ -55,7 +55,7 @@ class TextGrammar:
             raise Exception('Não terminal '+leftHand+' não foi definido em N')
     
     def rank_term(self, leftHand, rightHand, premise):
-        term = Term(leftHand, premise)
+        term = Premise(leftHand, premise)
         
         self.rank_stream(leftHand)
         

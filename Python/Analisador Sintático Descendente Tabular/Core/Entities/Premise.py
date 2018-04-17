@@ -1,20 +1,7 @@
-class TermUnit:
-    TERMINAL = 'TERMINAL'
-    NONTERMINAL = 'NON-TERMINAL'
-    EMPTY = 'EMPTY'
-    STREAM_END = '$'
+from Core.Entities.TermUnit import TermUnit
 
-    def __init__(self, firstType, firstText):
-        self.type = firstType
-        self.text = firstText
 
-    def __str__(self):
-        return self.text
-    
-    def __repr__(self):
-        return self.__str__()
-
-class Term:
+class Premise:
     RE = r'\s*(.+)\s*->\s*(.+)\s*'
 
     def __init__(self, left, text):

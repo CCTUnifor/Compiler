@@ -1,11 +1,14 @@
 import sys
 import io
-from Entidades.Grammar import Grammar
-from Services.GrammarTableService import TableService
+
+from Core.Entities.Grammar import Grammar
+from Core.Services.TableDescendentSintaticAnalyzer import TableService
+
 import printer
 
-input_file_directory = "arquivos/inputs/input "
-grammar_file_directory = "arquivos/gramaticas/Gramática "
+
+input_file_directory = "misc/inputs/input "
+grammar_file_directory = "misc/grammars/Gramática "
 
 grammar_name = "EB"
 grammar_name = "Tiny2"
@@ -24,7 +27,7 @@ if(len(sys.argv) > 2):
 
 with io.open(grammar_file_name, "r", encoding='utf8') as file_obj:
     fileTxt = file_obj.read()
-    g = Grammar.Grammar(fileTxt)
+    g = Grammar(fileTxt)
 
 compileGrammarService = TableService(g)
 compileGrammarService.compileGrammar()
