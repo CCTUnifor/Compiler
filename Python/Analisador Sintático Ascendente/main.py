@@ -2,7 +2,7 @@ import sys
 import io
 
 from Core.Entities.Grammar import Grammar
-from Core.Services.TableDescendentSintaticAnalyzer import TableService
+# from Core.Services.TableDescendentSintaticAnalyzer import TableService
 
 import printer
 
@@ -29,17 +29,17 @@ with io.open(grammar_file_name, "r", encoding='utf8') as file_obj:
     fileTxt = file_obj.read()
     g = Grammar(fileTxt)
 
-compileGrammarService = TableService(g)
-compileGrammarService.compileGrammar()
+# compileGrammarService = TableService(g)
+# compileGrammarService.compileGrammar()
 
 with io.open(input_file_name, "r", encoding='utf8') as file_obj:
     fileTxt = file_obj.read()
 
-    tokens, historic = compileGrammarService.compile(fileTxt)
+    # tokens, historic = compileGrammarService.compile(fileTxt)
 
 
 printer.Grammar_Printer(g)
-printer.Grammar_Table_Printer(compileGrammarService)
+# printer.Grammar_Table_Printer(compileGrammarService)
 printer.LexicPrint(tokens)
-printer.CompileHistoric(historic)
+# printer.CompileHistoric(historic)
 
