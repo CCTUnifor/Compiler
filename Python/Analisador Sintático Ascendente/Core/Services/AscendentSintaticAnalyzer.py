@@ -23,14 +23,15 @@ class TableService:
 
         self.item_graph = ItemGraph(grammar)
 
-    def build_table(self):
+    def __build_table(self):
         pass
     
-    def compileGrammar(self):
+    def __compileGrammar(self):
         if(self.table is None):
             self.first.build_first()
             self.follow.build_follow()
-            self.build_table()
+            self.item_graph.build_graph()
+            self.__build_table()
     
     def compile(self, text):
-        self.compileGrammar()
+        self.__compileGrammar()

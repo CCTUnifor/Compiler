@@ -16,7 +16,7 @@ class TextToGrammar:
         self.NonTerminals = self.matched.group(1).split(self.separator)
         self.Alphabet = self.matched.group(2).split(self.separator)
         self.StartSimbol = self.matched.group(3).strip()
-        self.Premises = self.matched.group(4)
+        self.PremisesText = self.matched.group(4)
 
         self.Premises = []
         self.TermUnits = []
@@ -27,16 +27,22 @@ class TextToGrammar:
                 return item
 
     def getStartSimbolUnit(self):
-        return self.TermUnits[0]            
+        return self.TermUnits[0]
+
+    def get_term_units(self):
+        self.__make_terms()
+        return self.TermUnits.copy()
     
     def get_premises(self):
-        if(len(self.Premises) is 0):
-            self.make_terms()
+        self.__make_terms()
         
-        return self.Premises
+        return self.Premises.copy()
     
-    def make_terms(self):
-        premises = self.Premises.split('\n')
+    def __make_terms(self):
+        if(len(self.Premises) is not 0):
+            return
+
+        premises = self.PremisesText.split('\n')
         patternObj = re.compile(Premise.RE)
 
         for premise in premises:
@@ -46,25 +52,25 @@ class TextToGrammar:
             leftHand = termMatch.group(1).strip()
             rightHand = termMatch.group(2).strip()
 
-            self.validate_left(leftHand)
+            self.__validate_left(leftHand)
 
-            self.rank_term(leftHand, rightHand, premise)
+            self.__rank_term(leftHand, rightHand, premise)
     
-    def validate_left(self, leftHand):
+    def __validate_left(self, leftHand):
         if(leftHand not in self.NonTerminals):
             raise Exception('Não terminal '+leftHand+' não foi definido em N')
     
-    def rank_term(self, leftHand, rightHand, premise):
+    def __rank_term(self, leftHand, rightHand, premise):
         term = Premise(leftHand, premise)
         
-        self.rank_stream(leftHand)
+        self.__rank_stream(leftHand)
         
         if(rightHand.find('|') >= 0):
             ors = rightHand.split('|')
             for orOption in ors:
-                term.right.append(self.rank_stream(orOption.strip()))
+                term.right.append(self.__rank_stream(orOption.strip()))
         else:
-            term.right.append(self.rank_stream(rightHand))
+            term.right.append(self.__rank_stream(rightHand))
                 
         self.Premises.append(term)
     
@@ -74,7 +80,7 @@ class TextToGrammar:
     def getUnits(self, item):
         return [x for x in self.TermUnits if (x.text.find(item,0)+1)]
     
-    def rank_stream(self, streamText):
+    def __rank_stream(self, streamText):
         streamArray = []
 
         stream = streamText.split(' ')

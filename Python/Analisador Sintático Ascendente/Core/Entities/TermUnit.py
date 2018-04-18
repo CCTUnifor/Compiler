@@ -4,9 +4,9 @@ class TermUnit:
     EMPTY = 'EMPTY'
     STREAM_END = '$'
 
-    def __init__(self, firstType, firstText):
-        self.type = firstType
-        self.text = firstText
+    def __init__(self, Type, Text):
+        self.type = Type
+        self.text = Text
 
     def __str__(self):
         return self.text

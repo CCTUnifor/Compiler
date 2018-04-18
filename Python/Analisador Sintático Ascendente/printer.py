@@ -1,13 +1,48 @@
+import networkx as nx
+import matplotlib.pyplot as plt
+
+def recursiveMatPlotLib(graph, ploted, G, node, x, y):
+        """internal use"""
+        G.add_node(node.id, pos=(x, y))
+        ploted.append(node)
+        
+        length = len(node.paths)
+        delta = int(length/2)
+        newX = x + 1
+        even = length%2 == 0
+
+        for i, path in enumerate(node.paths):
+            G.add_edge(node.id, path.dest.id, weight=(path.value.value if path.value else "ɛ"))
+            newY = y + (i -  delta)
+            if(even and newY is y):
+                newY += 1
+            if(path.dest not in ploted):
+                recursiveMatPlotLib(graph, ploted, G, path.dest, newX, newY)
+
+
+def printMatplotlib(graph):
+    """open a window with the informed graph"""
+    G=nx.Graph()
+
+    recursiveMatPlotLib(graph, [], G, graph.root, 1, 10)
+
+    pos = nx.get_node_attributes(G,'pos')
+    nx.draw(G,pos, with_labels=True)
+
+    labels = nx.get_edge_attributes(G,'weight')
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
+    plt.show()
+
 def Grammar_Printer(g):
     print('-----------------------GRAMÁTICA-----------------------')
     print(g)
 
     print('-------------------------FIRST-------------------------')
-    for term in g.Terms:
+    for term in g.Premises:
         print(term.strFirst())
 
     print('\n------------------------FOLLOW-------------------------')
-    for term in g.Terms:
+    for term in g.Premises:
         print(term.strFollow())
     
 def Grammar_Table_Printer(s):

@@ -16,6 +16,7 @@ grammar_name = "SXYZ"
 grammar_name = "SAB"
 grammar_name = "ETF"
 grammar_name = "Tiny"
+grammar_name = "A"
 grammar_name = "EB"
 
 grammar_file_name = grammar_file_directory + grammar_name
@@ -28,18 +29,21 @@ if(len(sys.argv) > 2):
 with io.open(grammar_file_name, "r", encoding='utf8') as file_obj:
     fileTxt = file_obj.read()
     g = Grammar(fileTxt)
-    TableService(g)
+    tservice = TableService(g)
+    printer.Grammar_Printer(tservice.item_graph.augmented_grammar)
+    printer.printMatplotlib(tservice.item_graph)
+
 
 # compileGrammarService = TableService(g)
 # compileGrammarService.compileGrammar()
 
-with io.open(input_file_name, "r", encoding='utf8') as file_obj:
-    fileTxt = file_obj.read()
+# with io.open(input_file_name, "r", encoding='utf8') as file_obj:
+#     fileTxt = file_obj.read()
 
     # tokens, historic = compileGrammarService.compile(fileTxt)
 
 
-printer.Grammar_Printer(g)
+# printer.Grammar_Printer(g)
 # printer.Grammar_Table_Printer(compileGrammarService)
 # printer.LexicPrint(tokens)
 # printer.CompileHistoric(historic)

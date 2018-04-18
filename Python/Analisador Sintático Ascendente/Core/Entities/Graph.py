@@ -38,12 +38,18 @@ class Node:
 
 
 class Graph:
-    def __init__(self, id=0):
+    def __init__(self, id=0, makeRoot=True):
         self.id = id
         self.countId = 0
         self.node_list = []
         self.edge_list = []
-        self.root = self.makeNode()
+        self.root = None
+
+        self.__make_root(makeRoot)
+
+    def __make_root(self, makeRoot):
+        if(makeRoot):
+            self.root = self.makeNode()
     
     def makeNode(self, value=None):
         node = Node(str(self.id)+ "-" + str(self.countId), value)
