@@ -8,7 +8,7 @@ class Grammar:
     def __init__(self, text):
         self.textGrammar = TextToGrammar(text)
 
-        self.Terms = self.textGrammar.get_premises()
+        self.Premises = self.textGrammar.get_premises()
 
         self.StartSimbol = self.textGrammar.getStartSimbol()
         self.StartSimbolUnit = self.textGrammar.getStartSimbolUnit()
@@ -17,7 +17,7 @@ class Grammar:
         self.NonTerminals = [unit for unit in self.textGrammar.TermUnits if unit.type is TermUnit.NONTERMINAL]       
 
     def get_term(self, termString):
-            for i in self.Terms:
+            for i in self.Premises:
                 if(i.left == termString):
                     return i
 

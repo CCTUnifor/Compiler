@@ -18,7 +18,7 @@ class TextToGrammar:
         self.StartSimbol = self.matched.group(3).strip()
         self.Premises = self.matched.group(4)
 
-        self.Terms = []
+        self.Premises = []
         self.TermUnits = []
     
     def getStartSimbol(self):
@@ -30,10 +30,10 @@ class TextToGrammar:
         return self.TermUnits[0]            
     
     def get_premises(self):
-        if(len(self.Terms) is 0):
+        if(len(self.Premises) is 0):
             self.make_terms()
         
-        return self.Terms
+        return self.Premises
     
     def make_terms(self):
         premises = self.Premises.split('\n')
@@ -66,7 +66,7 @@ class TextToGrammar:
         else:
             term.right.append(self.rank_stream(rightHand))
                 
-        self.Terms.append(term)
+        self.Premises.append(term)
     
     def getUnit(self, item):
         return next((x for x in self.TermUnits if x.text == item), None)
