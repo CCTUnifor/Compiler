@@ -31,6 +31,7 @@ with io.open(grammar_file_name, "r", encoding='utf8') as file_obj:
     g = Grammar(fileTxt)
     tservice = TableService(g)
     printer.Grammar_Printer(tservice.item_graph.augmented_grammar)
+    printer.printGraphLists(tservice.item_graph)
     printer.printMatplotlib(tservice.item_graph)
 
 

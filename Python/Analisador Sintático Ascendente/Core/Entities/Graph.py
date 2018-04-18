@@ -7,9 +7,12 @@ class Path:
     def __str__(self):
         return ("path: " 
                 + str(self.value if self.value else "ɛ")
-                + " from "
+                + " from ("
                 + str(self.src)
-                + " to " + str(self.dest))
+                + ") to (" + str(self.dest)) +")"
+
+    def __repr__(self):
+        return "\n" + str(self)
 
 
 class Node:
@@ -29,12 +32,17 @@ class Node:
                 return path
 
     def __str__(self):
-        returnStr = str(self.id)
+        # returnStr = str(self.id)
 
-        for item in self.paths:
-            returnStr += '\n'+str(item)
+        # for item in self.paths:
+        #     returnStr += '\n'+str(item)
 
-        return returnStr
+        # return returnStr
+
+        return "id: " + str(self.id) + " value: " + str(self.value)
+    
+    def __repr__(self):
+        return "\n" + str(self)
 
 
 class Graph:

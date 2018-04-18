@@ -1,37 +1,68 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 
-def recursiveMatPlotLib(graph, ploted, G, node, x, y):
-        """internal use"""
-        G.add_node(node.id, pos=(x, y))
-        ploted.append(node)
+# def recursiveMatPlotLib(graph, ploted, G, node, x, y):
+#         """internal use"""
+#         G.add_node(node.id, pos=(x, y))
+
+#         ploted.append(node)
         
-        length = len(node.paths)
-        delta = int(length/2)
-        newX = x + 1
-        even = length%2 == 0
+#         length = len(node.paths)
+#         delta = int(length/2)
+#         newX = x + 1
+#         even = length%2 == 0
 
-        for i, path in enumerate(node.paths):
-            G.add_edge(node.id, path.dest.id, weight=(path.value.value if path.value else "ɛ"))
-            newY = y + (i -  delta)
-            if(even and newY is y):
-                newY += 1
-            if(path.dest not in ploted):
-                recursiveMatPlotLib(graph, ploted, G, path.dest, newX, newY)
+#         for i, path in enumerate(node.paths):
+#             G.add_edge(node.id, path.dest.id, weight=(path.value.value if path.value else "ɛ"))
+#             newY = y + (i -  delta)
+#             if(even and newY is y):
+#                 newY += 1
+#             if(path.dest not in ploted):
+#                 recursiveMatPlotLib(graph, ploted, G, path.dest, newX, newY)
 
 
+# def printMatplotlib(graph):
+#     """open a window with the informed graph"""
+#     G=nx.Graph()
+
+#     recursiveMatPlotLib(graph, [], G, graph.root, 1, 10)
+
+#     pos = nx.get_node_attributes(G,'pos')
+#     nx.draw(G,pos, with_labels=True)
+
+#     labels = nx.get_edge_attributes(G,'weight')
+#     nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
+#     plt.show()
 def printMatplotlib(graph):
-    """open a window with the informed graph"""
-    G=nx.Graph()
+    G = nx.Graph()
+    pos = nx.random_layout(G)
 
-    recursiveMatPlotLib(graph, [], G, graph.root, 1, 10)
+    for x in graph.node_list:
+        value = str(x.value) if x.value else x.id
+        G.add_node(x.id, node_label=value)
 
-    pos = nx.get_node_attributes(G,'pos')
-    nx.draw(G,pos, with_labels=True)
+    pos = nx.random_layout(G)
+    # nx.draw_networkx_nodes(G,pos,node_color='r',node_size=500,alpha=0.8)
 
-    labels = nx.get_edge_attributes(G,'weight')
+    for x in graph.edge_list:
+        value = str(x.value) if x.value else "ɛ" 
+        G.add_edge(x.src.id, x.dest.id, edge_label=value)
+
+    labels = nx.get_node_attributes(G,'node_label')
+    nx.draw(G,pos, labels=labels, with_labels=True, font_size=10)#, node_size=1000)
+
+    labels = nx.get_edge_attributes(G,'edge_label')
     nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
+
+    plt.axis('off')
+    # plt.savefig("labels_and_colors.png") # save as png
     plt.show()
+
+def printGraphLists(graph):
+    print('-------------------------NODES-------------------------')
+    print(graph.node_list)
+    print('-------------------------EDGES-------------------------')
+    print(graph.edge_list)
 
 def Grammar_Printer(g):
     print('-----------------------GRAMÁTICA-----------------------')

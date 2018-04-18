@@ -18,7 +18,7 @@ class Premise:
         return self.left + " -> " + str([[j.text for j in tunit] for tunit in self.right])
     
     def __repr__(self):
-        return '\n'+str(self.left) + " -> " + str([[j.text for j in tunit] for tunit in self.right])
+        return '\n'+ str(self)
         # return str(self.left)
     
     def strFirst(self):
