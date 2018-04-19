@@ -1,0 +1,8 @@
+VAR X1:INTEGER;
+BEGIN
+    WHILE X1<100 DO
+    BEGIN
+        X1 := X1+1;
+        WRITE(X1)
+    END
+END
