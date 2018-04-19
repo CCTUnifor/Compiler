@@ -9,7 +9,7 @@ namespace MyCompiler.Core.Models.LexicalAnalyzes
 {
     public class LexicAnalyser
     {
-        private readonly ICollection<NonTerminalToken> _nonTerminals;
+        private readonly IEnumerable<NonTerminalToken> _nonTerminals;
         private readonly string _production;
 
         private int CurrentIndex { get; set; }
@@ -20,7 +20,7 @@ namespace MyCompiler.Core.Models.LexicalAnalyzes
         private string Value;
         private bool Continue => CurrentIndex < _production.Length;
 
-        public LexicAnalyser(ICollection<NonTerminalToken> nonTerminals, string production)
+        public LexicAnalyser(IEnumerable<NonTerminalToken> nonTerminals, string production)
         {
             _nonTerminals = nonTerminals;
             _production = production;
@@ -94,7 +94,6 @@ namespace MyCompiler.Core.Models.LexicalAnalyzes
                 State = LexicAnalyserState.Letter;
         }
 
-        private bool IsLetter() => Value.All(char.IsLetter);
         private bool IsNonTerminal() =>
             _nonTerminals.OrderByDescending(x => x.Value.Length).Any(x => x.Value == Value);
     }

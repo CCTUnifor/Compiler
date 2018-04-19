@@ -8,18 +8,18 @@ namespace MyCompiler.Core.Models.Generators
 {
     public class TableGenerator
     {
-        private readonly ICollection<Term> _terms;
-        public ICollection<NonTerminalToken> NonTerminals { get; private set; }
-        public ICollection<TerminalToken> Terminals { get; private set; }
-        private readonly ICollection<First> _firsts;
-        private readonly ICollection<Follow> _follows;
+        private readonly IEnumerable<Term> _terms;
+        public IEnumerable<NonTerminalToken> NonTerminals { get; private set; }
+        public IEnumerable<TerminalToken> Terminals { get; private set; }
+        private readonly IEnumerable<First> _firsts;
+        private readonly IEnumerable<Follow> _follows;
         public Term[,] Table { get; private set; }
-        private int GetIndexNonTerminal(string X) => NonTerminals.Select(x => x.Value).ToList().IndexOf(X);
+        public int GetIndexNonTerminal(string X) => NonTerminals.Select(x => x.Value).ToList().IndexOf(X);
         private bool IsNum(string s) => s.All(char.IsDigit);
         private bool IsLetter(string s) => s.All(char.IsLetter);
 
-        public TableGenerator(ICollection<Term> terms, ICollection<NonTerminalToken> nonTerminals,
-            ICollection<TerminalToken> terminals, ICollection<First> firsts, ICollection<Follow> follows)
+        public TableGenerator(IEnumerable<Term> terms, IEnumerable<NonTerminalToken> nonTerminals,
+            IEnumerable<TerminalToken> terminals, IEnumerable<First> firsts, IEnumerable<Follow> follows)
         {
             _terms = terms;
             NonTerminals = nonTerminals;
@@ -31,7 +31,7 @@ namespace MyCompiler.Core.Models.Generators
         [LogTableAspect]
         public Term[,] GenerateTable()
         {
-            Table = new Term[NonTerminals.Count, Terminals.Count];
+            Table = new Term[NonTerminals.Count(), Terminals.Count()];
 
             foreach (var term in _terms)
             {
@@ -77,7 +77,7 @@ namespace MyCompiler.Core.Models.Generators
                 Table[i, j].AddProduction(t.Productions);
         }
 
-        private int GetIndexTerminal(string f)
+        public int GetIndexTerminal(string f)
         {
             if (f == "ε")
                 return -1;

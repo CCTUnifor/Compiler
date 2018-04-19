@@ -7,12 +7,19 @@ using MyCompiler.Core.Models.Tokens;
 
 namespace MyCompiler.Core.Models.Generators
 {
-    public static class TermGeneator
+    public class TermGenerator
     {
-        public static ICollection<NonTerminalToken> CalculateNonTerminals(IEnumerable<string> lines)
-            => lines.Select(line => line.Split("->").FirstOrDefault()?.Trim().ToNonTerminal()).ToList();
+        public IEnumerable<NonTerminalToken> NonTerminalTokens { get; private set; }
+        public IEnumerable<TerminalToken> TerminalTokens { get; private set; }
+        public IEnumerable<Term> Terms { get; private set; }
 
-        public static ICollection<Term> CalculateTerms(ICollection<NonTerminalToken> nonTerminals, IEnumerable<string> lines)
+        public IEnumerable<NonTerminalToken> CalculateNonTerminals(IEnumerable<string> lines)
+        {
+            NonTerminalTokens = lines.Select(line => line.Split("->").FirstOrDefault()?.Trim().ToNonTerminal()).ToList();
+            return NonTerminalTokens;
+        }
+
+        public ICollection<Term> CalculateTerms(IEnumerable<NonTerminalToken> nonTerminals, IEnumerable<string> lines)
         {
             var terms = new List<Term>();
 
@@ -42,14 +49,15 @@ namespace MyCompiler.Core.Models.Generators
                 terms.Add(new Term(caller, p));
             }
 
+            Terms = terms;
             return terms;
         }
 
-        public static ICollection<TerminalToken> CalculateTerminals(ICollection<Term> terms)
+        public ICollection<TerminalToken> CalculateTerminals(IEnumerable<Term> terms)
         {
             var terminals = terms.SelectMany(x => x.Productions).SelectMany(x => x.Elements).OfType<TerminalToken>().ToList();
             terminals.Add(new TerminalToken("$"));
-
+            TerminalTokens = terminals;
             return terminals;
         }
     }

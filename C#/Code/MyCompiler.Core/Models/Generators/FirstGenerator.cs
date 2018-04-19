@@ -8,12 +8,12 @@ namespace MyCompiler.Core.Models.Generators
 {
     public class FirstGenerator
     {
-        public readonly ICollection<Term> _terms;
-        public ICollection<First> _firsts { get; private set; }
+        public readonly IEnumerable<Term> Terms;
+        public ICollection<First> Firsts { get; private set; }
 
-        public FirstGenerator(ICollection<Term> terms)
+        public FirstGenerator(IEnumerable<Term> terms)
         {
-            _terms = terms;
+            Terms = terms;
         }
 
         [LogFirstAspect]
@@ -21,24 +21,24 @@ namespace MyCompiler.Core.Models.Generators
         {
             Initial();
 
-            foreach (var term in _terms)
+            foreach (var term in Terms)
                 GenerateFirst(term);
-            return _firsts;
+            return Firsts;
         }
 
         private void Initial()
         {
-            _firsts = new List<First>();
-            foreach (var term in _terms)
+            Firsts = new List<First>();
+            foreach (var term in Terms)
             {
-                if (_firsts.All(x => x.NonTerminal != term.Caller))
-                    _firsts.Add(new First(term.Caller, new List<TerminalToken>()));
+                if (Firsts.All(x => x.NonTerminal != term.Caller))
+                    Firsts.Add(new First(term.Caller, new List<TerminalToken>()));
             }
         }
 
         private First GenerateFirst(Term term)
         {
-            var currentFirst = _firsts.Single(x => x.NonTerminal == term.Caller);
+            var currentFirst = Firsts.Single(x => x.NonTerminal == term.Caller);
 
             foreach (var production in term.Productions)
             {
@@ -72,6 +72,6 @@ namespace MyCompiler.Core.Models.Generators
             return currentFirst;
         }
 
-        private Term GetTermByElement(Token firstElement) => _terms.SingleOrDefault(x => x.Caller.Value == firstElement.Value);
+        private Term GetTermByElement(Token firstElement) => Terms.SingleOrDefault(x => x.Caller.Value == firstElement.Value);
     }
 }

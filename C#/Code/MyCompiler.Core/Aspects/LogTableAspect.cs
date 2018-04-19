@@ -27,10 +27,10 @@ namespace MyCompiler.Core.Aspects
             var rowsHeader = model.NonTerminals.Select(x => x.Value.ToString()).ToArray();
 
             var tab = new ConsoleTable(collumnsHeader, rowsHeader);
-            for (var i = 0; i < model.NonTerminals.Count; i++)
+            for (var i = 0; i < model.NonTerminals.Count(); i++)
             {
                 var zxc = new List<Term>();
-                for (var j = 0; j < model.Terminals.Count; j++)
+                for (var j = 0; j < model.Terminals.Count(); j++)
                 {
                     zxc.Add(model.Table[i, j]);
                 }

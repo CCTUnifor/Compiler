@@ -12,7 +12,7 @@ namespace MyCompiler.Core.Aspects
         {
             var model = (FirstGenerator)args.Instance;
             Logger.PrintHeader("Firsts");
-            foreach (var first in model._firsts)
+            foreach (var first in model.Firsts)
                 Logger.PrintLn(first.ToString());
             Logger.PrintLn("\n");
 

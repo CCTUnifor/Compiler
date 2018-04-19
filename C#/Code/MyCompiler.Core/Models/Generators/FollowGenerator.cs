@@ -9,10 +9,10 @@ namespace MyCompiler.Core.Models.Generators
 {
     public class FollowGenerator
     {
-        private readonly ICollection<Term> _terms;
-        private readonly ICollection<First> _firsts;
+        private readonly IEnumerable<Term> _terms;
+        private readonly IEnumerable<First> _firsts;
         public ICollection<Follow> Follows { get; private set; }
-        public FollowGenerator(ICollection<Term> terms, ICollection<First> firsts)
+        public FollowGenerator(IEnumerable<Term> terms, IEnumerable<First> firsts)
         {
             _terms = terms;
             _firsts = firsts;
@@ -79,36 +79,8 @@ namespace MyCompiler.Core.Models.Generators
                         else if (aB)
                             followB.AddTerminal(followA.Terminals);
                     }
-                    //var indexOfTermChoosed = elements.IndexOf(termChoosed.Caller);
-                    //elements.RemoveAll(x => x == termChoosed.Caller);
-
-                    //var aBb = indexOfTermChoosed + 1 < elements.Count;
-                    //var aB = indexOfTermChoosed < elements.Count;
-
-                    //var followA = Follows.Single(x => x.NonTerminal == currentTerm.Caller);
-
-                    //if (aBb)
-                    //{
-                    //    foreach (var element in elements)
-                    //    {
-                    //        //var b = term.First();
-
-                    //        //var firstb = Firsts.SingleOrDefault(x => x.NonTerminal.Value == b);
-
-                    //        //if (IsTerminal(b))
-                    //        //    followB.AddTerminal(b.ToTerminal());
-                    //        //else
-                    //        //    followB.AddTerminal(firstb?.RemoveEmpty().Terminals);
-
-                    //        //if (firstb?.AnyEmpty() ?? false)
-                    //        //    followB.AddTerminal(followA.Terminals);
-                    //    }
-                    //}
-                    //else if (aB)
-                    //    followB.AddTerminal(followA.Terminals);
                 }
             }
-            //throw new System.NotImplementedException();
         }
     }
 }

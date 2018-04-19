@@ -7,6 +7,8 @@ namespace MyCompiler.Core.Extensions
 {
     public static class StringExtensions
     {
+        public static bool IsLetter(this string value) => value.All(char.IsLetter);
+
         public static bool IsDigit(this string value)
             => MathExpressionLexicalAnalyzer.Digits.Contains(value);
 
