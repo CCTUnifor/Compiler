@@ -7,7 +7,7 @@ using MyCompiler.Core.Models.Tokens;
 
 namespace MyCompiler.Core.Models.LexicalAnalyzes
 {
-    public class LexicAnalyser
+    public class TopDownParser
     {
         private readonly IEnumerable<NonTerminalToken> _nonTerminals;
         private readonly string _production;
@@ -20,7 +20,7 @@ namespace MyCompiler.Core.Models.LexicalAnalyzes
         private string Value;
         private bool Continue => CurrentIndex < _production.Length;
 
-        public LexicAnalyser(IEnumerable<NonTerminalToken> nonTerminals, string production)
+        public TopDownParser(IEnumerable<NonTerminalToken> nonTerminals, string production)
         {
             _nonTerminals = nonTerminals;
             _production = production;

@@ -2,7 +2,7 @@
 using System.Linq;
 using MyCompiler.Core.Models.Tokens;
 
-namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
+namespace MyCompiler.Tokenization.TopDown
 {
     public class First : Base
     {

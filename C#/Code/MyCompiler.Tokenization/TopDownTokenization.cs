@@ -7,9 +7,9 @@ using MyCompiler.Core.Extensions;
 using MyCompiler.Core.Models.Generators;
 using MyCompiler.Core.Models.Tokens;
 
-namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
+namespace MyCompiler.Tokenization.TopDown
 {
-    public class NonRecursiveDescendingSyntacticAnalysis
+    public class TopDownTokenization
     {
         private string Grammar { get; }
 
@@ -28,7 +28,7 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
         public TableGenerator TableGenerator { get; private set; }
 
 
-        public NonRecursiveDescendingSyntacticAnalysis(string grammar) => Grammar = grammar;
+        public TopDownTokenization(string grammar) => Grammar = grammar;
 
         private static int stackCounterPad = 3;
         private static int stackPad = 110;

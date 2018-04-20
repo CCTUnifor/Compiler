@@ -2,7 +2,7 @@
 using System.Linq;
 using MyCompiler.Core.Models.Tokens;
 
-namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
+namespace MyCompiler.Tokenization.TopDown
 {
     public class Production
     {
@@ -18,7 +18,5 @@ namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
         public bool FirstElementIsEmptyToken() => FirstToken is EmptyToken;
         public bool FirstElementIsSpaceToken() => FirstToken is SpaceToken;
         public override string ToString() => string.Join("", Elements);
-
-
     }
 }

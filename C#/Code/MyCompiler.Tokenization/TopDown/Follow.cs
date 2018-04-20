@@ -3,7 +3,7 @@ using System.Linq;
 using MyCompiler.Core.Extensions;
 using MyCompiler.Core.Models.Tokens;
 
-namespace MyCompiler.Core.Models.SyntacticAnalyzes.NRDSA
+namespace MyCompiler.Tokenization.TopDown
 {
     public class Follow : Base
     {
