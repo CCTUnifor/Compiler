@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using MyCompiler.Core.Enums;
-using MyCompiler.Core.Extensions;
-using MyCompiler.Core.Models.Tokens;
+using MyCompiler.Grammar;
+using MyCompiler.Grammar.Extensions;
+using MyCompiler.Grammar.Tokens;
 
-namespace MyCompiler.Core.Models.LexicalAnalyzes
+namespace MyCompiler.Parser
 {
     public class TopDownParser
     {

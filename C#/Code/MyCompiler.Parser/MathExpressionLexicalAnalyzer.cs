@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using MyCompiler.Core.Enums.MathExpression;
-using MyCompiler.Core.Extensions;
-using MyCompiler.Core.Interfaces;
-using MyCompiler.Core.Models.Tokens;
+using MyCompiler.Core.Interfaces.Graph;
+using MyCompiler.Core.Interfaces.Tokenizations;
+using MyCompiler.Grammar.Tokens;
+using MyCompiler.Parser.Extensions;
 
-namespace MyCompiler.Core.Models.LexicalAnalyzer
+namespace MyCompiler.Parser
 {
-    public class MathExpressionLexicalAnalyzer : ILexicalAnalyzer<MathExpressionGrammarClass>
+    public class MathExpressionLexicalAnalyzer : ITokenization<MathExpressionGrammarClass>
     {
         public static string Parentheses => "()";
         public static string Operations => "+-/*";

@@ -7,16 +7,16 @@
     <StartupObject />
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Common\**" />
-    <EmbeddedResource Remove="Common\**" />
-    <None Remove="Common\**" />
-  </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MyCompiler.Core\MyCompiler.Core.csproj" />
-    <ProjectReference Include="..\MyCompiler.Grammar\MyCompiler.Grammar.csproj" />
-    <ProjectReference Include="..\MyCompiler.Parser\MyCompiler.Parser.csproj" />
   </ItemGroup>
 
 </Project>

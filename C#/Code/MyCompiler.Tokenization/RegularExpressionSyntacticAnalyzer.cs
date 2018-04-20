@@ -1,15 +1,13 @@
 using System.Collections.Generic;
 using MyCompiler.Core.Enums.RegularExpression;
 using MyCompiler.Core.Exceptions;
-using MyCompiler.Core.Extensions;
 using MyCompiler.Core.Interfaces;
-using MyCompiler.Core.Models.GraphModels;
-using MyCompiler.Core.Models.LexicalAnalyzer;
-using MyCompiler.Core.Models.Tokens;
+using MyCompiler.Core.Interfaces.Graph;
+using MyCompiler.Parser.GraphModels;
 
-namespace MyCompiler.Core.Models.SyntacticAnalyzes
+namespace MyCompiler.Tokenization
 {
-    public class RegularExpressionSyntacticAnalyzer : ISyntacticAnalyzer<RegularExpressionGrammarClass>
+    public class RegularExpressionSyntacticAnalyzer : IParser<RegularExpressionGrammarClass>
     {
         private RegularExpressionParserToken<RegularExpressionGrammarClass> _regexParser;
 

@@ -1,13 +1,15 @@
 using System;
 using System.Collections.Generic;
 using MyCompiler.Core.Enums.RegularExpression;
-using MyCompiler.Core.Extensions;
-using MyCompiler.Core.Interfaces;
-using MyCompiler.Core.Models.Tokens;
+using MyCompiler.Core.Interfaces.Graph;
+using MyCompiler.Core.Interfaces.Tokenizations;
+using MyCompiler.Grammar.Extensions;
+using MyCompiler.Grammar.Tokens;
+using MyCompiler.Parser.Extensions;
 
-namespace MyCompiler.Core.Models.LexicalAnalyzer
+namespace MyCompiler.Parser
 {
-    public class RegularExpressionLexicalAnalyzer : ILexicalAnalyzer<RegularExpressionGrammarClass>
+    public class RegularExpressionLexicalAnalyzer : ITokenization<RegularExpressionGrammarClass>
     {
         public static string Parentheses => "()";
         public static string Repeat => "*";
@@ -117,7 +119,7 @@ namespace MyCompiler.Core.Models.LexicalAnalyzer
         private void HandleState(RegularExpressionGrammarClass operation, string value, int line)
         {
             //if (LastToken == null || LastToken.GrammarClass != operation)
-                CreateToken(operation, value, line);
+            CreateToken(operation, value, line);
             //else if (LastToken.GrammarClass == operation)
             //    ConcatToken(value);
         }

@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MyCompiler.Core.Interfaces;
+using MyCompiler.Core.Interfaces.Graph;
 
-namespace MyCompiler.Core.Models.SyntacticAnalyzes
+namespace MyCompiler.Tokenization
 {
     public class RegularExpressionParserToken<T>
     {

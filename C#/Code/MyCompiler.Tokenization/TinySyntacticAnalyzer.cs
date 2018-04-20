@@ -1,9 +1,7 @@
 ﻿using MyCompiler.Core.Enums;
 using MyCompiler.Core.Exceptions;
-using MyCompiler.Core.Models.LexicalAnalyzes;
-using MyCompiler.Core.Models.Tokens;
 
-namespace MyCompiler.Core.Models.SyntacticAnalyzes
+namespace MyCompiler.Tokenization
 {
     public class TinySyntacticAnalyzer
     {

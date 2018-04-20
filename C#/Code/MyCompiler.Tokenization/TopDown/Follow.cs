@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using MyCompiler.Core.Extensions;
-using MyCompiler.Core.Models.Tokens;
+using MyCompiler.Grammar.Extensions;
+using MyCompiler.Grammar.Tokens;
 
 namespace MyCompiler.Tokenization.TopDown
 {

@@ -1,13 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using CCTUnifor.Logger;
-using MyCompiler.Core.Aspects;
 using MyCompiler.Core.Exceptions;
-using MyCompiler.Core.Extensions;
-using MyCompiler.Core.Models.Generators;
-using MyCompiler.Core.Models.Tokens;
+using MyCompiler.Grammar;
+using MyCompiler.Grammar.Tokens;
+using MyCompiler.Parser.Extensions;
+using MyCompiler.Tokenization.Aspects;
+using MyCompiler.Tokenization.Extensions;
+using MyCompiler.Tokenization.Generators;
+using MyCompiler.Tokenization.TopDown;
 
-namespace MyCompiler.Tokenization.TopDown
+namespace MyCompiler.Tokenization
 {
     public class TopDownTokenization
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using MyCompiler.Core.Models.SyntacticAnalyzes;
+using MyCompiler.Tokenization;
 
 namespace MyCompiler.TinyApp
 {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using MyCompiler.Core.Models.Tokens;
+using MyCompiler.Grammar.Tokens;
 
 namespace MyCompiler.Tokenization.TopDown
 {

@@ -7,4 +7,9 @@
     <StartupObject />
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MyCompiler.Core\MyCompiler.Core.csproj" />
+    <ProjectReference Include="..\MyCompiler.Grammar\MyCompiler.Grammar.csproj" />
+  </ItemGroup>
+
 </Project>

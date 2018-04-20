@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyCompiler.Core", "MyCompil
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyCompiler.TinyApp", "MyCompiler.Tiny\MyCompiler.TinyApp.csproj", "{C71EC9FF-67CC-41CE-935C-64673C164F51}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyCompiler.AnalisadorSintaticoDescendenteTabular", "MyCompiler.AnalisadorSintaticoDescendenteTabular\MyCompiler.AnalisadorSintaticoDescendenteTabular.csproj", "{193AAB04-9A35-43D7-AC46-4A779F11E5BC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyCompiler.TopDownApp", "MyCompiler.TopDownApp\MyCompiler.TopDownApp.csproj", "{193AAB04-9A35-43D7-AC46-4A779F11E5BC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Applications", "Applications", "{D9AB63DF-3859-4866-9C30-3CEC0D82BD7B}"
 EndProject
@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyCompiler.Tokenization", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyCompiler.Parser", "MyCompiler.Parser\MyCompiler.Parser.csproj", "{99A3B77C-4F0A-4894-B1EE-0B4265E07C07}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyCompiler.Tokens", "MyCompiler.Tokens\MyCompiler.Tokens.csproj", "{3195F270-4204-46DB-B638-71432D0036A9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyCompiler.Grammar", "MyCompiler.Grammar\MyCompiler.Grammar.csproj", "{3195F270-4204-46DB-B638-71432D0036A9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

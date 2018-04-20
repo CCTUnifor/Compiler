@@ -18,6 +18,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\MyCompiler.Core\MyCompiler.Core.csproj" />
+        <ProjectReference Include="..\MyCompiler.Tokenization\MyCompiler.Tokenization.csproj" />
     </ItemGroup>
 
     <ItemGroup>
