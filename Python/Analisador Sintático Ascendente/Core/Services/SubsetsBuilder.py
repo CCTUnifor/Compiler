@@ -88,7 +88,7 @@ class Builder:
 
         self.matrix = self.__buildMatriz(self.subsets)
 
-        # self.__reduceMatrix(matrix)
+        self.__reduceMatrix(self.matrix)
 
         return self.matrix
 

@@ -68,5 +68,5 @@ class First:
         return retorno
 
     def build_first(self):
-        for term in self.grammar.Terms:
+        for term in self.grammar.Premises:
             self.first(term)

@@ -5,7 +5,7 @@ from Core.Entities.Grammar import Grammar
 from Core.Services.AscendentSintaticAnalyzer import TableService
 from Core.Services.SubsetsBuilder import Builder as SBuilder
 
-import printer
+import printer as PRINTER
 
 
 input_file_directory = "misc/inputs/input "
@@ -33,19 +33,22 @@ with io.open(grammar_file_name, "r", encoding='utf8') as file_obj:
     g = Grammar(fileTxt)
     tservice = TableService(g)
 
-    printer.Grammar_Printer(tservice.item_graph.augmented_grammar)
+    PRINTER.Grammar_Printer(tservice.item_graph.augmented_grammar)
 
-    tservice.item_graph.build_graph()
+    tservice.compile('')
 
-    printer.printGraphLists(tservice.item_graph)
-    # printer.printMatplotlib(tservice.item_graph)
+    # tservice.item_graph.build_graph()
+
+    PRINTER.printGraphLists(tservice.item_graph)
 
     sb = SBuilder(tservice.item_graph)
     matrix = sb.build()
 
-    printer.printMinimunMatrix(matrix)
-    printer.printSubsets(sb.subsets)
-    
+    PRINTER.printMinimunMatrix(matrix)
+    PRINTER.printSubsets(sb.subsets)
+
+    PRINTER.printMatplotlib(tservice.item_graph)
+
 
 
 # compileGrammarService = TableService(g)

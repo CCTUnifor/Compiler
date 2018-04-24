@@ -19,7 +19,7 @@ class Follow:
         """
         calls = deque()
 
-        for A in self.grammar.Terms:
+        for A in self.grammar.Premises:
             for stream in A.right:
                 streamLen = len(stream)
 
@@ -62,7 +62,7 @@ class Follow:
         Alfa is any stream
         Beta is a not empty stream
         """
-        for term in self.grammar.Terms:
+        for term in self.grammar.Premises:
             for stream in term.right:
                 streamLen = len(stream)
 
