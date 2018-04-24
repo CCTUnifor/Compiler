@@ -26,68 +26,7 @@ FATOR           -> ( EXP ) | num | ide
 
 ############################## Input ##############################
 
-read x ;
-if ( 0 < x ) then
-    fact := 1 ;
-    repeat
-        fact := fact * x ;
-        x := x - 1 
-    until x = 0 ;
-    write fact
-end
-
-############################## Firsts ##############################
-
-first(PROGRAMA) => [if, repeat, ide, read, write]
-first(DECL-SEQUENCIA) => [if, repeat, ide, read, write]
-first(DECL-SEQUENCIA') => [;, ε]
-first(DECLARACAO) => [if, repeat, ide, read, write]
-first(COND-DECL) => [if]
-first(REPET-DECL) => [repeat]
-first(ATRIB-DECL) => [ide]
-first(LEIT-DECL) => [read]
-first(ESCR-DECL) => [write]
-first(EXP) => [(, num, ide]
-first(X') => [<, =, ε]
-first(COMP-OP) => [<, =]
-first(EXP-SIMPLES) => [(, num, ide]
-first(EXP-SIMPLES') => [+, -, ε]
-first(SOMA) => [+, -]
-first(TERMO) => [(, num, ide]
-first(TERMO') => [*, /, ε]
-first(MULT) => [*, /]
-first(FATOR) => [(, num, ide]
-
-
-
-############################## # Analisador Sintatico Descendente Tabular ##############################
-
-
-############################## Grammar ##############################
-
-PROGRAMA        -> DECL-SEQUENCIA
-DECL-SEQUENCIA  -> DECLARACAO DECL-SEQUENCIA'
-DECL-SEQUENCIA' -> ; DECLARACAO DECL-SEQUENCIA' | ε
-DECLARACAO      -> COND-DECL | REPET-DECL | ATRIB-DECL | LEIT-DECL | ESCR-DECL 
-COND-DECL       -> if EXP then DECL-SEQUENCIA end
-REPET-DECL      -> repeat DECL-SEQUENCIA until EXP
-ATRIB-DECL      -> ide := EXP
-LEIT-DECL       -> read ide
-ESCR-DECL       -> write EXP
-EXP             -> EXP-SIMPLES X'
-X'               -> COMP-OP EXP-SIMPLES | ε
-COMP-OP         -> < | =
-EXP-SIMPLES     -> TERMO EXP-SIMPLES'
-EXP-SIMPLES'    -> SOMA TERMO EXP-SIMPLES' | ε
-SOMA            -> + | -
-TERMO           -> FATOR TERMO'
-TERMO'          -> MULT FATOR TERMO' | ε
-MULT            -> * | /
-FATOR           -> ( EXP ) | num | ide
-
-############################## Input ##############################
-
-read x ;
+read x;
 if ( 0 < x ) then
     fact := 1 ;
     repeat
@@ -174,5 +113,21 @@ follow(FATOR) => [*, /, +, -, <, =, then, ;, $, end, until, )]
 ############################## Analyse the input: ##############################
 
  #     Stack                                                                                                            Input                  Term                                               
-[0  ] [PROGRAMA, $                                                                                                   ] [read x ;            ] [PROGRAMA -> DECL-SEQUENCIA                        ]
-[1  ] [DECL-SEQUENCIA, $                                                                                             ] [read x ;            ] [DECL-SEQUENCIA -> DECLARACAO DECL-SEQUENCIA'      ]
+[0  ] [PROGRAMA, $                                                                                                   ] [read x;             ] [PROGRAMA -> DECL-SEQUENCIA                        ]
+[1  ] [DECL-SEQUENCIA, $                                                                                             ] [read x;             ] [DECL-SEQUENCIA -> DECLARACAO DECL-SEQUENCIA'      ]
+[2  ] [DECLARACAO, DECL-SEQUENCIA', $                                                                                ] [read x;             ] [DECLARACAO -> LEIT-DECL                           ]
+[3  ] [LEIT-DECL, DECL-SEQUENCIA', $                                                                                 ] [read x;             ] [LEIT-DECL -> read ide                             ]
+[4  ] [read, ide, DECL-SEQUENCIA', $                                                                                 ] [read x;             ] [Next                                              ]
+MyCompiler.Core.Exceptions.CompilationException: 
+** Compilation exception: **
+Line: 1 | Collumn: 2
+
+The x; doesn't exists in this grammar!
+Stack: [ide, DECL-SEQUENCIA', $] 
+X: 'ide' ; f: 'x;'; 
+M: '-1'; a: '-1';
+
+
+   at MyCompiler.Tokenization.TopDownParser.Analyse(String input) in C:\Users\thiag\Documents\Workspace\Compiler\C#\Code\MyCompiler.Parser\TopDownParser.cs:line 144
+   at MyCompiler.Tokenization.TopDownParser.Parser(String input) in C:\Users\thiag\Documents\Workspace\Compiler\C#\Code\MyCompiler.Parser\TopDownParser.cs:line 51
+   at MyCompiler.TopDownApp.Program.Main(String[] args) in C:\Users\thiag\Documents\Workspace\Compiler\C#\Code\MyCompiler.TopDownApp\Program.cs:line 23

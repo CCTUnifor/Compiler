@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MyCompiler.Grammar;
+using MyCompiler.Grammar.Extensions;
 using MyCompiler.Grammar.Tokens;
 using MyCompiler.Parser.TopDown;
 using MyCompiler.Tokenization.Aspects;
@@ -15,7 +16,7 @@ namespace MyCompiler.Tokenization.Generators
         private readonly IEnumerable<First> _firsts;
         private readonly IEnumerable<Follow> _follows;
         public Term[,] Table { get; private set; }
-        public int GetIndexNonTerminal(string X) => NonTerminals.Select(x => x.Value).ToList().IndexOf(X);
+        public int GetIndexNonTerminal(Token X) => NonTerminals.ToList().IndexOf(X.ToNonTerminalToken());
         private bool IsNum(string s) => s.All(char.IsDigit);
         private bool IsLetter(string s) => s.All(char.IsLetter);
 
@@ -36,7 +37,7 @@ namespace MyCompiler.Tokenization.Generators
 
             foreach (var term in _terms)
             {
-                var A = GetIndexNonTerminal(term.Caller.Value);
+                var A = GetIndexNonTerminal(term.Caller);
 
                 foreach (var production in term.Productions)
                 {
@@ -48,7 +49,7 @@ namespace MyCompiler.Tokenization.Generators
 
                     foreach (var terminal in f.Terminals)
                     {
-                        var a = GetIndexTerminal(terminal.Value);
+                        var a = GetIndexTerminal(terminal);
                         var t = new Term(term.Caller, production);
 
                         if (A >= 0 && a >= 0)
@@ -59,7 +60,7 @@ namespace MyCompiler.Tokenization.Generators
 
                             foreach (var followTerminal in follow.Terminals)
                             {
-                                var b = GetIndexTerminal(followTerminal.Value);
+                                var b = GetIndexTerminal(followTerminal);
                                 PopulateTable(A, b, t);
                             }
                         }
@@ -78,19 +79,19 @@ namespace MyCompiler.Tokenization.Generators
                 Table[i, j].AddProduction(t.Productions);
         }
 
-        public int GetIndexTerminal(string f)
+        public int GetIndexTerminal(Token f)
         {
-            if (f == "ε")
+            if (f is EmptyToken)
                 return -1;
 
-            var i = Terminals.Select(x => x.Value).ToList().IndexOf(f);
+            var i = Terminals.ToList().IndexOf(f.ToTerminalToken());
             if (i >= 0)
                 return i;
 
-            if (IsLetter(f))
-                return GetIndexTerminal("ide");
-            if (IsNum(f))
-                return GetIndexTerminal("num");
+            if (f.IsLetter())
+                return GetIndexTerminal("ide".ToTerminal());
+            if (f.IsDigit())
+                return GetIndexTerminal("num".ToTerminal());
 
             return -1;
         }

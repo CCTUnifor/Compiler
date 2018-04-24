@@ -1,4 +1,6 @@
-﻿using MyCompiler.Grammar.Tokens;
+﻿using System;
+using System.Linq;
+using MyCompiler.Grammar.Tokens;
 
 namespace MyCompiler.Grammar
 {
@@ -29,11 +31,17 @@ namespace MyCompiler.Grammar
             return (Value != null ? Value.GetHashCode() : 0);
         }
 
+
         public static bool operator ==(Token token1, Token token2) => Equals(token1, token2);
         public static bool operator !=(Token token1, Token token2) => !Equals(token1, token2);
 
         public TerminalToken ToTerminalToken() => new TerminalToken(Value);
+        public NonTerminalToken ToNonTerminalToken() => new NonTerminalToken(Value);
 
         public bool IsTerminal() => this is TerminalToken;
+        public bool IsIde() => Value.ToLower() == "ide";
+        public bool IsDigit() => Value.All(char.IsDigit);
+        public bool IsLetter() => Value.All(char.IsLetter);
+
     }
 }

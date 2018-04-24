@@ -41,7 +41,7 @@ namespace MyCompiler.Tokenization
 
         private static void PrintHeaderStack()
             => Logger.PrintLn($"{" #".PadRight(stackCounterPad + 2)} {" Stack".PadRight(stackPad + 2)} {" Input".PadRight(stackInputPad + 2)} {" Term".PadRight(stackCalledPad + 2)}");
-        private static void PrintRowStack(IEnumerable<string> q, int count, IEnumerable<string> restOfTheInput, string termString)
+        private static void PrintRowStack(IEnumerable<Token> q, int count, IEnumerable<string> restOfTheInput, string termString)
             => Logger.PrintLn($"[{count.ToString().PadRight(stackCounterPad)}] [{string.Join(", ", q).PadRight(stackPad)}] [{string.Join(" ", restOfTheInput).PadRight(stackInputPad)}] [{termString.PadRight(stackCalledPad)}]");
 
 
@@ -82,42 +82,45 @@ namespace MyCompiler.Tokenization
             lines[lines.Length - 1] = lines[lines.Length - 1] + " $";
 
             var count = 0;
-            var q = new Stack<string>();
-            var X = NonTerminals.First().Value;
+            var q = new Stack<Token>();
+            var topoPilha = (Token) NonTerminals.First();
 
-            q.Push("$");
-            q.Push(X);
+            var finalToken = "$".ToTerminal();
+            q.Push(finalToken);
+            q.Push(topoPilha);
 
             for (var l = 0; l < lines.Length; l++)
             {
                 var line = lines[l];
+                var tokenize = new TopDownTokenization(NonTerminals, line);
 
                 var i = 0;
                 var strings = line.Split(" ");
+                var current = tokenize.GetTokenIgnoreSpace();
 
-                while (X != "$" && i < strings.Length)
+                while (topoPilha != finalToken && i < strings.Length)
                 {
-                    var f = strings[i];
-                    var M = TableGenerator.GetIndexNonTerminal(X);
-                    var a = TableGenerator.GetIndexTerminal(f);
+                    var M = TableGenerator.GetIndexNonTerminal(topoPilha);
+                    var a = TableGenerator.GetIndexTerminal(current); 
 
                     var restOfTheInput = strings.ToList();
                     restOfTheInput.RemoveRange(0, i);
                     var lineString = $"Line: {l + 1} | Collumn: {i + 1}\n\n";
 
-                    if (X == f || (X == "ide" && f.IsLetter()) || (X == "num" && f.IsDigit()))
+                    if (topoPilha == current || (topoPilha.IsIde() && current.IsLetter()) || (topoPilha.IsDigit() && current.IsDigit()))
                     {
-                        if (q.Peek() != X && (q.Peek() == "ide" && !X.IsLetter()) && q.Peek() == "num" && !X.IsDigit())
-                            throw new CompilationException($"{lineString}Expeted: '{X}'; got '{q.Peek()}'");
+                        if (q.Peek() != topoPilha && (q.Peek().IsIde() && !topoPilha.IsLetter()) && q.Peek().IsDigit() && !topoPilha.IsDigit())
+                            throw new CompilationException($"{lineString}Expeted: '{topoPilha}'; got '{q.Peek()}'");
                         PrintRowStack(q, count, restOfTheInput, "Next");
 
                         q.Pop();
+                        current = tokenize.GetTokenIgnoreSpace();
                         i++;
                     }
                     else if (a >= 0 && Table[M, a] != null)
                     {
-                        if (q.Peek() != X)
-                            throw new CompilationException($"{lineString}Expeted: '{X}'; got '{q.Peek()}'");
+                        if (q.Peek() != topoPilha)
+                            throw new CompilationException($"{lineString}Expeted: '{topoPilha}'; got '{q.Peek()}'");
                         var xc = Table[M, a];
 
                         PrintRowStack(q, count, restOfTheInput, xc.ToString());
@@ -129,19 +132,18 @@ namespace MyCompiler.Tokenization
 
                         foreach (var production in xc.Productions)
                         {
-
                             var productionSplited = production.Elements.RemoveSpacesTokens().ToArray();
                             for (var j = productionSplited.Length - 1; j >= 0; j--)
                             {
                                 if (!productionSplited[j].IsEmpty() && !string.IsNullOrEmpty(productionSplited[j].Value))
-                                    q.Push(productionSplited[j].Value);
+                                    q.Push(productionSplited[j]);
                             }
                         }
                     }
                     else
-                        throw new CompilationException($"{lineString}The {f} doesn't exists in this grammar!\nStack: [{string.Join(", ", q)}] \nX: '{X}' ; f: '{f}'; \nM: '{M}'; a: '{a}';");
+                        throw new CompilationException($"{lineString}The {current} doesn't exists in this grammar!\nStack: [{string.Join(", ", q)}] \nX: '{topoPilha}' ; f: '{current}'; \nM: '{M}'; a: '{a}';");
 
-                    X = q.Peek();
+                    topoPilha = q.Peek();
                     count++;
                 }
             }

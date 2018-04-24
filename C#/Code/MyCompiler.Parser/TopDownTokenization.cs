@@ -27,6 +27,14 @@ namespace MyCompiler.Tokenization
             _production = production;
         }
 
+        public Token GetTokenIgnoreSpace()
+        {
+            var token = GetToken();
+            while (token != null && token is SpaceToken)
+                token = GetToken();
+            return token;
+        }
+
         public Token GetToken()
         {
             State = LexicAnalyserState.Initial;
