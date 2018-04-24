@@ -128,3 +128,27 @@ def LexicPrint(tokens):
 def CompileHistoric(historic):
     print('\n-----------------------HISTORIC-----------------------')
     print(historic)
+
+def printMinimunMatrix(matrix):
+    print('')
+    header = "k\Σ"
+    body = ""
+    for i, state in enumerate(matrix):
+        body += str(state.id) + "  "
+
+        for letter in state.StatesByKey:
+            if(i is 0):
+                header += "  |  " + letter
+            if(state.StatesByKey[letter] is None):
+                body += "  |  -"
+            else:
+                body += "  |  " + str(state.StatesByKey[letter].id)
+
+        body += '\n'              
+
+    print(header)
+    print(body)
+
+def printSubsets(subsets):
+    for s in subsets:
+        print(s)

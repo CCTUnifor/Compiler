@@ -56,10 +56,10 @@ class ItemGraph(Graph):
             if(item.is_complete()):
                 continue
             
-            self.apply_second_rule(item_node)
-            self.apply_third_rule(item_node)
+            self.__apply_second_rule(item_node)
+            self.__apply_third_rule(item_node)
      
-    def apply_third_rule(self, item_node):
+    def __apply_third_rule(self, item_node):
         item = item_node.value
         
         term_unit = item.get_term_unit()
@@ -71,7 +71,7 @@ class ItemGraph(Graph):
 
         self.addPath(item_node, next_node, term_unit)
     
-    def apply_second_rule(self, item_node):
+    def __apply_second_rule(self, item_node):
         item = item_node.value
         term_unit = item.get_term_unit()
         if(term_unit.type is TermUnit.NONTERMINAL):
