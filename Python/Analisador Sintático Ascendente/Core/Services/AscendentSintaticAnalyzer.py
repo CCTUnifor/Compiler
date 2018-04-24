@@ -21,7 +21,7 @@ class TableService:
         self.first = First(grammar)
         self.follow = Follow(grammar, self.first)
 
-        self.item_graph = ItemGraph(grammar)
+        # self.item_graph = ItemGraph(grammar)
 
     def __build_table(self):
         pass
@@ -30,7 +30,7 @@ class TableService:
         if(self.table is None):
             self.first.build_first()
             self.follow.build_follow()
-            self.item_graph.build_graph()
+            # self.item_graph.build_graph()
             self.__build_table()
     
     def compile(self, text):
