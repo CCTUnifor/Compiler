@@ -1,101 +1,153 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using MyCompiler.Core.Enums;
+using CCTUnifor.Logger;
+using MyCompiler.Core.Exceptions;
 using MyCompiler.Grammar;
 using MyCompiler.Grammar.Extensions;
 using MyCompiler.Grammar.Tokens;
+using MyCompiler.Parser.Extensions;
+using MyCompiler.Parser.Generators;
+using MyCompiler.Parser.TopDown;
+using MyCompiler.Tokenization.Aspects;
+using MyCompiler.Tokenization.Generators;
 
-namespace MyCompiler.Parser
+namespace MyCompiler.Tokenization
 {
     public class TopDownParser
     {
-        private readonly IEnumerable<NonTerminalToken> _nonTerminals;
-        private readonly string _production;
+        private string Grammar { get; }
 
-        private int CurrentIndex { get; set; }
-        private LexicAnalyserState State { get; set; }
+        public TermGenerator TermGenerator { get; private set; }
+        public IEnumerable<NonTerminalToken> NonTerminals => TermGenerator.NonTerminalTokens;
+        public IEnumerable<TerminalToken> Terminals => TermGenerator.TerminalTokens;
+        public IEnumerable<Term> Terms => TermGenerator.Terms;
 
-        private char Character => _production[CurrentIndex];
-        private char NextCharacter => CurrentIndex + 1 < _production.Length ? _production[CurrentIndex + 1] : ' ';
-        private string Value;
-        private bool Continue => CurrentIndex < _production.Length;
+        public Term[,] Table { get; private set; }
 
-        public TopDownParser(IEnumerable<NonTerminalToken> nonTerminals, string production)
+        public FirstGenerator FirstGenerator { get; private set; }
+        public IEnumerable<First> Firsts => FirstGenerator.Firsts;
+        public FollowGenerator FollowGenerator { get; private set; }
+        public IEnumerable<Follow> Follows => FollowGenerator.Follows;
+
+        public TableGenerator TableGenerator { get; private set; }
+
+
+        public TopDownParser(string grammar) => Grammar = grammar;
+
+        private static int stackCounterPad = 3;
+        private static int stackPad = 110;
+        private static int stackInputPad = 20;
+        private static int stackCalledPad = 50;
+
+        private static void PrintHeaderStack()
+            => Logger.PrintLn($"{" #".PadRight(stackCounterPad + 2)} {" Stack".PadRight(stackPad + 2)} {" Input".PadRight(stackInputPad + 2)} {" Term".PadRight(stackCalledPad + 2)}");
+        private static void PrintRowStack(IEnumerable<string> q, int count, IEnumerable<string> restOfTheInput, string termString)
+            => Logger.PrintLn($"[{count.ToString().PadRight(stackCounterPad)}] [{string.Join(", ", q).PadRight(stackPad)}] [{string.Join(" ", restOfTheInput).PadRight(stackInputPad)}] [{termString.PadRight(stackCalledPad)}]");
+
+
+        public void Parser(string input)
         {
-            _nonTerminals = nonTerminals;
-            _production = production;
+            HandleLines();
+            Analyse(input);
         }
 
-        public Token GetToken()
+        private void HandleLines()
         {
-            State = LexicAnalyserState.Initial;
-            Value = Continue ? Character.ToString() : "";
-            Token token = null;
+            var lines = GetLines();
 
-            while (Continue && token == null)
+            TermGenerator = new TermGenerator();
+            TermGenerator.CalculateNonTerminals(lines);
+
+            TermGenerator.CalculateTerms(NonTerminals, lines);
+            TermGenerator.CalculateTerminals(Terms);
+
+            FirstGenerator = new FirstGenerator(Terms);
+            FirstGenerator.GenerateFirsts();
+
+            FollowGenerator = new FollowGenerator(Terms, Firsts);
+            FollowGenerator.GenerateFollows();
+
+            TableGenerator = new TableGenerator(Terms, NonTerminals, Terminals, Firsts, Follows);
+            Table = TableGenerator.GenerateTable();
+        }
+
+        private string[] GetLines() => Grammar.GetLines().IgnoreEmptyOrNull();
+
+        [LogAnalyserAspect]
+        private void Analyse(string input)
+        {
+            PrintHeaderStack();
+
+            var lines = input.Split("\n").Select(x => x.Replace("\t", "").Replace("\r", "").Trim()).ToArray();
+            lines[lines.Length - 1] = lines[lines.Length - 1] + " $";
+
+            var count = 0;
+            var q = new Stack<string>();
+            var X = NonTerminals.First().Value;
+
+            q.Push("$");
+            q.Push(X);
+
+            for (var l = 0; l < lines.Length; l++)
             {
-                switch (State)
+                var line = lines[l];
+
+                var i = 0;
+                var strings = line.Split(" ");
+
+                while (X != "$" && i < strings.Length)
                 {
-                    case LexicAnalyserState.Initial:
-                        HandleInitial();
-                        break;
-                    case LexicAnalyserState.Letter:
-                        if (IsNonTerminal() && NextCharacter == ' ')
-                            State = LexicAnalyserState.NonTerminal;
-                        else if (Value.IsEmpty())
-                            State = LexicAnalyserState.Empty;
-                        else if (!IsNonTerminal() && NextCharacter == ' ')
-                            State = LexicAnalyserState.Terminal;
-                        else if (IsSpace())
-                            State = LexicAnalyserState.Space;
-                        else
+                    var f = strings[i];
+                    var M = TableGenerator.GetIndexNonTerminal(X);
+                    var a = TableGenerator.GetIndexTerminal(f);
+
+                    var restOfTheInput = strings.ToList();
+                    restOfTheInput.RemoveRange(0, i);
+                    var lineString = $"Line: {l + 1} | Collumn: {i + 1}\n\n";
+
+                    if (X == f || (X == "ide" && f.IsLetter()) || (X == "num" && f.IsDigit()))
+                    {
+                        if (q.Peek() != X && (q.Peek() == "ide" && !X.IsLetter()) && q.Peek() == "num" && !X.IsDigit())
+                            throw new CompilationException($"{lineString}Expeted: '{X}'; got '{q.Peek()}'");
+                        PrintRowStack(q, count, restOfTheInput, "Next");
+
+                        q.Pop();
+                        i++;
+                    }
+                    else if (a >= 0 && Table[M, a] != null)
+                    {
+                        if (q.Peek() != X)
+                            throw new CompilationException($"{lineString}Expeted: '{X}'; got '{q.Peek()}'");
+                        var xc = Table[M, a];
+
+                        PrintRowStack(q, count, restOfTheInput, xc.ToString());
+
+                        q.Pop();
+
+                        if (xc.Productions.Count() > 1)
+                            throw new CompilationException($"{lineString}Ambiguous grammar in \n{xc}");
+
+                        foreach (var production in xc.Productions)
                         {
-                            CurrentIndex++;
-                            Value += Character;
+
+                            var productionSplited = production.Elements.RemoveSpacesTokens().ToArray();
+                            for (var j = productionSplited.Length - 1; j >= 0; j--)
+                            {
+                                if (!productionSplited[j].IsEmpty() && !string.IsNullOrEmpty(productionSplited[j].Value))
+                                    q.Push(productionSplited[j].Value);
+                            }
                         }
+                    }
+                    else
+                        throw new CompilationException($"{lineString}The {f} doesn't exists in this grammar!\nStack: [{string.Join(", ", q)}] \nX: '{X}' ; f: '{f}'; \nM: '{M}'; a: '{a}';");
 
-                        break;
-
-                    case LexicAnalyserState.NonTerminal:
-                        token = new NonTerminalToken(Value);
-                        CurrentIndex++;
-                        break;
-
-                    case LexicAnalyserState.Space:
-                        token = new SpaceToken();
-                        CurrentIndex++;
-                        break;
-
-                    case LexicAnalyserState.Terminal:
-                        token = new TerminalToken(Value);
-                        CurrentIndex++;
-                        break;
-                    case LexicAnalyserState.Empty:
-                        token = new EmptyToken();
-                        CurrentIndex++;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    X = q.Peek();
+                    count++;
                 }
             }
 
-            return token;
+            PrintRowStack(q, count, new List<string> { "$" }, "Accepted");
+            Logger.PrintLnSuccess("COMPILE SUCCESS CARAIO!!!!");
         }
-
-        private bool IsSpace() => Character == ' ';
-
-        private void HandleInitial()
-        {
-            if (IsNonTerminal())
-                State = LexicAnalyserState.NonTerminal;
-            else if (IsSpace())
-                State = LexicAnalyserState.Space;
-            else
-                State = LexicAnalyserState.Letter;
-        }
-
-        private bool IsNonTerminal() =>
-            _nonTerminals.OrderByDescending(x => x.Value.Length).Any(x => x.Value == Value);
     }
 }

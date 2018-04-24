@@ -7,6 +7,11 @@
     <StartupObject />
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Remove="Common\**" />
     <EmbeddedResource Remove="Common\**" />
@@ -14,9 +19,21 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="RegularExpressionSyntacticAnalyzer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="PostSharp" Version="5.0.50" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\MyCompiler.Core\MyCompiler.Core.csproj" />
     <ProjectReference Include="..\MyCompiler.Grammar\MyCompiler.Grammar.csproj" />
     <ProjectReference Include="..\MyCompiler.Parser\MyCompiler.Parser.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Extensions\" />
   </ItemGroup>
 
 </Project>

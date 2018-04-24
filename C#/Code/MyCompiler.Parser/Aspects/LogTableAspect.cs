@@ -2,7 +2,7 @@
 using System.Linq;
 using CCTUnifor.ConsoleTable;
 using CCTUnifor.Logger;
-using MyCompiler.Core.Models.Generators;
+using MyCompiler.Grammar;
 using PostSharp.Aspects;
 using PostSharp.Serialization;
 using TableGenerator = MyCompiler.Tokenization.Generators.TableGenerator;

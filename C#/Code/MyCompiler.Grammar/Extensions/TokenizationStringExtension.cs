@@ -3,7 +3,7 @@ using System.Linq;
 using MyCompiler.Grammar;
 using MyCompiler.Grammar.Tokens;
 
-namespace MyCompiler.Tokenization.Extensions
+namespace MyCompiler.Grammar.Extensions
 {
     public static class TokenizationStringExtension
     {

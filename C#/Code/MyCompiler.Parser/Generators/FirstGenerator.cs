@@ -4,7 +4,6 @@ using MyCompiler.Grammar;
 using MyCompiler.Grammar.Tokens;
 using MyCompiler.Parser.TopDown;
 using MyCompiler.Tokenization.Aspects;
-using MyCompiler.Tokenization.TopDown;
 
 namespace MyCompiler.Tokenization.Generators
 {

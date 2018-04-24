@@ -1,4 +1,4 @@
-read x ;
+read x;
 if ( 0 < x ) then
     fact := 1 ;
     repeat

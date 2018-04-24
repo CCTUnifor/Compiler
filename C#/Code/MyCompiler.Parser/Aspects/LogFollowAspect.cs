@@ -1,8 +1,7 @@
 ﻿using CCTUnifor.Logger;
-using MyCompiler.Core.Models.Generators;
+using MyCompiler.Parser.Generators;
 using PostSharp.Aspects;
 using PostSharp.Serialization;
-using FollowGenerator = MyCompiler.Tokenization.Generators.FollowGenerator;
 
 namespace MyCompiler.Tokenization.Aspects
 {

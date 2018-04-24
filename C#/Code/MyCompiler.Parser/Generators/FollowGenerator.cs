@@ -6,7 +6,7 @@ using MyCompiler.Grammar.Tokens;
 using MyCompiler.Parser.TopDown;
 using MyCompiler.Tokenization.Aspects;
 
-namespace MyCompiler.Tokenization.Generators
+namespace MyCompiler.Parser.Generators
 {
     public class FollowGenerator
     {

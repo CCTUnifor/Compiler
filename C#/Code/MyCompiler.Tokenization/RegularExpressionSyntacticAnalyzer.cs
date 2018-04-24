@@ -3,7 +3,6 @@ using MyCompiler.Core.Enums.RegularExpression;
 using MyCompiler.Core.Exceptions;
 using MyCompiler.Core.Interfaces;
 using MyCompiler.Core.Interfaces.Graph;
-using MyCompiler.Parser.GraphModels;
 
 namespace MyCompiler.Tokenization
 {

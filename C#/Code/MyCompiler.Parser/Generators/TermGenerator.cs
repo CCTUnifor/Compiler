@@ -3,6 +3,7 @@ using System.Linq;
 using MyCompiler.Grammar;
 using MyCompiler.Grammar.Extensions;
 using MyCompiler.Grammar.Tokens;
+using MyCompiler.Parser;
 
 namespace MyCompiler.Tokenization.Generators
 {

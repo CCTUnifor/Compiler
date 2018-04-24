@@ -1,5 +1,7 @@
 ﻿using MyCompiler.Core.Enums;
 using MyCompiler.Core.Exceptions;
+using MyCompiler.Grammar.Tokens;
+using MyCompiler.Parser;
 
 namespace MyCompiler.Tokenization
 {

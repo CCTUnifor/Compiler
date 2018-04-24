@@ -1,5 +1,4 @@
 ﻿using CCTUnifor.Logger;
-using MyCompiler.Core.Models.Generators;
 using PostSharp.Aspects;
 using PostSharp.Serialization;
 using FirstGenerator = MyCompiler.Tokenization.Generators.FirstGenerator;

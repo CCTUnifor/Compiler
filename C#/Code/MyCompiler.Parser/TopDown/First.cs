@@ -2,7 +2,7 @@
 using System.Linq;
 using MyCompiler.Grammar.Tokens;
 
-namespace MyCompiler.Tokenization.TopDown
+namespace MyCompiler.Parser.TopDown
 {
     public class First : Base
     {

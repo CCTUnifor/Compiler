@@ -19,7 +19,7 @@ namespace MyCompiler.TopDownApp
                 var grammar = Read("Grammar", $"grammars/{grammarFile}");
                 var input = Read("Input", $"inputs/{inputFile}");
 
-                var syntacticAnalysis = new TopDownTokenization(grammar);
+                var syntacticAnalysis = new TopDownParser(grammar);
                 syntacticAnalysis.Parser(input);
             }
             catch (Exception e)

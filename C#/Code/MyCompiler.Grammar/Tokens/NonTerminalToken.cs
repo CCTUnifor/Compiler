@@ -1,4 +1,6 @@
-﻿namespace MyCompiler.Grammar.Tokens
+﻿using System;
+
+namespace MyCompiler.Grammar.Tokens
 {
     public class NonTerminalToken : Token
     {
