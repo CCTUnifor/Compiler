@@ -25,7 +25,7 @@ class Follow:
 
                 for index, unit in enumerate(stream):
                     if(unit.type is TermUnit.NONTERMINAL):
-                        B = self.grammar.get_term(unit.text)
+                        B = self.grammar.get_premise(unit.text)
 
                         if(A is B):
                             continue
@@ -68,7 +68,7 @@ class Follow:
 
                 for index, unit in enumerate(stream):
                     if(unit.type is TermUnit.NONTERMINAL):
-                        termB = self.grammar.get_term(unit.text)
+                        termB = self.grammar.get_premise(unit.text)
 
                         if(streamLen > index + 1):
                             beta = stream[index + 1::]

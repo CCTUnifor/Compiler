@@ -20,7 +20,7 @@ class Grammar:
         self.Alphabet = [unit for unit in self.textGrammar.get_term_units() if unit.type is TermUnit.TERMINAL]
         self.NonTerminals = [unit for unit in self.textGrammar.get_term_units() if unit.type is TermUnit.NONTERMINAL]       
 
-    def get_term(self, termString):
+    def get_premise(self, termString):
             for i in self.Premises:
                 if(i.left == termString):
                     return i

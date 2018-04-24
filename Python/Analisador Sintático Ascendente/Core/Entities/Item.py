@@ -18,7 +18,7 @@ class Item:
         return len(self.premise.right[self.cursor[0]]) <= self.cursor[1]
 
     def get_next(self):
-        return Item(self.premise, self.cursor + 1)
+        return Item(self.premise, (self.cursor[0], self.cursor[1]+ 1))
     
     def __str__(self):
         retorno = self.premise.left + " -> "

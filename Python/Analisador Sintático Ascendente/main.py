@@ -16,8 +16,9 @@ grammar_name = "SXYZ"
 grammar_name = "SAB"
 grammar_name = "ETF"
 grammar_name = "Tiny"
-grammar_name = "A"
 grammar_name = "EB"
+grammar_name = "A"
+grammar_name = "SLR"
 
 grammar_file_name = grammar_file_directory + grammar_name
 input_file_name = input_file_directory + grammar_name
@@ -31,6 +32,7 @@ with io.open(grammar_file_name, "r", encoding='utf8') as file_obj:
     g = Grammar(fileTxt)
     tservice = TableService(g)
     printer.Grammar_Printer(tservice.item_graph.augmented_grammar)
+    tservice.item_graph.build_graph()
     printer.printGraphLists(tservice.item_graph)
     printer.printMatplotlib(tservice.item_graph)
 

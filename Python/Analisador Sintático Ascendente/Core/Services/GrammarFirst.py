@@ -36,7 +36,7 @@ class First:
         
         for index, item in enumerate(stream):
             if(item.type is TermUnit.NONTERMINAL):
-                term = self.grammar.get_term(item.text)
+                term = self.grammar.get_premise(item.text)
 
                 retorno |= self.first(term)
                 
@@ -59,7 +59,7 @@ class First:
             retorno = self.first_of_stream(p)
 
         elif(p_type is TermUnit):
-            term = self.grammar.get_term(p)
+            term = self.grammar.get_premise(p)
             retorno = self.first_of_non_terminal(term)
         
         elif(p_type is Premise):

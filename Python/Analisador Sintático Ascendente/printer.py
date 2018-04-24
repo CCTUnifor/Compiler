@@ -1,4 +1,5 @@
 import networkx as nx
+from networkx.drawing.nx_agraph import write_dot, graphviz_layout
 import matplotlib.pyplot as plt
 
 # def recursiveMatPlotLib(graph, ploted, G, node, x, y):
@@ -34,14 +35,15 @@ import matplotlib.pyplot as plt
 #     nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
 #     plt.show()
 def printMatplotlib(graph):
-    G = nx.Graph()
-    pos = nx.random_layout(G)
+    G = nx.DiGraph()
+    
+    first = graph.node_list[0]
 
     for x in graph.node_list:
         value = str(x.value) if x.value else x.id
         G.add_node(x.id, node_label=value)
 
-    pos = nx.random_layout(G)
+    pos = nx.spring_layout(G)
     # nx.draw_networkx_nodes(G,pos,node_color='r',node_size=500,alpha=0.8)
 
     for x in graph.edge_list:
@@ -50,6 +52,8 @@ def printMatplotlib(graph):
 
     labels = nx.get_node_attributes(G,'node_label')
     nx.draw(G,pos, labels=labels, with_labels=True, font_size=10)#, node_size=1000)
+
+    nx.draw_networkx_nodes(G,pos, nodelist=[first.id], node_color='b')
 
     labels = nx.get_edge_attributes(G,'edge_label')
     nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
