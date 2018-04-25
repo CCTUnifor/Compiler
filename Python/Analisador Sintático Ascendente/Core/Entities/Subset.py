@@ -23,14 +23,19 @@ class Subset:
         semiFunctions = "\n    "
         for sf in self.semiFunction:
             sm = self.semiFunction[sf]
+            
+            if(len(sm) is 0):
+                continue
+
             # if(len(sm)):
             semiFunctions += "δ(" + str(self.id) + ", " + sf + "): {"
-            for s in sm:
-                value = s.value if s.value else s.id
+            for node in sm:
+                value = node.value if node.value else node.id
                 semiFunctions +=  str(value) + ", "
+
             semiFunctions = (semiFunctions[:len(semiFunctions)-2:] if semiFunctions[len(semiFunctions)-1] is not "{" else semiFunctions)  + "}    "
 
-        return ("Fecho-" + str(fecho )
+        return ("Fecho-" + str(fecho)
                 + " = " + str(states)
                 + " = "+str(self.id)
                 + str(semiFunctions))

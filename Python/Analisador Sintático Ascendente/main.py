@@ -19,8 +19,8 @@ grammar_name = "ETF_G"
 grammar_name = "Tiny"
 grammar_name = "SLR"
 grammar_name = "EB"
-grammar_name = "A"
 grammar_name = "ETF"
+grammar_name = "A"
 
 grammar_file_name = grammar_file_directory + grammar_name
 input_file_name = input_file_directory + grammar_name
@@ -36,13 +36,15 @@ with io.open(grammar_file_name, "r", encoding='utf8') as file_obj:
 
     tservice.compile('')
 
-    PRINTER.Grammar_Printer(tservice.grammar)
 
     tservice.item_graph.build_graph()
 
-    PRINTER.printGraphLists(tservice.item_graph)
+    # PRINTER.Grammar_Printer(tservice.grammar)
 
-    PRINTER.printSubsets(tservice.subset_builder.subsets)
-    PRINTER.printMinimunMatrix(tservice.subset_builder.matrix)
+    # PRINTER.printGraphLists(tservice.item_graph)
+
+    # PRINTER.printSubsets(tservice.subset_builder.subsets)
+    PRINTER.printSubsetMatrix(tservice.subset_builder.matrix)
+    PRINTER.printSintaticTable(tservice.table)
 
     # PRINTER.printMatplotlib(tservice.item_graph)

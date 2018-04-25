@@ -129,7 +129,8 @@ def CompileHistoric(historic):
     print('\n-----------------------HISTORIC-----------------------')
     print(historic)
 
-def printMinimunMatrix(matrix):
+def printSubsetMatrix(matrix):
+    print('\n-----------------------Matrix-----------------------')
     print('')
     header = "k\Σ"
     body = ""
@@ -150,5 +151,21 @@ def printMinimunMatrix(matrix):
     print(body)
 
 def printSubsets(subsets):
+    print('\n-----------------------Subsets-----------------------')
+
     for s in subsets:
         print(s)
+
+def printSintaticTable(table):
+    print('\n-----------------------Matrix-----------------------')
+    print('')
+    header = "k\Σ  | "
+    first_line = table[0]
+    
+    for c in first_line.columns:
+        header += c.center(first_line.StringCenterCount) + " | "
+
+    print(header)
+
+    for line in table:
+        print(line)

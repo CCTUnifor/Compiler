@@ -1,3 +1,5 @@
+from collections import deque
+
 from Core.Entities.Graph import Graph
 from Core.Entities.Subset import Subset
 
@@ -46,23 +48,25 @@ class Builder:
 
         return Subset(fecho, charId, self.alphabet)
     
-    def build(self):
+    def build(self, reduce=True):
         self.subsets = self.__buildFechos()
 
         self.matrix = self.__buildMatriz(self.subsets)
 
-        self.__reduceMatrix(self.matrix)
+        if(reduce):
+            self.__reduceMatrix(self.matrix)
 
         return self.matrix, self.subsets
 
 
     def __buildFechos(self):
-        fechos = [[self.graph.root]]
+        fechos = deque()
+        fechos.append([self.graph.root])
         doneFechos = []
         subsets = []
         
         while(len(fechos)):
-            fecho = fechos.pop()
+            fecho = fechos.popleft()
             doneFechos.append(fecho)
 
             subset = self.__getNewSubset(fecho)
@@ -163,7 +167,7 @@ class Builder:
                 if(len(nextFecho)):
                     inFecho = True
 
-                    for doneFecho in doneFechos + fechos:
+                    for doneFecho in doneFechos + list(fechos) :
                         inFecho = True
 
                         for node in nextFecho:
