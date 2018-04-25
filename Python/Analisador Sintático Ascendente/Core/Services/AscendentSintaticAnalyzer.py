@@ -12,6 +12,7 @@ from Core.Services.SubsetsBuilder import State as State
 
 class TableLine:
     Shift = "S"
+    Go_to = "g"
     Reduce = "R"
     Accept = "ACC"
     StringCenterCount = 3
@@ -57,7 +58,7 @@ class TableService:
             if(edge.value is not None and edge.value not in self.header_term_units):
                 self.header_term_units.append(edge.value)
         
-    def __apply_shift(self, line: TableLine):
+    def __apply_shift_and_goto(self, line: TableLine):
         for c in line.columns:
             column = line.columns[c]
 
@@ -66,8 +67,12 @@ class TableService:
 
             term_unit = next((x for x in self.header_term_units if x.text == c), None)
 
-            if(term_unit and term_unit.type is TermUnit.TERMINAL):
-                column[0] = TableLine.Shift            
+            if term_unit:
+                if term_unit.type is TermUnit.TERMINAL:
+                    column[0] = TableLine.Shift
+
+                elif(term_unit.type is TermUnit.NONTERMINAL):
+                    column[0] = TableLine.Go_to
 
     def __build_table(self, matrix, subsets):
         self.table = []
@@ -77,10 +82,12 @@ class TableService:
         for state in matrix:
             line = TableLine(state)
             
-            self.__apply_shift(line)
+            self.__apply_shift_and_goto(line)
 
             # line.columns[TermUnit.STREAM_END]
             self.table.append(line)
+        
+        self.grammar.Premises
     
     def __compileGrammar(self):
         if(self.table is None):
