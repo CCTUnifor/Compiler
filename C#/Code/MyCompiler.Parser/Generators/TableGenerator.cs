@@ -52,9 +52,7 @@ namespace MyCompiler.Tokenization.Generators
                         var a = GetIndexTerminal(terminal);
                         var t = new Term(term.Caller, production);
 
-                        if (A >= 0 && a >= 0)
-                            PopulateTable(A, a, t);
-                        else if (terminal.Value == "ε")
+                        if (terminal.Value == "ε")
                         {
                             var follow = _follows.Single(x => x.NonTerminal == term.Caller);
 
@@ -64,6 +62,9 @@ namespace MyCompiler.Tokenization.Generators
                                 PopulateTable(A, b, t);
                             }
                         }
+                        else if (A >= 0 && a >= 0)
+                            PopulateTable(A, a, t);
+
                     }
                 }
             }
