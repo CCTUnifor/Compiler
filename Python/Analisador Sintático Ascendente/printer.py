@@ -157,9 +157,9 @@ def printSubsets(subsets):
         print(s)
 
 def printSintaticTable(table):
-    print('\n-----------------------Matrix-----------------------')
+    print('\n------------------Sintatic-Matrix-------------------')
     print('')
-    header = "k\Σ  | "
+    header = r"k\Σ  | "
     first_line = table[0]
     
     for c in first_line.columns:

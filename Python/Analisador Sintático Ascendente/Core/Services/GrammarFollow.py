@@ -11,7 +11,7 @@ class Follow:
         self.grammar = grammar
         self.first = first
                             
-    def apply_follow_third_rule(self):
+    def __apply_follow_third_rule(self):
         """
         A -> Alfa B Beta, B.follow += A.follow
         Alfa is any stream
@@ -58,7 +58,7 @@ class Follow:
             B.follow |= A.follow
 
 
-    def apply_follow_second_rule(self):
+    def __apply_follow_second_rule(self):
         """
         A -> Alfa B Beta, B.follow += first(Beta) - {ɛ}
         Alfa is any stream
@@ -79,7 +79,7 @@ class Follow:
                             termB.follow |= set(firstBeta) - {self.grammar.textGrammar.EMPTY_UNIT}
     
 
-    def apply_follow_first_rule(self):
+    def __apply_follow_first_rule(self):
         """
         S.follow = $
         """
@@ -90,6 +90,5 @@ class Follow:
         """
         Routine that creates follow sets of the given grammar
         """
-        self.apply_follow_first_rule()
-        self.apply_follow_second_rule()
-        self.apply_follow_third_rule()
+        self.__apply_follow_first_rule()
+        self.__apply_follow_second_rule()

@@ -87,8 +87,29 @@ class TableService:
             # line.columns[TermUnit.STREAM_END]
             self.table.append(line)
         
-        self.grammar.Premises
-    
+        complete_fechos = self.__load_complete_fechos(subsets)
+        
+        for i, premise in enumerate(self.grammar.Premises):
+            follows = list(premise.follow)
+
+            for units in premise.right:
+                pass
+            
+    def __load_complete_fechos(self, subsets):
+        group_dict = {}
+        for subset in subsets:
+            for node in subset.fecho:
+                if(node.value):
+                    item = node.value
+                    if(item.is_complete()):
+                        if(subset.id not in group_dict):
+                            group_dict[subset.id] = []
+
+                        group_dict[subset.id].append(item.premise)
+        
+        return group_dict
+
+
     def __compileGrammar(self):
         if(self.table is None):
             self.first.build_first()

@@ -43,7 +43,7 @@ with io.open(grammar_file_name, "r", encoding='utf8') as file_obj:
 
     # PRINTER.printGraphLists(tservice.item_graph)
 
-    # PRINTER.printSubsets(tservice.subset_builder.subsets)
+    PRINTER.printSubsets(tservice.subset_builder.subsets)
     PRINTER.printSubsetMatrix(tservice.subset_builder.matrix)
     PRINTER.printSintaticTable(tservice.table)
 
