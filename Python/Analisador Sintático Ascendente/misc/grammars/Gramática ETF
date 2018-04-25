@@ -1,10 +1,10 @@
 N = {E,E',T,T',F}
-Sigma = {+,-,*,/,(,),ide,num}
+Sigma = {+,*,(,),ide}
 S = {E}
 P = {
     E -> T E'
-    E'-> + T E' | - T E' | ɛ
+    E'-> + T E' | ɛ
     T -> F T'
-    T'-> * F T' | / F T' | ɛ
-    F -> ( E )|ide|num
+    T'-> * F T' | ɛ
+    F -> ( E ) | ide
 }

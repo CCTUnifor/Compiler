@@ -3,7 +3,7 @@ import io
 
 from Core.Entities.Grammar import Grammar
 from Core.Services.AscendentSintaticAnalyzer import TableService
-from Core.Services.SubsetsBuilder import Builder as SBuilder
+from Core.Services.SubsetsBuilder import Builder as SubsetBuilder
 
 import printer as PRINTER
 
@@ -15,11 +15,12 @@ grammar_name = "Tiny2"
 grammar_name = "EABCD"
 grammar_name = "SXYZ"
 grammar_name = "SAB"
-grammar_name = "ETF"
+grammar_name = "ETF_G"
 grammar_name = "Tiny"
+grammar_name = "SLR"
 grammar_name = "EB"
 grammar_name = "A"
-grammar_name = "SLR"
+grammar_name = "ETF"
 
 grammar_file_name = grammar_file_directory + grammar_name
 input_file_name = input_file_directory + grammar_name
@@ -33,18 +34,15 @@ with io.open(grammar_file_name, "r", encoding='utf8') as file_obj:
     g = Grammar(fileTxt)
     tservice = TableService(g)
 
-    tservice.compile('')    
+    tservice.compile('')
 
     PRINTER.Grammar_Printer(tservice.grammar)
 
-    # tservice.item_graph.build_graph()
+    tservice.item_graph.build_graph()
 
-    # PRINTER.printGraphLists(tservice.item_graph)
+    PRINTER.printGraphLists(tservice.item_graph)
 
-    # sb = SBuilder(tservice.item_graph)
-    # matrix = sb.build()
-
-    # PRINTER.printMinimunMatrix(matrix)
-    # PRINTER.printSubsets(sb.subsets)
+    PRINTER.printSubsets(tservice.subset_builder.subsets)
+    PRINTER.printMinimunMatrix(tservice.subset_builder.matrix)
 
     # PRINTER.printMatplotlib(tservice.item_graph)

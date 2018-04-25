@@ -2,7 +2,6 @@ N = {S,L,R}
 Sigma = {*,id,=}
 S = {S}
 P = {
-    S -> L = R | R
-    L -> * R | id
-    R -> L
+    S -> L = L | L
+    L -> * L | id
 }

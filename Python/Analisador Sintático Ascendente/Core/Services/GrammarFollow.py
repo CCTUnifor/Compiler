@@ -45,9 +45,11 @@ class Follow:
             tupleBA = calls.popleft()
             B, A = tupleBA
         
-            AinStack = next((x for x in calls if x[0] is A), None)
+            AinQueue = next((x for x in calls if x[0] is A), None)
 
-            if(AinStack):
+            if(AinQueue):
+                print(calls)
+                print(B, A)
                 calls.append(tupleBA)
                 continue
 
