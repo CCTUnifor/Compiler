@@ -40,6 +40,7 @@ namespace MyCompiler.Grammar
 
         public bool IsTerminal() => this is TerminalToken;
         public bool IsIde() => Value.ToLower() == "ide";
+        public bool IsNum() => Value.ToLower() == "num";
         public bool IsDigit() => Value.All(char.IsDigit);
         public bool IsLetter() => Value.All(char.IsLetter);
 

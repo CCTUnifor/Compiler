@@ -19,7 +19,7 @@ namespace MyCompiler.Tokenization
         private char Character => _production[CurrentIndex];
         private char NextCharacter => CurrentIndex + 1 < _production.Length ? _production[CurrentIndex + 1] : ' ';
         private string Value;
-        private bool Continue => CurrentIndex < _production.Length;
+        public bool HasNext => CurrentIndex < _production.Length;
 
         public TopDownTokenization(IEnumerable<NonTerminalToken> nonTerminals, string production)
         {
@@ -35,13 +35,23 @@ namespace MyCompiler.Tokenization
             return token;
         }
 
+        public IEnumerable<Token> GetAllTokens()
+        {
+            var tokens = new List<Token>();
+
+            while (HasNext)
+                tokens.Add(GetToken());
+            CurrentIndex = 0;
+            return tokens;
+        }
+
         public Token GetToken()
         {
             State = LexicAnalyserState.Initial;
-            Value = Continue ? Character.ToString() : "";
+            Value = HasNext ? Character.ToString() : "";
             Token token = null;
 
-            while (Continue && token == null)
+            while (HasNext && token == null)
             {
                 switch (State)
                 {
@@ -105,5 +115,7 @@ namespace MyCompiler.Tokenization
 
         private bool IsNonTerminal() =>
             _nonTerminals.OrderByDescending(x => x.Value.Length).Any(x => x.Value == Value);
+
+        
     }
 }

@@ -41,7 +41,7 @@ namespace MyCompiler.Tokenization
 
         private static void PrintHeaderStack()
             => Logger.PrintLn($"{" #".PadRight(stackCounterPad + 2)} {" Stack".PadRight(stackPad + 2)} {" Input".PadRight(stackInputPad + 2)} {" Term".PadRight(stackCalledPad + 2)}");
-        private static void PrintRowStack(IEnumerable<Token> q, int count, IEnumerable<string> restOfTheInput, string termString)
+        private static void PrintRowStack(IEnumerable<Token> q, int count, string restOfTheInput, string termString)
             => Logger.PrintLn($"[{count.ToString().PadRight(stackCounterPad)}] [{string.Join(", ", q).PadRight(stackPad)}] [{string.Join(" ", restOfTheInput).PadRight(stackInputPad)}] [{termString.PadRight(stackCalledPad)}]");
 
 
@@ -82,50 +82,47 @@ namespace MyCompiler.Tokenization
             lines[lines.Length - 1] = lines[lines.Length - 1] + " $";
 
             var count = 0;
-            var q = new Stack<Token>();
-            var topoPilha = (Token) NonTerminals.First();
+            var stackInput = new Stack<Token>();
+            var topoPilha = (Token)NonTerminals.First();
 
             var finalToken = "$".ToTerminal();
-            q.Push(finalToken);
-            q.Push(topoPilha);
+            stackInput.Push(finalToken);
+            stackInput.Push(topoPilha);
 
-            for (var l = 0; l < lines.Length; l++)
+            for (var lineCount = 0; lineCount < lines.Length; lineCount++)
             {
-                var line = lines[l];
+                var line = lines[lineCount];
                 var tokenize = new TopDownTokenization(NonTerminals, line);
+                var allTokens = tokenize.GetAllTokens().ToList();
 
-                var i = 0;
-                var strings = line.Split(" ");
+                var collumnCount = 0;
                 var current = tokenize.GetTokenIgnoreSpace();
 
-                while (topoPilha != finalToken && i < strings.Length)
+                while (topoPilha != finalToken && current != null)
                 {
                     var M = TableGenerator.GetIndexNonTerminal(topoPilha);
-                    var a = TableGenerator.GetIndexTerminal(current); 
+                    var a = TableGenerator.GetIndexTerminal(current);
 
-                    var restOfTheInput = strings.ToList();
-                    restOfTheInput.RemoveRange(0, i);
-                    var lineString = $"Line: {l + 1} | Collumn: {i + 1}\n\n";
+                    var lineString = $"Line: {lineCount + 1} | Collumn: {collumnCount + 1}\n\n";
 
-                    if (topoPilha == current || (topoPilha.IsIde() && current.IsLetter()) || (topoPilha.IsDigit() && current.IsDigit()))
+                    if (topoPilha == current || (topoPilha.IsIde() && current.IsLetter()) || (topoPilha.IsNum() && current.IsDigit()))
                     {
-                        if (q.Peek() != topoPilha && (q.Peek().IsIde() && !topoPilha.IsLetter()) && q.Peek().IsDigit() && !topoPilha.IsDigit())
-                            throw new CompilationException($"{lineString}Expeted: '{topoPilha}'; got '{q.Peek()}'");
-                        PrintRowStack(q, count, restOfTheInput, "Next");
+                        if (stackInput.Peek() != topoPilha && (stackInput.Peek().IsIde() && !topoPilha.IsLetter()) && stackInput.Peek().IsDigit() && !topoPilha.IsDigit())
+                            throw new CompilationException($"{lineString}Expeted: '{topoPilha}'; got '{stackInput.Peek()}'");
+                        PrintRowStack(stackInput, count, string.Join("", allTokens), "Next");
 
-                        q.Pop();
-                        current = tokenize.GetTokenIgnoreSpace();
-                        i++;
+                        collumnCount += RemoveFirstToken(allTokens);
+                        stackInput.Pop();
+                        current = WalkInInput(tokenize);
                     }
                     else if (a >= 0 && Table[M, a] != null)
                     {
-                        if (q.Peek() != topoPilha)
-                            throw new CompilationException($"{lineString}Expeted: '{topoPilha}'; got '{q.Peek()}'");
+                        if (stackInput.Peek() != topoPilha)
+                            throw new CompilationException($"{lineString}Expeted: '{topoPilha}'; got '{stackInput.Peek()}'");
                         var xc = Table[M, a];
 
-                        PrintRowStack(q, count, restOfTheInput, xc.ToString());
-
-                        q.Pop();
+                        PrintRowStack(stackInput, count, string.Join("", allTokens), xc.ToString());
+                        stackInput.Pop();
 
                         if (xc.Productions.Count() > 1)
                             throw new CompilationException($"{lineString}Ambiguous grammar in \n{xc}");
@@ -136,20 +133,36 @@ namespace MyCompiler.Tokenization
                             for (var j = productionSplited.Length - 1; j >= 0; j--)
                             {
                                 if (!productionSplited[j].IsEmpty() && !string.IsNullOrEmpty(productionSplited[j].Value))
-                                    q.Push(productionSplited[j]);
+                                    stackInput.Push(productionSplited[j]);
                             }
                         }
                     }
                     else
-                        throw new CompilationException($"{lineString}The {current} doesn't exists in this grammar!\nStack: [{string.Join(", ", q)}] \nX: '{topoPilha}' ; f: '{current}'; \nM: '{M}'; a: '{a}';");
+                        throw new CompilationException($"{lineString}The {current} doesn't exists in this grammar!\nStack: [{string.Join(", ", stackInput)}] \nX: '{topoPilha}' ; f: '{current}'; \nM: '{M}'; a: '{a}';");
 
-                    topoPilha = q.Peek();
+                    topoPilha = stackInput.Peek();
                     count++;
                 }
             }
 
-            PrintRowStack(q, count, new List<string> { "$" }, "Accepted");
+            PrintRowStack(stackInput, count, "$", "Accepted");
             Logger.PrintLnSuccess("COMPILE SUCCESS CARAIO!!!!");
+        }
+
+        private static Token WalkInInput(TopDownTokenization tokenize) => tokenize.GetTokenIgnoreSpace();
+
+        private static int RemoveFirstToken(List<Token> allTokens)
+        {
+            var collumns = allTokens[0].Value.Length;
+            allTokens.RemoveAt(0);
+
+            while (allTokens.Any() && allTokens[0] is SpaceToken)
+            {
+                collumns += allTokens[0].Value.Length;
+                allTokens.RemoveAt(0);
+            }
+
+            return collumns;
         }
     }
 }
