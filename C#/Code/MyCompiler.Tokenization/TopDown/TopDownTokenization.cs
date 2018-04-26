@@ -6,7 +6,7 @@ using MyCompiler.Grammar;
 using MyCompiler.Grammar.Extensions;
 using MyCompiler.Grammar.Tokens;
 
-namespace MyCompiler.Tokenization.TopDown
+namespace MyCompiler.Tokenization
 {
     public class TopDownTokenization
     {
@@ -19,7 +19,7 @@ namespace MyCompiler.Tokenization.TopDown
         private char Character => _production[CurrentIndex];
         private char NextCharacter => CurrentIndex + 1 < _production.Length ? _production[CurrentIndex + 1] : ' ';
         private string Value;
-        private bool Continue => CurrentIndex < _production.Length;
+        public bool HasNext => CurrentIndex < _production.Length;
 
         public TopDownTokenization(IEnumerable<NonTerminalToken> nonTerminals, string production)
         {
@@ -27,13 +27,34 @@ namespace MyCompiler.Tokenization.TopDown
             _production = production;
         }
 
+        public Token GetTokenIgnoreSpace()
+        {
+            var token = GetToken();
+            while (token != null && token is SpaceToken)
+                token = GetToken();
+            return token;
+        }
+
+        public IEnumerable<Token> GetAllTokens()
+        {
+            var tokens = new List<Token>();
+            var currentAux = CurrentIndex;
+            CurrentIndex = 0;
+
+            while (HasNext)
+                tokens.Add(GetToken());
+
+            CurrentIndex = currentAux;
+            return tokens;
+        }
+
         public Token GetToken()
         {
             State = LexicAnalyserState.Initial;
-            Value = Continue ? Character.ToString() : "";
+            Value = HasNext ? Character.ToString() : "";
             Token token = null;
 
-            while (Continue && token == null)
+            while (HasNext && token == null)
             {
                 switch (State)
                 {
@@ -45,6 +66,10 @@ namespace MyCompiler.Tokenization.TopDown
                             State = LexicAnalyserState.NonTerminal;
                         else if (Value.IsEmpty())
                             State = LexicAnalyserState.Empty;
+                        else if (Value.ToLower() == "ide")
+                            State = LexicAnalyserState.Identifier;
+                        else if (Value.ToLower() == "num" || Value.IsNumber())
+                            State = LexicAnalyserState.Number;
                         else if (!IsNonTerminal() && NextCharacter == ' ')
                             State = LexicAnalyserState.Terminal;
                         else if (IsSpace())
@@ -54,7 +79,6 @@ namespace MyCompiler.Tokenization.TopDown
                             CurrentIndex++;
                             Value += Character;
                         }
-
                         break;
 
                     case LexicAnalyserState.NonTerminal:
@@ -73,6 +97,14 @@ namespace MyCompiler.Tokenization.TopDown
                         break;
                     case LexicAnalyserState.Empty:
                         token = new EmptyToken();
+                        CurrentIndex++;
+                        break;
+                    case LexicAnalyserState.Identifier:
+                        token = new IdentifierToken(Value);
+                        CurrentIndex++;
+                        break;
+                    case LexicAnalyserState.Number:
+                        token = new NumberToken(Value);
                         CurrentIndex++;
                         break;
                     default:

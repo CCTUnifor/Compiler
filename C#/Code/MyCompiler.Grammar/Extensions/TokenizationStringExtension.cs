@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using MyCompiler.Grammar;
 using MyCompiler.Grammar.Tokens;
 
 namespace MyCompiler.Grammar.Extensions
@@ -9,6 +8,7 @@ namespace MyCompiler.Grammar.Extensions
     {
 
         public static bool IsLetter(this string value) => value.All(char.IsLetter);
+        public static bool IsNumber(this string value) => value.All(char.IsNumber);
 
         public static string[] GetLines(this string value)
             => value.IgnoreNewLineInWindows().Split("\n").ToArray();

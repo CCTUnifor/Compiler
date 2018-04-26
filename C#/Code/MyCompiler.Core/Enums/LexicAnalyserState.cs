@@ -7,6 +7,8 @@
         Letter,
         Space,
         Terminal,
-        Empty
+        Empty,
+        Identifier,
+        Number
     }
 }

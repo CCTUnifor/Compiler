@@ -4,9 +4,9 @@ using System.Linq;
 using MyCompiler.Core.Enums;
 using MyCompiler.Grammar.Tokens;
 
-namespace MyCompiler.Parser
+namespace MyCompiler.Tokenization
 {
-    public class TinyLexicalAnalyze
+    public class TinyTokenization
     {
         private readonly string _input;
         public int Line { get; private set; }
@@ -29,7 +29,7 @@ namespace MyCompiler.Parser
             "until"
         };
 
-        public TinyLexicalAnalyze(string input)
+        public TinyTokenization(string input)
         {
             Line = 1;
             _input = input;

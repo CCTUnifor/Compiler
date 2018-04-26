@@ -3,7 +3,6 @@ using System.Linq;
 using MyCompiler.Grammar;
 using MyCompiler.Grammar.Extensions;
 using MyCompiler.Grammar.Tokens;
-using MyCompiler.Parser;
 
 namespace MyCompiler.Tokenization.Generators
 {
@@ -34,14 +33,7 @@ namespace MyCompiler.Tokenization.Generators
                 foreach (var production in productions)
                 {
                     var lex = new TopDownTokenization(nonTerminals, production);
-                    var tokens = new List<Token>();
-
-                    var token = lex.GetToken();
-                    while (token != null)
-                    {
-                        tokens.Add(token);
-                        token = lex.GetToken();
-                    }
+                    var tokens = lex.GetAllTokens();
 
                     p.Add(new Production(tokens));
                 }
@@ -55,10 +47,15 @@ namespace MyCompiler.Tokenization.Generators
 
         public ICollection<TerminalToken> CalculateTerminals(IEnumerable<Term> terms)
         {
-            var terminals = terms.SelectMany(x => x.Productions).SelectMany(x => x.Elements).OfType<TerminalToken>().ToList();
-            terminals.Add(new TerminalToken("$"));
-            TerminalTokens = terminals;
-            return terminals;
+            var selectMany = terms.SelectMany(x => x.Productions).SelectMany(x => x.Elements).ToArray();
+            var terminalTokens = selectMany.OfType<TerminalToken>().ToList();
+
+            terminalTokens.AddRange(selectMany.OfType<NumberToken>().Select(x => x.ToTerminalToken()).Distinct().ToArray());
+            terminalTokens.AddRange(selectMany.OfType<IdentifierToken>().Select(x => x.ToTerminalToken()).Distinct().ToArray());
+            terminalTokens.Add(new TerminalToken("$"));
+
+            TerminalTokens = terminalTokens;
+            return terminalTokens;
         }
     }
 }

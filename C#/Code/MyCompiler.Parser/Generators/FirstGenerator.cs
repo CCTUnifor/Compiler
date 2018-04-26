@@ -46,7 +46,7 @@ namespace MyCompiler.Tokenization.Generators
                 if (production.FirstElementIsSpaceToken())
                     continue;
 
-                if (production.FirstElementIsTerminal() || production.FirstElementIsEmptyToken())
+                if (production.FirstElementIsTerminal() || production.FirstElementIsEmptyToken() || production.FirstToken is IdentifierToken || production.FirstToken is NumberToken)
                     currentFirst.AddTerminal(production.FirstToken.ToTerminalToken());
                 else
                 {

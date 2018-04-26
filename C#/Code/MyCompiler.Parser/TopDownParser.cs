@@ -5,7 +5,6 @@ using MyCompiler.Core.Exceptions;
 using MyCompiler.Grammar;
 using MyCompiler.Grammar.Extensions;
 using MyCompiler.Grammar.Tokens;
-using MyCompiler.Parser.Extensions;
 using MyCompiler.Parser.Generators;
 using MyCompiler.Parser.TopDown;
 using MyCompiler.Tokenization.Aspects;
@@ -85,7 +84,7 @@ namespace MyCompiler.Tokenization
             var stackInput = new Stack<Token>();
             var topoPilha = (Token)NonTerminals.First();
 
-            var finalToken = "$".ToTerminal();
+            var finalToken = new FinalToken();// "$".ToTerminal();
             stackInput.Push(finalToken);
             stackInput.Push(topoPilha);
 
@@ -105,10 +104,10 @@ namespace MyCompiler.Tokenization
 
                     var lineString = $"Line: {lineCount + 1} | Collumn: {collumnCount + 1}\n\n";
 
-                    if (topoPilha == current || (topoPilha.IsIde() && current.IsLetter()) || (topoPilha.IsNum() && current.IsDigit()))
+                    if (topoPilha == current || topoPilha is IdentifierToken || topoPilha is NumberToken)
                     {
-                        if (stackInput.Peek() != topoPilha && (stackInput.Peek().IsIde() && !topoPilha.IsLetter()) && stackInput.Peek().IsDigit() && !topoPilha.IsDigit())
-                            throw new CompilationException($"{lineString}Expeted: '{topoPilha}'; got '{stackInput.Peek()}'");
+                        //if (stackInput.Peek() != topoPilha && (stackInput.Peek().IsIde() && !topoPilha.IsLetter()) && stackInput.Peek().IsDigit() && !topoPilha.IsDigit())
+                        //    throw new CompilationException($"{lineString}Expeted: '{topoPilha}'; got '{stackInput.Peek()}'");
                         PrintRowStack(stackInput, count, string.Join("", allTokens), "Next");
 
                         collumnCount += RemoveFirstToken(allTokens);

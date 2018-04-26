@@ -1,13 +1,13 @@
 ﻿using MyCompiler.Core.Enums;
 using MyCompiler.Core.Exceptions;
 using MyCompiler.Grammar.Tokens;
-using MyCompiler.Parser;
+using MyCompiler.Tokenization;
 
-namespace MyCompiler.Tokenization
+namespace MyCompiler.Parser
 {
-    public class TinySyntacticAnalyzer
+    public class TinyParser
     {
-        public TinyLexicalAnalyze LexicalAnalyze { get; set; }
+        public TinyTokenization LexicalAnalyze { get; set; }
 
         public TinyToken Peek => LexicalAnalyze.LastToken;
         private bool HasNext() => LexicalAnalyze.Any();
@@ -36,7 +36,7 @@ namespace MyCompiler.Tokenization
 
         public void Parser(int countLine, string input)
         {
-            LexicalAnalyze = new TinyLexicalAnalyze(input);
+            LexicalAnalyze = new TinyTokenization(input);
             LexicalAnalyze.GetNextToken();
             DeclSequencia();
         }

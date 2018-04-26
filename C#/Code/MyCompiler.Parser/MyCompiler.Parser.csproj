@@ -28,6 +28,7 @@
   <ItemGroup>
     <ProjectReference Include="..\MyCompiler.Core\MyCompiler.Core.csproj" />
     <ProjectReference Include="..\MyCompiler.Grammar\MyCompiler.Grammar.csproj" />
+    <ProjectReference Include="..\MyCompiler.Tokenization\MyCompiler.Tokenization.csproj" />
   </ItemGroup>
 
 </Project>

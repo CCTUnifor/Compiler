@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using MyCompiler.Grammar.Tokens;
+﻿using MyCompiler.Grammar.Tokens;
 
 namespace MyCompiler.Grammar
 {
@@ -39,10 +37,10 @@ namespace MyCompiler.Grammar
         public NonTerminalToken ToNonTerminalToken() => new NonTerminalToken(Value);
 
         public bool IsTerminal() => this is TerminalToken;
-        public bool IsIde() => Value.ToLower() == "ide";
-        public bool IsNum() => Value.ToLower() == "num";
-        public bool IsDigit() => Value.All(char.IsDigit);
-        public bool IsLetter() => Value.All(char.IsLetter);
+        //public bool IsIde() => Value.ToLower() == "ide";
+        //public bool IsNum() => Value.ToLower() == "num";
+        //public bool IsDigit() => Value.All(char.IsDigit);
+        //public bool IsLetter() => Value.All(char.IsLetter);
 
     }
 }
