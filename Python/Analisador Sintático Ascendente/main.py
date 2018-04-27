@@ -39,9 +39,9 @@ with io.open(grammar_file_name, "r", encoding='utf8') as file_obj:
 
     tservice.item_graph.build_graph()
 
-    # PRINTER.Grammar_Printer(tservice.grammar)
+    PRINTER.Grammar_Printer(tservice.grammar)
 
-    # PRINTER.printGraphLists(tservice.item_graph)
+    PRINTER.printGraphLists(tservice.item_graph)
 
     PRINTER.printSubsets(tservice.subset_builder.subsets)
     PRINTER.printSubsetMatrix(tservice.subset_builder.matrix)
