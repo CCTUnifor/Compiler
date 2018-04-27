@@ -1,3 +1,4 @@
+import re
 import networkx as nx
 from networkx.drawing.nx_agraph import write_dot, graphviz_layout
 import matplotlib.pyplot as plt
@@ -73,9 +74,9 @@ def Grammar_Printer(g):
     print(g)
 
     print('-----------------GRAMÁTICA-PRODUCTIONS-----------------')
-    print(g.productions)
+    print(re.sub('\[|\]|,', '', str(g.productions))[1::])
 
-    print('-------------------------FIRST-------------------------')
+    print('\n-------------------------FIRST-------------------------')
     for term in g.Premises:
         print(term.strFirst())
 

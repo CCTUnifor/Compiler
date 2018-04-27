@@ -10,4 +10,4 @@ class Production:
         return str(self.premise.left) + " -> " + str(' ').join([str(x) for x in self.term])
     
     def __repr__(self):
-        return str(self) + '\n'
+        return '\n' + str(self)
