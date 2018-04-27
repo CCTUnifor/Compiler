@@ -35,6 +35,8 @@ class ItemGraph(Graph):
         
         augmentedgrammar.NonTerminals = [start] + grammar.NonTerminals
 
+        augmentedgrammar.load_productions()
+
         augmentedgrammar.augmented = True
 
         return augmentedgrammar

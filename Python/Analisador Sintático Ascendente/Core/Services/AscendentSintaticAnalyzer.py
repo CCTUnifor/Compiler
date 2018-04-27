@@ -2,6 +2,7 @@ import re
 
 from Core.Entities.TermUnit import TermUnit
 from Core.Entities.Premise import Premise
+from Core.Entities.Production import Production
 from Core.Entities.Grammar import Grammar
 from Core.Entities.ItemGraph import ItemGraph
 from Core.Entities.Reduction import Reduction
@@ -142,7 +143,9 @@ class TableService:
                 ## um obj reduce com essa premissa,
                 ## esse subset e o index do vetor
                 ## premise.right referente a esta
-                ## cadeia de unidades
+                ## cadeia de unidades pra depois
+                ## por o obj reduce na celula cor-
+                ## reta da tabela
                 pass
 
             

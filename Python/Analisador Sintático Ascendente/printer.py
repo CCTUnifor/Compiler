@@ -72,6 +72,9 @@ def Grammar_Printer(g):
     print('-----------------------GRAMÁTICA-----------------------')
     print(g)
 
+    print('-----------------GRAMÁTICA-PRODUCTIONS-----------------')
+    print(g.productions)
+
     print('-------------------------FIRST-------------------------')
     for term in g.Premises:
         print(term.strFirst())

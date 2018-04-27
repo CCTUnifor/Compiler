@@ -1,5 +1,6 @@
 from Core.Services.TextGrammar import TextToGrammar
 from Core.Entities.TermUnit import TermUnit
+from Core.Entities.Production import Production
 
 
 class Grammar:
@@ -19,6 +20,15 @@ class Grammar:
         
         self.Alphabet = [unit for unit in self.textGrammar.get_term_units() if unit.type is TermUnit.TERMINAL]
         self.NonTerminals = [unit for unit in self.textGrammar.get_term_units() if unit.type is TermUnit.NONTERMINAL]       
+
+        self.load_productions()
+
+    def load_productions(self):
+        self.productions = []
+
+        for premise in self.Premises:
+            for i in range(len(premise.right)):
+                self.productions.append(Production(premise, i))
 
     def get_premise(self, termString):
             for i in self.Premises:
