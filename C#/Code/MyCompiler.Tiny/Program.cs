@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using MyCompiler.Core.Models.SyntacticAnalyzes;
+using MyCompiler.Tokenization;
 
 namespace MyCompiler.TinyApp
 {
@@ -13,7 +13,7 @@ namespace MyCompiler.TinyApp
             try
             {
                 var fileName = "my-programm.txt";
-                var tiny = new TinySyntacticAnalyzer();
+                var tiny = new TinyParser();
                 var countLine = 0;
 
                 Console.WriteLine("# Tiny Grammar");

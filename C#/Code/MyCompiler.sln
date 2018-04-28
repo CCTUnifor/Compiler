@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2036
+VisualStudioVersion = 15.0.27004.2008
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyCompiler.RegularExpressionApp", "MyCompiler\MyCompiler.RegularExpressionApp.csproj", "{14E9CCD2-B2D2-4AC4-BF43-E0299FE8DF70}"
 EndProject
@@ -9,12 +9,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyCompiler.Core", "MyCompil
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyCompiler.TinyApp", "MyCompiler.Tiny\MyCompiler.TinyApp.csproj", "{C71EC9FF-67CC-41CE-935C-64673C164F51}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyCompiler.AnalisadorSintaticoDescendenteTabular", "MyCompiler.AnalisadorSintaticoDescendenteTabular\MyCompiler.AnalisadorSintaticoDescendenteTabular.csproj", "{193AAB04-9A35-43D7-AC46-4A779F11E5BC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyCompiler.TopDownApp", "MyCompiler.TopDownApp\MyCompiler.TopDownApp.csproj", "{193AAB04-9A35-43D7-AC46-4A779F11E5BC}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F6BE2D38-C7E2-4D67-9000-CF8E69332D4B}"
-	ProjectSection(SolutionItems) = preProject
-		MyCompiler.pssln = MyCompiler.pssln
-	EndProjectSection
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Applications", "Applications", "{D9AB63DF-3859-4866-9C30-3CEC0D82BD7B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyCompiler.Tokenization", "MyCompiler.Tokenization\MyCompiler.Tokenization.csproj", "{A4C5741B-D3F4-430D-AD40-66F2232A5B9B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyCompiler.Parser", "MyCompiler.Parser\MyCompiler.Parser.csproj", "{99A3B77C-4F0A-4894-B1EE-0B4265E07C07}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyCompiler.Grammar", "MyCompiler.Grammar\MyCompiler.Grammar.csproj", "{3195F270-4204-46DB-B638-71432D0036A9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,9 +41,26 @@ Global
 		{193AAB04-9A35-43D7-AC46-4A779F11E5BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{193AAB04-9A35-43D7-AC46-4A779F11E5BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{193AAB04-9A35-43D7-AC46-4A779F11E5BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4C5741B-D3F4-430D-AD40-66F2232A5B9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4C5741B-D3F4-430D-AD40-66F2232A5B9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4C5741B-D3F4-430D-AD40-66F2232A5B9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4C5741B-D3F4-430D-AD40-66F2232A5B9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99A3B77C-4F0A-4894-B1EE-0B4265E07C07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99A3B77C-4F0A-4894-B1EE-0B4265E07C07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99A3B77C-4F0A-4894-B1EE-0B4265E07C07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99A3B77C-4F0A-4894-B1EE-0B4265E07C07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3195F270-4204-46DB-B638-71432D0036A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3195F270-4204-46DB-B638-71432D0036A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3195F270-4204-46DB-B638-71432D0036A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3195F270-4204-46DB-B638-71432D0036A9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{14E9CCD2-B2D2-4AC4-BF43-E0299FE8DF70} = {D9AB63DF-3859-4866-9C30-3CEC0D82BD7B}
+		{C71EC9FF-67CC-41CE-935C-64673C164F51} = {D9AB63DF-3859-4866-9C30-3CEC0D82BD7B}
+		{193AAB04-9A35-43D7-AC46-4A779F11E5BC} = {D9AB63DF-3859-4866-9C30-3CEC0D82BD7B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D119D55B-D768-4100-BFA7-610A0C9CC030}

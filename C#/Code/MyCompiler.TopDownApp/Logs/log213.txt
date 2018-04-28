@@ -1,0 +1,72 @@
+
+############################## # Analisador Sintatico Descendente Tabular ##############################
+
+
+############################## Grammar ##############################
+
+PROGRAMA        -> DECL-SEQUENCIA
+DECL-SEQUENCIA  -> DECLARACAO DECL-SEQUENCIA'
+DECL-SEQUENCIA' -> ; DECLARACAO DECL-SEQUENCIA' | ε
+DECLARACAO      -> COND-DECL | REPET-DECL | ATRIB-DECL | LEIT-DECL | ESCR-DECL 
+COND-DECL       -> if EXP then DECL-SEQUENCIA end
+REPET-DECL      -> repeat DECL-SEQUENCIA until EXP
+ATRIB-DECL      -> ide := EXP
+LEIT-DECL       -> read ide
+ESCR-DECL       -> write EXP
+EXP             -> EXP-SIMPLES X'
+X'               -> COMP-OP EXP-SIMPLES | ε
+COMP-OP         -> < | =
+EXP-SIMPLES     -> TERMO EXP-SIMPLES'
+EXP-SIMPLES'    -> SOMA TERMO EXP-SIMPLES' | ε
+SOMA            -> + | -
+TERMO           -> FATOR TERMO'
+TERMO'          -> MULT FATOR TERMO' | ε
+MULT            -> * | /
+FATOR           -> ( EXP ) | num | ide
+
+############################## Input ##############################
+
+read x ;
+if ( 0 < x ) then
+    fact := 1 ;
+    repeat
+        fact := fact * x ;
+        x := x - 1 
+    until x = 0 ;
+    write fact
+end
+ #     Stack                                                                                                            Input                  Term                                               
+[0  ] [PROGRAMA, $                                                                                                   ] [read x ;            ] [PROGRAMA -> DECL-SEQUENCIA                        ]
+[1  ] [DECL-SEQUENCIA, $                                                                                             ] [read x ;            ] [DECL-SEQUENCIA -> DECLARACAO DECL-SEQUENCIA'      ]
+[2  ] [DECLARACAO, DECL-SEQUENCIA', $                                                                                ] [read x ;            ] [DECLARACAO -> LEIT-DECL                           ]
+[3  ] [LEIT-DECL, DECL-SEQUENCIA', $                                                                                 ] [read x ;            ] [LEIT-DECL -> read ide                             ]
+[4  ] [read, ide, DECL-SEQUENCIA', $                                                                                 ] [read x ;            ] [Next                                              ]
+[5  ] [ide, DECL-SEQUENCIA', $                                                                                       ] [x ;                 ] [Next                                              ]
+[6  ] [DECL-SEQUENCIA', $                                                                                            ] [;                   ] [DECL-SEQUENCIA' -> ; DECLARACAO DECL-SEQUENCIA'   ]
+[7  ] [;, DECLARACAO, DECL-SEQUENCIA', $                                                                             ] [;                   ] [Next                                              ]
+[8  ] [DECLARACAO, DECL-SEQUENCIA', $                                                                                ] [if ( 0 < x ) then   ] [DECLARACAO -> COND-DECL                           ]
+[9  ] [COND-DECL, DECL-SEQUENCIA', $                                                                                 ] [if ( 0 < x ) then   ] [COND-DECL -> if EXP then DECL-SEQUENCIA end       ]
+[10 ] [if, EXP, then, DECL-SEQUENCIA, end, DECL-SEQUENCIA', $                                                        ] [if ( 0 < x ) then   ] [Next                                              ]
+[11 ] [EXP, then, DECL-SEQUENCIA, end, DECL-SEQUENCIA', $                                                            ] [( 0 < x ) then      ] [EXP -> EXP-SIMPLES X'                             ]
+[12 ] [EXP-SIMPLES, X', then, DECL-SEQUENCIA, end, DECL-SEQUENCIA', $                                                ] [( 0 < x ) then      ] [EXP-SIMPLES -> TERMO EXP-SIMPLES'                 ]
+[13 ] [TERMO, EXP-SIMPLES', X', then, DECL-SEQUENCIA, end, DECL-SEQUENCIA', $                                        ] [( 0 < x ) then      ] [TERMO -> FATOR TERMO'                             ]
+[14 ] [FATOR, TERMO', EXP-SIMPLES', X', then, DECL-SEQUENCIA, end, DECL-SEQUENCIA', $                                ] [( 0 < x ) then      ] [FATOR -> ( EXP )                                  ]
+[15 ] [(, EXP, ), TERMO', EXP-SIMPLES', X', then, DECL-SEQUENCIA, end, DECL-SEQUENCIA', $                            ] [( 0 < x ) then      ] [Next                                              ]
+[16 ] [EXP, ), TERMO', EXP-SIMPLES', X', then, DECL-SEQUENCIA, end, DECL-SEQUENCIA', $                               ] [0 < x ) then        ] [EXP -> EXP-SIMPLES X'                             ]
+[17 ] [EXP-SIMPLES, X', ), TERMO', EXP-SIMPLES', X', then, DECL-SEQUENCIA, end, DECL-SEQUENCIA', $                   ] [0 < x ) then        ] [EXP-SIMPLES -> TERMO EXP-SIMPLES'                 ]
+[18 ] [TERMO, EXP-SIMPLES', X', ), TERMO', EXP-SIMPLES', X', then, DECL-SEQUENCIA, end, DECL-SEQUENCIA', $           ] [0 < x ) then        ] [TERMO -> FATOR TERMO'                             ]
+[19 ] [FATOR, TERMO', EXP-SIMPLES', X', ), TERMO', EXP-SIMPLES', X', then, DECL-SEQUENCIA, end, DECL-SEQUENCIA', $   ] [0 < x ) then        ] [FATOR -> num                                      ]
+[20 ] [num, TERMO', EXP-SIMPLES', X', ), TERMO', EXP-SIMPLES', X', then, DECL-SEQUENCIA, end, DECL-SEQUENCIA', $     ] [0 < x ) then        ] [Next                                              ]
+MyCompiler.Core.Exceptions.CompilationException: 
+** Compilation exception: **
+Line: 2 | Collumn: 4
+
+The < doesn't exists in this grammar!
+Stack: [TERMO', EXP-SIMPLES', X', ), TERMO', EXP-SIMPLES', X', then, DECL-SEQUENCIA, end, DECL-SEQUENCIA', $] 
+X: 'TERMO'' ; f: '<'; 
+M: '16'; a: '11';
+
+
+   at MyCompiler.Tokenization.TopDownTokenization.Analyse(String input) in C:\Users\thiag\Documents\Workspace\Compiler\C#\Code\MyCompiler.Tokenization\TopDownTokenization.cs:line 143
+   at MyCompiler.Tokenization.TopDownTokenization.Parser(String input) in C:\Users\thiag\Documents\Workspace\Compiler\C#\Code\MyCompiler.Tokenization\TopDownTokenization.cs:line 50
+   at MyCompiler.TopDownApp.Program.Main(String[] args) in C:\Users\thiag\Documents\Workspace\Compiler\C#\Code\MyCompiler.TopDownApp\Program.cs:line 23

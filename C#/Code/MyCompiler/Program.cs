@@ -1,8 +1,8 @@
 ﻿using System;
 using MyCompiler.Core.Exceptions;
-using MyCompiler.Core.Models.ConstructionSubsets;
-using MyCompiler.Core.Models.LexicalAnalyzer;
-using MyCompiler.Core.Models.SyntacticAnalyzes;
+using MyCompiler.Parser;
+using MyCompiler.Parser.ConstructionSubsets;
+using MyCompiler.Tokenization;
 
 namespace MyCompiler.RegularExpressionApp
 {

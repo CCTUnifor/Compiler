@@ -1,0 +1,68 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="grammars\grammar%280%29.txt" />
+    <None Remove="grammars\_grammar%280%29.txt" />
+    <None Remove="inputs\input%280%29.txt" />
+    <None Remove="inputs\__input%280%29.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="grammars\grammar(0).txt" />
+    <EmbeddedResource Include="grammars\_grammar(0).txt" />
+    <EmbeddedResource Include="inputs\input(0).txt" />
+    <EmbeddedResource Include="inputs\__input(0).txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CCTUnifor.Logger" Version="1.0.0" />
+    <PackageReference Include="PostSharp" Version="5.0.50" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MyCompiler.Core\MyCompiler.Core.csproj" />
+    <ProjectReference Include="..\MyCompiler.Parser\MyCompiler.Parser.csproj" />
+    <ProjectReference Include="..\MyCompiler.Tokenization\MyCompiler.Tokenization.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="grammars\grammar%280%29.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Update="inputs\input%280%29.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="grammars\grammar(1).txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="grammars\_grammar(0).txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="grammars\grammar(03).txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="grammars\grammar%282%29.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="grammars\grammar%283%29.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="grammars\grammar%284%29.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

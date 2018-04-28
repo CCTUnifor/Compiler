@@ -1,23 +1,33 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <OutputType>Library</OutputType>
     <TargetFramework>netcoreapp2.0</TargetFramework>
+    <ApplicationIcon />
+    <StartupObject />
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <LangVersion>7.1</LangVersion>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <LangVersion>default</LangVersion>
+    <LangVersion>latest</LangVersion>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CCTUnifor.ConsoleTable" Version="1.0.0" />
-    <PackageReference Include="CCTUnifor.Logger" Version="1.0.0" />
+    <Compile Remove="Tokens\IdentifierToken.cs" />
+    <Compile Remove="Tokens\NumberToken.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="PostSharp" Version="5.0.50" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MyCompiler.Core\MyCompiler.Core.csproj" />
   </ItemGroup>
 
 </Project>
