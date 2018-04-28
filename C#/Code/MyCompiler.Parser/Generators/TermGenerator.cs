@@ -50,8 +50,8 @@ namespace MyCompiler.Tokenization.Generators
             var selectMany = terms.SelectMany(x => x.Productions).SelectMany(x => x.Elements).ToArray();
             var terminalTokens = selectMany.OfType<TerminalToken>().ToList();
 
-            terminalTokens.AddRange(selectMany.OfType<NumberToken>().Select(x => x.ToTerminalToken()).Distinct().ToArray());
-            terminalTokens.AddRange(selectMany.OfType<IdentifierToken>().Select(x => x.ToTerminalToken()).Distinct().ToArray());
+            //terminalTokens.AddRange(selectMany.OfType<NumberToken>().Select(x => x.ToTerminalToken()).Distinct().ToArray());
+            //terminalTokens.AddRange(selectMany.OfType<IdentifierToken>().Select(x => x.ToTerminalToken()).Distinct().ToArray());
             terminalTokens.Add(new TerminalToken("$"));
 
             TerminalTokens = terminalTokens;

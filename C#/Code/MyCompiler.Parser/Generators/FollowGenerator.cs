@@ -67,7 +67,7 @@ namespace MyCompiler.Parser.Generators
                         if (aBb)
                         {
                             var nextElement = elements[i + 1];
-                            var firstb = _firsts.SingleOrDefault(x => nextElement.Equals(x.NonTerminal));
+                            var firstb = _firsts.SingleOrDefault(x => nextElement.Value == x.NonTerminal.Value);
 
                             if (nextElement.IsTerminal())
                                 followB.AddTerminal(nextElement.ToTerminalToken());

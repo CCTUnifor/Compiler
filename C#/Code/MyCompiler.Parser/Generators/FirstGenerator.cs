@@ -46,14 +46,13 @@ namespace MyCompiler.Tokenization.Generators
                 if (production.FirstElementIsSpaceToken())
                     continue;
 
-                if (production.FirstElementIsTerminal() || production.FirstElementIsEmptyToken() || production.FirstToken is IdentifierToken || production.FirstToken is NumberToken)
+                if (production.FirstElementIsTerminal() || production.FirstElementIsEmptyToken())
                     currentFirst.AddTerminal(production.FirstToken.ToTerminalToken());
                 else
                 {
                     var termOfNonTerminal = GetTermByElement(production.FirstToken);
                     var firstsOfNonTerminal = GenerateFirst(termOfNonTerminal).RemoveEmpty().Terminals;
                     currentFirst.AddTerminal(firstsOfNonTerminal);
-
 
                     var productionElements = production.Elements.ToArray();
                     for (var i = 1; i < productionElements.Length; i++)

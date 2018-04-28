@@ -18,6 +18,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Tokens\IdentifierToken.cs" />
+    <Compile Remove="Tokens\NumberToken.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="PostSharp" Version="5.0.50" />
   </ItemGroup>
 

@@ -43,7 +43,7 @@ namespace MyCompiler.Tokenization.Generators
                 {
                     var first = production.FirstToken;
 
-                    var f = first.IsTerminal() || first.IsEmpty() || first is IdentifierToken || first is NumberToken
+                    var f = first.IsTerminal() || first.IsEmpty()
                         ? new First(term.Caller, new List<TerminalToken> { first.ToTerminalToken() })
                         : _firsts.Single(x => x.NonTerminal == first);
 
@@ -89,9 +89,9 @@ namespace MyCompiler.Tokenization.Generators
             if (i >= 0)
                 return i;
 
-            if (f is IdentifierToken)
+            if (f.IsIdentifier())
                 return GetIndexTerminal("ide".ToTerminal());
-            if (f is NumberToken)
+            if (f.IsNumber())
                 return GetIndexTerminal("num".ToTerminal());
 
             return -1;

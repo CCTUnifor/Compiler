@@ -2,6 +2,7 @@
 using System.Linq;
 using CCTUnifor.Logger;
 using MyCompiler.Core.Exceptions;
+using MyCompiler.Core.Extensions;
 using MyCompiler.Grammar;
 using MyCompiler.Grammar.Extensions;
 using MyCompiler.Grammar.Tokens;
@@ -41,7 +42,7 @@ namespace MyCompiler.Tokenization
         private static void PrintHeaderStack()
             => Logger.PrintLn($"{" #".PadRight(stackCounterPad + 2)} {" Stack".PadRight(stackPad + 2)} {" Input".PadRight(stackInputPad + 2)} {" Term".PadRight(stackCalledPad + 2)}");
         private static void PrintRowStack(IEnumerable<Token> q, int count, string restOfTheInput, string termString)
-            => Logger.PrintLn($"[{count.ToString().PadRight(stackCounterPad)}] [{string.Join(", ", q).PadRight(stackPad)}] [{string.Join(" ", restOfTheInput).PadRight(stackInputPad)}] [{termString.PadRight(stackCalledPad)}]");
+            => Logger.PrintLn($"[{count.ToString().PadRight(stackCounterPad)}] {q.ToConvertString().PadRight(stackPad)} [{string.Join(" ", restOfTheInput).PadRight(stackInputPad)}] [{termString.PadRight(stackCalledPad)}]");
 
 
         public void Parser(string input)
@@ -84,7 +85,7 @@ namespace MyCompiler.Tokenization
             var stackInput = new Stack<Token>();
             var topoPilha = (Token)NonTerminals.First();
 
-            var finalToken = new FinalToken();// "$".ToTerminal();
+            var finalToken = new FinalToken();
             stackInput.Push(finalToken);
             stackInput.Push(topoPilha);
 
@@ -104,10 +105,8 @@ namespace MyCompiler.Tokenization
 
                     var lineString = $"Line: {lineCount + 1} | Collumn: {collumnCount + 1}\n\n";
 
-                    if (topoPilha == current || topoPilha is IdentifierToken || topoPilha is NumberToken)
+                    if (topoPilha == current || topoPilha.Value == "ide" && current.IsIdentifier() || topoPilha.Value == "num" && current.IsNumber())
                     {
-                        //if (stackInput.Peek() != topoPilha && (stackInput.Peek().IsIde() && !topoPilha.IsLetter()) && stackInput.Peek().IsDigit() && !topoPilha.IsDigit())
-                        //    throw new CompilationException($"{lineString}Expeted: '{topoPilha}'; got '{stackInput.Peek()}'");
                         PrintRowStack(stackInput, count, string.Join("", allTokens), "Next");
 
                         collumnCount += RemoveFirstToken(allTokens);
@@ -137,7 +136,7 @@ namespace MyCompiler.Tokenization
                         }
                     }
                     else
-                        throw new CompilationException($"{lineString}The {current} doesn't exists in this grammar!\nStack: [{string.Join(", ", stackInput)}] \nX: '{topoPilha}' ; f: '{current}'; \nM: '{M}'; a: '{a}';");
+                        throw new CompilationException($"{lineString}The {current} doesn't exists in this grammar!\nStack: {stackInput.ToConvertString()} \nX: '{topoPilha}' ; f: '{current}'; \nM: '{M}'; a: '{a}';");
 
                     topoPilha = stackInput.Peek();
                     count++;

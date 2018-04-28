@@ -66,10 +66,10 @@ namespace MyCompiler.Tokenization
                             State = LexicAnalyserState.NonTerminal;
                         else if (Value.IsEmpty())
                             State = LexicAnalyserState.Empty;
-                        else if (Value.ToLower() == "ide" || !IsNonTerminal() && NextCharacter == ' ')
-                            State = LexicAnalyserState.Identifier;
-                        else if (Value.ToLower() == "num" || Value.IsNumber() && NextCharacter == ' ')
-                            State = LexicAnalyserState.Number;
+                        //else if (Value.ToLower() == "ide" || !IsNonTerminal() && NextCharacter == ' ')
+                        //    State = LexicAnalyserState.Identifier;
+                        //else if (Value.ToLower() == "num" || Value.IsNumber() && NextCharacter == ' ')
+                        //    State = LexicAnalyserState.Number;
                         else if (!IsNonTerminal() && NextCharacter == ' ')
                             State = LexicAnalyserState.Terminal;
                         else if (IsSpace())
@@ -99,14 +99,14 @@ namespace MyCompiler.Tokenization
                         token = new EmptyToken();
                         CurrentIndex++;
                         break;
-                    case LexicAnalyserState.Identifier:
-                        token = new IdentifierToken(Value);
-                        CurrentIndex++;
-                        break;
-                    case LexicAnalyserState.Number:
-                        token = new NumberToken(Value);
-                        CurrentIndex++;
-                        break;
+                    //case LexicAnalyserState.Identifier:
+                    //    token = new IdentifierToken(Value);
+                    //    CurrentIndex++;
+                    //    break;
+                    //case LexicAnalyserState.Number:
+                    //    token = new NumberToken(Value);
+                    //    CurrentIndex++;
+                    //    break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
