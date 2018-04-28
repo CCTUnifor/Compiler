@@ -53,7 +53,7 @@ class TableLine:
 
             self.columns[key] = column_value 
         
-        self.columns[TermUnit.STREAM_END] = [TableCellValue(self.id, key)]
+        self.columns[TermUnit.STREAM_END] = []
     
     def __str__(self):
         txt = str(self.id) + "    | "
@@ -74,6 +74,7 @@ class TableService:
     def __init__(self, grammar):
         self.grammar = grammar
         self.table = None
+        self.reductions = None
 
         self.first = First(grammar)
         self.follow = Follow(grammar, self.first)
@@ -111,6 +112,7 @@ class TableService:
 
     def __build_table(self, matrix, subsets):
         self.table = []
+        self.reductions = []
 
         self.__get_header_termunits()
 
@@ -129,24 +131,37 @@ class TableService:
         """
 
         complete_fechos = self.__load_complete_fechos(subsets)
+
+        self.__apply_reduce(complete_fechos)
+        self.__apply_acc(complete_fechos)
+
+    def __apply_acc(self, complete_fechos):
+        indice = ItemGraph.FakeStartString + "_0"
+        production_subset = complete_fechos[indice]
+
+        line = self.table[production_subset[0].id]
+        tablecellvalue = TableCellValue(line.id, ItemGraph.FakeStartString, cell_type=TableCellValue.Accept)
+        line.columns[TermUnit.STREAM_END] = tablecellvalue
+
         
-        for i, premise in enumerate(self.grammar.Premises):
-            follows = list(premise.follow)
+    
+    def __apply_reduce(self, complete_fechos):
+        for i, production in enumerate(self.grammar.productions):
+            follows = list(production.premise.follow)
+    
+            indice = str("_").join([str(x) for x in production.id])
+            
+            production_subset = complete_fechos[indice]
 
-            premise_subsets = complete_fechos[premise.left]
+            reduction = Reduction(i+1, production)
+            self.reductions.append(reduction)
 
-            for units in premise.right:
-                ## aqui dentro preciso reconhecer
-                ## qual o subset referente a minha
-                ## cadeia de termUnit para poder
-                ## pegar o id do subset e montar
-                ## um obj reduce com essa premissa,
-                ## esse subset e o index do vetor
-                ## premise.right referente a esta
-                ## cadeia de unidades pra depois
-                ## por o obj reduce na celula cor-
-                ## reta da tabela
-                pass
+
+            for unit in follows:
+                line = self.table[production_subset[0].id]
+
+                tablecellvalue = TableCellValue(line.id, unit.text, reduction, TableCellValue.Reduce)
+                line.columns[unit.text].append(tablecellvalue)
 
             
     def __load_complete_fechos(self, subsets):
@@ -156,10 +171,11 @@ class TableService:
                 if(node.value):
                     item = node.value
                     if(item.is_complete()):
-                        if(item.premise.left not in group_dict):
-                            group_dict[item.premise.left] = []
+                        indice = str(item.premise.left) + "_" + str(item.cursor[0])
+                        if(indice not in group_dict):
+                            group_dict[indice] = []
 
-                        group_dict[item.premise.left].append(subset)
+                        group_dict[indice].append(subset)
         
         return group_dict
 

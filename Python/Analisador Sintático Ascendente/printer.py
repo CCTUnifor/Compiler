@@ -74,7 +74,7 @@ def Grammar_Printer(g):
     print(g)
 
     print('-----------------GRAMÁTICA-PRODUCTIONS-----------------')
-    print(re.sub('\[|\]|,', '', str(g.productions))[1::])
+    print(re.sub(r'\[|\]|,', '', str(g.productions))[1::])
 
     print('\n-------------------------FIRST-------------------------')
     for term in g.Premises:

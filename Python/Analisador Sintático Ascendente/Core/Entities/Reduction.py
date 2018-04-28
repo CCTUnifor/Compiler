@@ -1,13 +1,13 @@
-from Core.Entities.Premise import Premise
+from Core.Entities.Production import Production
 
 
 class Reduction:
-    def __init__(self, premise: Premise):
-        self.id = premise.left
-        self.premise = premise
+    def __init__(self, id, production: Production):
+        self.id = id
+        self.production = production
     
     def __str__(self):
-        return "R" + str(self.id)
+        return str(self.id)
 
     def __repr__(self):
         return str(self)

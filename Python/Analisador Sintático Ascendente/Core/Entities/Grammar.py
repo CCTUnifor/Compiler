@@ -30,6 +30,11 @@ class Grammar:
             for i in range(len(premise.right)):
                 self.productions.append(Production(premise, i))
 
+    def get_production(self, id):
+        for production in self.productions:
+            if production.id == id:
+                return production
+
     def get_premise(self, termString):
             for i in self.Premises:
                 if(i.left == termString):
