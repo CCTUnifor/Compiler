@@ -21,6 +21,7 @@ grammar_name = "EB"
 grammar_name = "A"
 grammar_name = "SLR"
 grammar_name = "ETF"
+grammar_name = "SVE"
 
 grammar_file_name = grammar_file_directory + grammar_name
 input_file_name = input_file_directory + grammar_name

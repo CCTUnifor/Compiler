@@ -1,0 +1,8 @@
+N = {S,V,E}
+Sigma = {id,:=,n}
+S = {S}
+P = {
+    S -> id | V := E
+    V -> id
+    E -> V | n
+}

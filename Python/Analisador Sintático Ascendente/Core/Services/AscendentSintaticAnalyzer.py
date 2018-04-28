@@ -193,3 +193,11 @@ class TableService:
     
     def compile(self, text):
         self.__compileGrammar()
+
+        lxa = LexicAnalyzer(text, self.grammar)
+
+        stack = [Grammar.STREAM_END_UNIT, self.grammar.StartSimbolUnit]
+        current = lxa.getToken()
+
+        
+        
