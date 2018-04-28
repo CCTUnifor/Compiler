@@ -22,7 +22,7 @@ class Follow:
         for A in self.grammar.Premises:
             for stream in A.right:
                 streamLen = len(stream)
-
+        
                 for index, unit in enumerate(stream):
                     if(unit.type is TermUnit.NONTERMINAL):
                         B = self.grammar.get_premise(unit.text)
@@ -48,8 +48,6 @@ class Follow:
             AinQueue = next((x for x in calls if x[0] is A), None)
 
             if(AinQueue):
-                print(calls)
-                print(B, A)
                 calls.append(tupleBA)
                 continue
 
@@ -92,3 +90,4 @@ class Follow:
         """
         self.__apply_follow_first_rule()
         self.__apply_follow_second_rule()
+        self.__apply_follow_third_rule()
