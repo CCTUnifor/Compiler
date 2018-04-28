@@ -66,9 +66,9 @@ namespace MyCompiler.Tokenization
                             State = LexicAnalyserState.NonTerminal;
                         else if (Value.IsEmpty())
                             State = LexicAnalyserState.Empty;
-                        else if (Value.ToLower() == "ide")
+                        else if (Value.ToLower() == "ide" || !IsNonTerminal() && NextCharacter == ' ')
                             State = LexicAnalyserState.Identifier;
-                        else if (Value.ToLower() == "num" || Value.IsNumber())
+                        else if (Value.ToLower() == "num" || Value.IsNumber() && NextCharacter == ' ')
                             State = LexicAnalyserState.Number;
                         else if (!IsNonTerminal() && NextCharacter == ' ')
                             State = LexicAnalyserState.Terminal;
