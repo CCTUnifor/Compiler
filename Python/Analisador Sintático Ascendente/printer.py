@@ -136,7 +136,7 @@ def CompileHistoric(historic):
 def printSubsetMatrix(matrix):
     print('\n-----------------------Matrix-----------------------')
     print('')
-    header = "k\Σ"
+    header = r"k\Σ"
     body = ""
     for i, state in enumerate(matrix):
         body += str(state.id) + "  "
@@ -163,8 +163,8 @@ def printSubsets(subsets):
 def printSintaticTable(table):
     print('\n------------------Sintatic-Matrix-------------------')
     print('')
-    header = r"k\Σ  | "
     first_line = table[0]
+    header = (r"k\Σ").rjust(first_line.StringCenterCount)+"   | "
     
     for c in first_line.columns:
         header += c.center(first_line.StringCenterCount) + " | "

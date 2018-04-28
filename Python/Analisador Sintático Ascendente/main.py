@@ -17,10 +17,10 @@ grammar_name = "SXYZ"
 grammar_name = "SAB"
 grammar_name = "ETF_G"
 grammar_name = "Tiny"
-grammar_name = "SLR"
 grammar_name = "EB"
-grammar_name = "ETF"
 grammar_name = "A"
+grammar_name = "SLR"
+grammar_name = "ETF"
 
 grammar_file_name = grammar_file_directory + grammar_name
 input_file_name = input_file_directory + grammar_name

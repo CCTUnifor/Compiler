@@ -56,7 +56,7 @@ class TableLine:
         self.columns[TermUnit.STREAM_END] = []
     
     def __str__(self):
-        txt = str(self.id) + "    | "
+        txt = str(self.id).rjust(TableLine.StringCenterCount) + "   | "
         for column in self.columns:
             cell = self.columns[column]
 
