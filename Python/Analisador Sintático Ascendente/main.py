@@ -35,17 +35,19 @@ with io.open(grammar_file_name, "r", encoding='utf8') as file_obj:
     g = Grammar(fileTxt)
     tservice = TableService(g)
 
-    tservice.compile('')
+    tservice.compileGrammar()
 
+with io.open(input_file_name, "r", encoding='utf8') as file_obj:
+    fileTxt = file_obj.read()
 
-    tservice.item_graph.build_graph()
+    tokens, history = tservice.compile(fileTxt)
 
     PRINTER.Grammar_Printer(tservice.grammar)
-
     PRINTER.printGraphLists(tservice.item_graph)
-
     PRINTER.printSubsets(tservice.subset_builder.subsets)
     PRINTER.printSubsetMatrix(tservice.subset_builder.matrix)
     PRINTER.printSintaticTable(tservice)
+    PRINTER.LexicPrint(tokens)
+    PRINTER.CompileHistoric(history)
 
     # PRINTER.printMatplotlib(tservice.item_graph)

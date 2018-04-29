@@ -175,7 +175,7 @@ class TableService:
         return group_dict
 
 
-    def __compileGrammar(self):
+    def compileGrammar(self):
         if(self.table is None):
             self.first.build_first()
             self.follow.build_follow()
@@ -187,12 +187,25 @@ class TableService:
             self.__build_table(matrix, subsets)
     
     def compile(self, text):
-        self.__compileGrammar()
+        self.compileGrammar()
+
+        history = ''
 
         lxa = LexicAnalyzer(text, self.grammar)
 
         stack = [Grammar.STREAM_END_UNIT, self.grammar.StartSimbolUnit]
         current = lxa.getToken()
+
+        while(True):
+            history += str(current.value).ljust(20) + " " + str(stack) + '\n'
+            
+            top = stack.pop()
+
+            break
+
+        return lxa.tokens, history
+
+
 
         
         
