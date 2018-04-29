@@ -5,6 +5,7 @@ class Reduction:
     def __init__(self, id, production: Production):
         self.id = id
         self.production = production
+        self.states = []
     
     def __str__(self):
         return str(self.id)

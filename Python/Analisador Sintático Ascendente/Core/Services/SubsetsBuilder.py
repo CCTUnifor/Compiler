@@ -75,7 +75,7 @@ class Builder:
             for node in fecho:
                 Builder.recursiveFill(subset, node)
                 
-            self.__alreadyRunned(doneFechos, fechos, subset)
+            self.__add_on_queue(doneFechos, fechos, subset)
 
         # print('\n')
         # for s in subsets:
@@ -159,7 +159,7 @@ class Builder:
         
         return matrix
 
-    def __alreadyRunned(self, doneFechos, fechos, subset):
+    def __add_on_queue(self, doneFechos, fechos, subset):
             semiFunction = subset.semiFunction
             for setKey in semiFunction:
                 nextFecho = semiFunction[setKey]
@@ -170,10 +170,14 @@ class Builder:
                     for doneFecho in doneFechos + list(fechos) :
                         inFecho = True
 
-                        for node in nextFecho:
-                            if(node not in doneFecho):
-                                inFecho = False
-                                break
+                        if len(doneFecho) is len(nextFecho):
+                            for node in nextFecho:
+                                if(node not in doneFecho):
+                                    inFecho = False
+                                    break
+                        else:
+                            inFecho = False
+                            break
 
                         if(inFecho):
                             break

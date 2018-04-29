@@ -160,7 +160,8 @@ def printSubsets(subsets):
     for s in subsets:
         print(s)
 
-def printSintaticTable(table):
+def printSintaticTable(tservice):
+    table = tservice.table
     print('\n------------------Sintatic-Matrix-------------------')
     print('')
     first_line = table[0]
@@ -173,3 +174,8 @@ def printSintaticTable(table):
 
     for line in table:
         print(line)
+    
+    print('\n-----------------Reduction-Table--------------------')
+
+    for reduction in tservice.reductions:
+        print("R"+str(reduction.id) + " " + str(reduction.production) + " "+ str(reduction.states))

@@ -37,7 +37,7 @@ class TableCellValue:
 
 
 class TableLine:
-    StringCenterCount = 3
+    StringCenterCount = 5
 
     def __init__(self, state: State):
         self.id = state.id
@@ -123,12 +123,6 @@ class TableService:
 
             # line.columns[TermUnit.STREAM_END]
             self.table.append(line)
-        
-        """
-        Encontrar o esto de cada premissa por meio do item completo,
-        encontrar o follow dessa premissa
-        atribuir na lista do estado e nas colunas dos follows aquela redução
-        """
 
         complete_fechos = self.__load_complete_fechos(subsets)
 
@@ -156,9 +150,10 @@ class TableService:
             reduction = Reduction(i+1, production)
             self.reductions.append(reduction)
 
-
             for unit in follows:
                 line = self.table[production_subset[0].id]
+
+                reduction.states.append(str(line.id) + "_" + str(unit.text))
 
                 tablecellvalue = TableCellValue(line.id, unit.text, reduction, TableCellValue.Reduce)
                 line.columns[unit.text].append(tablecellvalue)
