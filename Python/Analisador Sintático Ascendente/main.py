@@ -16,12 +16,12 @@ grammar_name = "EABCD"
 grammar_name = "SXYZ"
 grammar_name = "SAB"
 grammar_name = "ETF_G"
-grammar_name = "Tiny"
 grammar_name = "EB"
 grammar_name = "A"
 grammar_name = "SLR"
 grammar_name = "ETF"
 grammar_name = "SVE"
+grammar_name = "Tiny"
 
 grammar_file_name = grammar_file_directory + grammar_name
 input_file_name = input_file_directory + grammar_name
@@ -37,17 +37,18 @@ with io.open(grammar_file_name, "r", encoding='utf8') as file_obj:
 
     tservice.compileGrammar()
 
-with io.open(input_file_name, "r", encoding='utf8') as file_obj:
-    fileTxt = file_obj.read()
-
-    tokens, history = tservice.compile(fileTxt)
-
     PRINTER.Grammar_Printer(tservice.grammar)
     PRINTER.printGraphLists(tservice.item_graph)
     PRINTER.printSubsets(tservice.subset_builder.subsets)
     PRINTER.printSubsetMatrix(tservice.subset_builder.matrix)
     PRINTER.printSintaticTable(tservice)
+    # PRINTER.printMatplotlib(tservice.item_graph)
+
+with io.open(input_file_name, "r", encoding='utf8') as file_obj:
+    fileTxt = file_obj.read()
+    
+    tokens, history = tservice.compile(fileTxt)
+
     PRINTER.LexicPrint(tokens)
     PRINTER.CompileHistoric(history)
 
-    # PRINTER.printMatplotlib(tservice.item_graph)

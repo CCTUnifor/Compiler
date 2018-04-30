@@ -66,6 +66,9 @@ class TableLine:
             txt += cell_text.center(TableLine.StringCenterCount) + " | "
 
         return txt
+    
+    def __repr__(self):
+        return str(self.id)
 
 
 class TableService:    
@@ -101,6 +104,7 @@ class TableService:
 
             if term_unit:
                 cell_value_type = None
+
                 if term_unit.type is TermUnit.TERMINAL:
                     cell_value_type = TableCellValue.Shift
 
@@ -135,7 +139,7 @@ class TableService:
 
         line = self.table[production_subset[0].id]
         tablecellvalue = TableCellValue(line.id, ItemGraph.FakeStartString, cell_type=TableCellValue.Accept)
-        line.columns[TermUnit.STREAM_END] = tablecellvalue
+        line.columns[TermUnit.STREAM_END] = [tablecellvalue]
 
         
     
@@ -174,7 +178,6 @@ class TableService:
         
         return group_dict
 
-
     def compileGrammar(self):
         if(self.table is None):
             self.first.build_first()
@@ -186,24 +189,70 @@ class TableService:
 
             self.__build_table(matrix, subsets)
     
+    def __get_state_line(self, id):
+        return next((line for line in self.table if line.id == id), None)
+    
     def compile(self, text):
         self.compileGrammar()
+        print('-------------------Compile-Process---------------------')
 
         history = ''
 
         lxa = LexicAnalyzer(text, self.grammar)
 
-        stack = [Grammar.STREAM_END_UNIT, self.grammar.StartSimbolUnit]
+        stack = [self.__get_state_line(0)]
         current = lxa.getToken()
 
         while(True):
-            history += str(current.value).ljust(20) + " " + str(stack) + '\n'
+            hline = str(current.value).ljust(20) + " " + str(stack) + '\n'
+            history += hline
             
-            top = stack.pop()
+            print(hline)
+            
+            top = stack[len(stack) - 1]
 
-            break
+            cells = top.columns[current.unit.text]
 
-        return lxa.tokens, history
+            if(not len(cells)):
+                raise Exception('Erro no símbolo: ' + current.value)
+
+            for cell in cells:
+                if type(cell) is TableCellValue:
+                    if cell.cell_type == TableCellValue.Shift:
+                        stack.append(current.value)
+                        stack.append(self.__get_state_line(cell.value.id))
+
+                        current = lxa.getToken()
+                    
+                    elif cell.cell_type == TableCellValue.Reduce:
+                        reduction = cell.value
+                        production = reduction.production
+                        desemp_qtd = 2 * len(production.term)                    
+                        
+                        for i in range(desemp_qtd):
+                            stack.pop()
+                        
+                        last_state = stack[len(stack) - 1]
+                        stack.append(production.premise.left)
+
+                        deviation_cells = last_state.columns[production.premise.left]
+
+                        for deviation_cell in deviation_cells:
+                            state_line = self.__get_state_line(deviation_cell.value.id)
+
+                            stack.append(state_line)
+                    
+                    elif cell.cell_type == TableCellValue.Accept:
+                        hline = str(current.value).ljust(20) + " " + str(stack) + '\n'
+                        history += hline
+                        return lxa.tokens, history
+                    
+                    else:
+                        raise Exception('ACC não encontrado')
+                
+                else:
+                    raise Exception('celula não encontrada')
+
 
 
 

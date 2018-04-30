@@ -1,8 +1,8 @@
 N = {S,V,E}
-Sigma = {id,:=,n}
+Sigma = {ide,:=,n}
 S = {S}
 P = {
-    S -> id | V := E
-    V -> id
+    S -> ide | V := E
+    V -> ide
     E -> V | n
 }

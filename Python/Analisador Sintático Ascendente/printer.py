@@ -168,7 +168,9 @@ def printSintaticTable(tservice):
     header = (r"k\Σ").rjust(first_line.StringCenterCount)+"   | "
     
     for c in first_line.columns:
-        header += c.center(first_line.StringCenterCount) + " | "
+        offset = len(c) - first_line.StringCenterCount
+        offset = 0 if offset < 0 else offset
+        header += c[offset::].center(first_line.StringCenterCount) + " | "
 
     print(header)
 
@@ -178,4 +180,4 @@ def printSintaticTable(tservice):
     print('\n-----------------Reduction-Table--------------------')
 
     for reduction in tservice.reductions:
-        print("R"+str(reduction.id) + " " + str(reduction.production) + " "+ str(reduction.states))
+        print(("R"+str(reduction.id)).ljust(5) + " " + str(reduction.production).ljust(50) + " "+ str(reduction.states))
