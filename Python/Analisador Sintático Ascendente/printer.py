@@ -3,38 +3,6 @@ import networkx as nx
 from networkx.drawing.nx_agraph import write_dot, graphviz_layout
 import matplotlib.pyplot as plt
 
-# def recursiveMatPlotLib(graph, ploted, G, node, x, y):
-#         """internal use"""
-#         G.add_node(node.id, pos=(x, y))
-
-#         ploted.append(node)
-        
-#         length = len(node.paths)
-#         delta = int(length/2)
-#         newX = x + 1
-#         even = length%2 == 0
-
-#         for i, path in enumerate(node.paths):
-#             G.add_edge(node.id, path.dest.id, weight=(path.value.value if path.value else "ɛ"))
-#             newY = y + (i -  delta)
-#             if(even and newY is y):
-#                 newY += 1
-#             if(path.dest not in ploted):
-#                 recursiveMatPlotLib(graph, ploted, G, path.dest, newX, newY)
-
-
-# def printMatplotlib(graph):
-#     """open a window with the informed graph"""
-#     G=nx.Graph()
-
-#     recursiveMatPlotLib(graph, [], G, graph.root, 1, 10)
-
-#     pos = nx.get_node_attributes(G,'pos')
-#     nx.draw(G,pos, with_labels=True)
-
-#     labels = nx.get_edge_attributes(G,'weight')
-#     nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
-#     plt.show()
 def printMatplotlib(graph):
     G = nx.DiGraph()
     
@@ -73,7 +41,7 @@ def Grammar_Printer(g):
     print('-----------------------GRAMÁTICA-----------------------')
     print(g)
 
-    print('-----------------GRAMÁTICA-PRODUCTIONS-----------------')
+    print('\n-----------------GRAMÁTICA-PRODUCTIONS-----------------')
     print(re.sub(r'\[|\]|,', '', str(g.productions))[1::])
 
     print('\n-------------------------FIRST-------------------------')
@@ -158,7 +126,7 @@ def printSubsets(subsets):
     print('\n-----------------------Subsets-----------------------')
 
     for s in subsets:
-        print(s)
+        print("==> "+str(s) + '\n')
 
 def printSintaticTable(tservice):
     table = tservice.table

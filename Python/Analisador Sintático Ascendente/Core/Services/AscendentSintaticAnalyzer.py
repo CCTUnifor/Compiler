@@ -17,7 +17,7 @@ from Core.Services.SubsetsBuilder import State as State
 
 class TableCellValue:
     Shift = "S"
-    Go_to = "g"
+    Go_to = ""
     Reduce = "R"
     Accept = "ACC"
 
@@ -135,13 +135,13 @@ class TableService:
 
     def __apply_acc(self, complete_fechos):
         indice = ItemGraph.FakeStartString + "_0"
-        production_subset = complete_fechos[indice]
+        production_subsets = complete_fechos[indice]
 
-        line = self.table[production_subset[0].id]
-        tablecellvalue = TableCellValue(line.id, ItemGraph.FakeStartString, cell_type=TableCellValue.Accept)
-        line.columns[TermUnit.STREAM_END] = [tablecellvalue]
+        for production_subset in production_subsets:
+            line = self.__get_state_line(production_subset.id)
 
-        
+            tablecellvalue = TableCellValue(line.id, ItemGraph.FakeStartString, cell_type=TableCellValue.Accept)
+            line.columns[TermUnit.STREAM_END] = [tablecellvalue]        
     
     def __apply_reduce(self, complete_fechos):
         for i, production in enumerate(self.grammar.productions):
@@ -149,19 +149,19 @@ class TableService:
     
             indice = str("_").join([str(x) for x in production.id])
             
-            production_subset = complete_fechos[indice]
-
             reduction = Reduction(i+1, production)
             self.reductions.append(reduction)
 
-            for unit in follows:
-                line = self.table[production_subset[0].id]
+            production_subsets = complete_fechos[indice]
 
-                reduction.states.append(str(line.id) + "_" + str(unit.text))
+            for production_subset in production_subsets:
+                for unit in follows:
+                    line = self.__get_state_line(production_subset.id)
 
-                tablecellvalue = TableCellValue(line.id, unit.text, reduction, TableCellValue.Reduce)
-                line.columns[unit.text].append(tablecellvalue)
+                    reduction.states.append(str(line.id) + "_" + str(unit.text))
 
+                    tablecellvalue = TableCellValue(line.id, unit.text, reduction, TableCellValue.Reduce)
+                    line.columns[unit.text].append(tablecellvalue)
             
     def __load_complete_fechos(self, subsets):
         group_dict = {}
@@ -169,9 +169,11 @@ class TableService:
             for node in subset.fecho:
                 if(node.value):
                     item = node.value
+                    
                     if(item.is_complete()):
                         indice = str(item.premise.left) + "_" + str(item.cursor[0])
-                        if(indice not in group_dict):
+
+                        if indice not in group_dict:
                             group_dict[indice] = []
 
                         group_dict[indice].append(subset)
@@ -184,7 +186,7 @@ class TableService:
             self.follow.build_follow()
 
             self.item_graph.build_graph()
-            self.subset_builder = SubsetBuilder(self.item_graph)
+            self.subset_builder = SubsetBuilder(self.item_graph, is_ascii=False)
             matrix, subsets = self.subset_builder.build(reduce=False)
 
             self.__build_table(matrix, subsets)
@@ -200,7 +202,7 @@ class TableService:
 
         lxa = LexicAnalyzer(text, self.grammar)
 
-        stack = [self.__get_state_line(0)]
+        stack = [self.table[0]]
         current = lxa.getToken()
 
         while(True):
@@ -236,15 +238,17 @@ class TableService:
                         stack.append(production.premise.left)
 
                         deviation_cells = last_state.columns[production.premise.left]
-
+                        deviation_cell = deviation_cells[0]
+                        
+                        # state_line = self.__get_state_line(deviation_cell.value.id)
+                        # stack.append(state_line)
                         for deviation_cell in deviation_cells:
                             state_line = self.__get_state_line(deviation_cell.value.id)
 
                             stack.append(state_line)
+                        break
                     
                     elif cell.cell_type == TableCellValue.Accept:
-                        hline = str(current.value).ljust(20) + " " + str(stack) + '\n'
-                        history += hline
                         return lxa.tokens, history
                     
                     else:
@@ -252,9 +256,3 @@ class TableService:
                 
                 else:
                     raise Exception('celula não encontrada')
-
-
-
-
-        
-        

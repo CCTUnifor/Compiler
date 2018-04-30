@@ -15,14 +15,20 @@ class State:
         return str(self.id)
 
 class Builder:
-    def __init__(self, Graph: Graph):
-        self.__constructor(Graph)
+    def __init__(self, Graph: Graph, is_ascii=True):
+        self.__constructor(Graph, is_ascii)
 
-    def __constructor(self, Graph: Graph):
+    def __constructor(self, Graph: Graph, is_ascii=True):
         self.graph = Graph
         self.alphabet = self.__get_alphabet()
-        # self.subsetId = 65 # ascii code id
-        self.subsetId = 0 # counting id
+
+        self.is_ascii = is_ascii
+
+        if is_ascii:
+            self.subsetId = 65 # ascii code id
+        else:
+            self.subsetId = 0 # counting id
+
         self.cursor = Graph.root
     
     def __get_alphabet(self):
@@ -34,17 +40,20 @@ class Builder:
         return alphabet
     
     def __getNewSubset(self, fecho):
-        # Ascii code ID
-        # charId = str(chr(self.subsetId))
-        # self.subsetId += 1
-        # if(self.subsetId is 91):
-        #     self.subsetId = 97
-        # elif(self.subsetId is 123):
-        #     self.subsetId = 145
+        if self.is_ascii:
+            # Ascii code ID
+            charId = str(chr(self.subsetId))
+            self.subsetId += 1
+            if(self.subsetId is 91):
+                self.subsetId = 97
+            elif(self.subsetId is 123):
+                self.subsetId = 145
+        
+        else:
+            # counting ID
+            charId = self.subsetId    
+            self.subsetId += 1
 
-        # counting ID
-        charId = self.subsetId    
-        self.subsetId += 1
 
         return Subset(fecho, charId, self.alphabet)
     
@@ -170,6 +179,10 @@ class Builder:
                     for doneFecho in doneFechos + list(fechos) :
                         inFecho = True
 
+                        # for node in nextFecho:
+                        #         if(node not in doneFecho):
+                        #             inFecho = False
+                        #             break
                         if len(doneFecho) is len(nextFecho):
                             for node in nextFecho:
                                 if(node not in doneFecho):
