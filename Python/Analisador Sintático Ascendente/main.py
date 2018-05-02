@@ -42,7 +42,7 @@ with io.open(grammar_file_name, "r", encoding='utf8') as file_obj:
     PRINTER.printSubsets(tservice.subset_builder.subsets)
     # PRINTER.printSubsetMatrix(tservice.subset_builder.matrix)
     PRINTER.printSintaticTable(tservice)
-    PRINTER.printMatplotlib(tservice.item_graph)
+    # PRINTER.printMatplotlib(tservice.item_graph)
 
 with io.open(input_file_name, "r", encoding='utf8') as file_obj:
     fileTxt = file_obj.read()
