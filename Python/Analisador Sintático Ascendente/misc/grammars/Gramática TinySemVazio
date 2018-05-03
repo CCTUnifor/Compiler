@@ -1,36 +1,22 @@
-N = {Programa,decl-sequencia,decl-sequencia',declaracao,cond-decl,repet-decl,atrib-decl,leit-decl,escr-decl,exp,X,comp-op,exp-simples,exp-simples',soma,termo,termo',mult,fator}
+N = {Programa,decl-sequencia,declaracao,exp,comp-op,exp-simples,soma,termo,mult,fator}
 Sigma = {;,if,then,else,end,repeat,until,:=,ide,read,write,<,=,+,-,*,/,(,),num}
 S = {Programa}
 P = {
-    Programa -> decl-sequencia
+    Programa -> declaracao ; declaracao | if exp then decl-sequencia end | repeat decl-sequencia until exp | ide := exp | read ide | write exp
 
-    decl-sequencia -> declaracao decl-sequencia'
-    decl-sequencia'-> ; declaracao decl-sequencia'| ɛ
+    decl-sequencia -> declaracao ; declaracao | if exp then decl-sequencia end | repeat decl-sequencia until exp | ide := exp | read ide | write exp
 
-    declaracao -> cond-decl | repet-decl | atrib-decl | leit-decl | escr-decl 
+    declaracao -> if exp then decl-sequencia end | repeat decl-sequencia until exp | ide := exp | read ide | write exp
 
-    cond-decl -> if exp then decl-sequencia end
-
-    repet-decl -> repeat decl-sequencia until exp
-
-    atrib-decl -> ide := exp
-
-    leit-decl -> read ide
-
-    escr-decl -> write exp
-
-    exp -> exp-simples X
-    X -> comp-op exp-simples | ɛ
+    exp -> exp-simples comp-op exp-simples | termo soma termo | fator mult fator | ( exp ) | num | ide
 
     comp-op -> < | =
 
-    exp-simples -> termo exp-simples'
-    exp-simples'-> soma termo exp-simples' | ɛ
+    exp-simples -> termo soma termo | fator mult fator | ( exp ) | num | ide
 
     soma -> + | -
 
-    termo -> fator termo'
-    termo'-> mult fator termo' | ɛ
+    termo -> fator mult fator | ( exp ) | num | ide
 
     mult -> * | /
 

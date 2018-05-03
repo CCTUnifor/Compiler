@@ -2,5 +2,7 @@ N = {S,A,B}
 Sigma = {a,b,c}
 S = {S}
 P = {
-    S-> a b c | a c | b c | c
+    S-> A B c | B c | A c | c
+    A-> a
+    B-> b
 }
