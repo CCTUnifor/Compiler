@@ -216,7 +216,7 @@ class TableService:
             cells = top.columns[current.unit.text]
 
             if(not len(cells)):
-                raise Exception('Erro no símbolo: ' + current.value)
+                raise Exception('Erro no símbolo: ' + str(current.value))
 
             for cell in cells:
                 if type(cell) is TableCellValue:

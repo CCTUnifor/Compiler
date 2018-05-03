@@ -5,12 +5,12 @@
    "version": "0.2.0",
    "configurations": [
        {
-           "name": "Python: Current File",
+           "name": "Ascendent",
            "type": "python",
            "request": "launch",
            "stopOnEntry": true,
            "pythonPath": "${config:python.pythonPath}",
-           "program": "${file}",
+           "program": "${workspaceFolder}/Analisador Sintático Ascendente/main.py",
            "cwd": "${workspaceFolder}",
            "env": {},
            "envFile": "${workspaceFolder}/.env",

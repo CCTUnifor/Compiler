@@ -170,6 +170,7 @@ class Builder:
 
     def __add_on_queue(self, doneFechos, fechos, subset):
             semiFunction = subset.semiFunction
+            
             for setKey in semiFunction:
                 nextFecho = semiFunction[setKey]
                 
@@ -180,9 +181,9 @@ class Builder:
                         inFecho = True
 
                         # for node in nextFecho:
-                        #         if(node not in doneFecho):
-                        #             inFecho = False
-                        #             break
+                        #     if(node not in doneFecho):
+                        #         inFecho = False
+                        #         break
                         if len(doneFecho) is len(nextFecho):
                             for node in nextFecho:
                                 if(node not in doneFecho):
@@ -190,7 +191,7 @@ class Builder:
                                     break
                         else:
                             inFecho = False
-                            break
+                            # break
 
                         if(inFecho):
                             break
