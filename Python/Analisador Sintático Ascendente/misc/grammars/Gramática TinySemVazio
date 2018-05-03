@@ -1,56 +1,34 @@
-N = {Programa,decl-sequencia,declaracao,exp,comp-op,exp-simples,soma,termo,mult,fator,fator',P,P',termo',exp',exp-simples',if-start,if-end,repeat-start,repeat-end,IDE,WRITE,READ,decl-sequencia',ATRIB,ponto-virgula}
+N = {Programa,decl-sequencia,declaracao,cond-decl,repet-decl,atrib-decl,leit-decl,escr-decl,exp,comp-op,exp-simples,soma,termo,mult,fator}
 Sigma = {;,if,then,else,end,repeat,until,:=,ide,read,write,<,=,+,-,*,/,(,),num}
 S = {Programa}
 P = {
-    Programa -> declaracao decl-sequencia' | if-start if-end | repeat-start repeat-end | IDE ATRIB | READ IDE | WRITE exp
+    Programa -> decl-sequencia
 
-    decl-sequencia -> declaracao decl-sequencia' | if-start if-end | repeat-start repeat-end | IDE ATRIB | READ IDE | WRITE exp
+    decl-sequencia -> declaracao ; declaracao | declaracao
 
-    decl-sequencia'-> ponto-virgula declaracao
+    declaracao -> cond-decl | repet-decl | atrib-decl | leit-decl | escr-decl 
 
-    ponto-virgula -> ;
+    cond-decl -> if exp then decl-sequencia end
 
-    declaracao -> if-start if-end | repeat-start repeat-end | IDE ATRIB | READ IDE | WRITE exp
+    repet-decl -> repeat decl-sequencia until exp
 
-    READ -> read
+    atrib-decl -> ide := exp
 
-    WRITE -> write
+    leit-decl -> read ide
 
-    ATRIB -> := exp
+    escr-decl -> write exp
 
-    IDE -> ide
-
-    repeat-start -> repeat decl-sequencia
-
-    repeat-end -> until exp
-
-    if-start-> if exp then
-
-    if-end -> decl-sequencia end
-
-    exp -> exp' exp-simples | exp-simples' termo | termo' fator | fator' P' | num | ide
-
-    exp'-> exp-simples comp-op
+    exp -> exp-simples comp-op exp-simples | exp-simples
 
     comp-op -> < | =
 
-    exp-simples -> exp-simples' termo | termo' fator | fator' P' | num | ide
-
-    exp-simples'-> termo soma
+    exp-simples -> termo soma termo | termo
 
     soma -> + | -
 
-    termo -> termo' fator | fator' P' | num | ide
-
-    termo'-> fator mult
+    termo -> fator mult fator | fator
 
     mult -> * | /
 
-    fator ->  fator' P' | num | ide
-
-    fator'-> P exp
-
-    P -> (
-
-    P' -> )
+    fator -> ( exp ) | num | ide
 }

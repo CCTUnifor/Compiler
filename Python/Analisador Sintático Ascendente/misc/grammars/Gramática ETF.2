@@ -1,0 +1,8 @@
+N = {E,E',E'',T,F,P,P'}
+Sigma = {+,*,(,),ide}
+S = {E}
+P = {
+    E -> E + T | T
+    T -> T * F | F
+    F -> ( E ) | ide
+}
