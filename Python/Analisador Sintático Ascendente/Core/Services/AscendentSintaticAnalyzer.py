@@ -152,19 +152,21 @@ class TableService:
             reduction = Reduction(i+1, production)
             self.reductions.append(reduction)
 
-            production_subsets = complete_fechos[indice]
+            if indice in complete_fechos:
+                production_subsets = complete_fechos[indice]
 
-            for production_subset in production_subsets:
-                for unit in follows:
-                    line = self.__get_state_line(production_subset.id)
+                for production_subset in production_subsets:
+                    for unit in follows:
+                        line = self.__get_state_line(production_subset.id)
 
-                    reduction.states.append(str(line.id) + "_" + str(unit.text))
+                        reduction.states.append(str(line.id) + "_" + str(unit.text))
 
-                    tablecellvalue = TableCellValue(line.id, unit.text, reduction, TableCellValue.Reduce)
-                    line.columns[unit.text].append(tablecellvalue)
+                        tablecellvalue = TableCellValue(line.id, unit.text, reduction, TableCellValue.Reduce)
+                        line.columns[unit.text].append(tablecellvalue)
             
     def __load_complete_fechos(self, subsets):
         group_dict = {}
+
         for subset in subsets:
             for node in subset.fecho:
                 if(node.value):
@@ -237,15 +239,15 @@ class TableService:
                         last_state = stack[len(stack) - 1]
                         stack.append(production.premise.left)
 
-                        deviation_cells = last_state.columns[production.premise.left]
-                        deviation_cell = deviation_cells[0]
+                        go_tos = last_state.columns[production.premise.left]
+                        go_to = go_tos[0]
                         
-                        # state_line = self.__get_state_line(deviation_cell.value.id)
-                        # stack.append(state_line)
-                        for deviation_cell in deviation_cells:
-                            state_line = self.__get_state_line(deviation_cell.value.id)
+                        state_line = self.__get_state_line(go_to.value.id)
+                        stack.append(state_line)
+                        # for go_to in go_tos:
+                        #     state_line = self.__get_state_line(go_to.value.id)
 
-                            stack.append(state_line)
+                        #     stack.append(state_line)
                         break
                     
                     elif cell.cell_type == TableCellValue.Accept:

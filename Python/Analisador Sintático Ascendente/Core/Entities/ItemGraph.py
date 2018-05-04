@@ -13,6 +13,7 @@ class ItemGraph(Graph):
     def __init__(self, grammar: Grammar, id=0):
         super().__init__(id, makeRoot=True)
         self.grammar = grammar
+        self.cursor_valid_values = self.grammar.Alphabet + self.grammar.NonTerminals
         self.augmented_grammar = ItemGraph.augment_grammar(grammar)
         self.itemnode_queue = Deque()
         self.explored_term_units = {}
@@ -63,20 +64,21 @@ class ItemGraph(Graph):
      
     def __apply_third_rule(self, item_node):
         item = item_node.value
-        
         term_unit = item.get_term_unit()
+        
+        if term_unit in self.cursor_valid_values:
+            next_item = item.get_next()
+            next_node = self.makeNode(next_item)
 
-        next_item = item.get_next()
-        next_node = self.makeNode(next_item)
+            self.itemnode_queue.append(next_node)
 
-        self.itemnode_queue.append(next_node)
-
-        self.addPath(item_node, next_node, term_unit)
+            self.addPath(item_node, next_node, term_unit)
     
     def __apply_second_rule(self, item_node):
         item = item_node.value
         term_unit = item.get_term_unit()
-        if(term_unit.type is TermUnit.NONTERMINAL):
+
+        if term_unit.type is TermUnit.NONTERMINAL:
             # adicionar premisas repetidas
             next_premise = self.grammar.get_premise(term_unit.text)
 

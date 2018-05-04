@@ -1,0 +1,475 @@
+
+-----------------------GRAMÁTICA-----------------------
+Alphabet: [;, if, then, end, repeat, until, ide, :=, read, write, <, =, +, -, *, /, (, ), num]
+Non Terminals: [Programa, decl-sequencia, declaracao, cond-decl, repet-decl, atrib-decl, leit-decl, escr-decl, exp, exp-simples, comp-op, termo, soma, fator, mult]
+Start Simbol: Programa -> [['decl-sequencia']]
+Premises:[
+Programa -> [['decl-sequencia']],
+decl-sequencia -> [['declaracao', ';', 'declaracao'], ['declaracao']],
+declaracao -> [['cond-decl'], ['repet-decl'], ['atrib-decl'], ['leit-decl'], ['escr-decl']],
+cond-decl -> [['if', 'exp', 'then', 'decl-sequencia', 'end']],
+repet-decl -> [['repeat', 'decl-sequencia', 'until', 'exp']],
+atrib-decl -> [['ide', ':=', 'exp']],
+leit-decl -> [['read', 'ide']],
+escr-decl -> [['write', 'exp']],
+exp -> [['exp-simples', 'comp-op', 'exp-simples'], ['exp-simples']],
+comp-op -> [['<'], ['=']],
+exp-simples -> [['termo', 'soma', 'termo'], ['termo']],
+soma -> [['+'], ['-']],
+termo -> [['fator', 'mult', 'fator'], ['fator']],
+mult -> [['*'], ['/']],
+fator -> [['(', 'exp', ')'], ['num'], ['ide']]]
+
+-----------------GRAMÁTICA-PRODUCTIONS-----------------
+Programa -> decl-sequencia
+decl-sequencia -> declaracao ; declaracao
+decl-sequencia -> declaracao
+declaracao -> cond-decl
+declaracao -> repet-decl
+declaracao -> atrib-decl
+declaracao -> leit-decl
+declaracao -> escr-decl
+cond-decl -> if exp then decl-sequencia end
+repet-decl -> repeat decl-sequencia until exp
+atrib-decl -> ide := exp
+leit-decl -> read ide
+escr-decl -> write exp
+exp -> exp-simples comp-op exp-simples
+exp -> exp-simples
+comp-op -> <
+comp-op -> =
+exp-simples -> termo soma termo
+exp-simples -> termo
+soma -> +
+soma -> -
+termo -> fator mult fator
+termo -> fator
+mult -> *
+mult -> /
+fator -> ( exp )
+fator -> num
+fator -> ide
+
+-------------------------FIRST-------------------------
+first(Programa)      => {read, repeat, ide, if, write}
+first(decl-sequencia) => {ide, read, repeat, if, write}
+first(declaracao)    => {read, repeat, ide, if, write}
+first(cond-decl)     => {if}
+first(repet-decl)    => {repeat}
+first(atrib-decl)    => {ide}
+first(leit-decl)     => {read}
+first(escr-decl)     => {write}
+first(exp)           => {ide, num, (}
+first(comp-op)       => {<, =}
+first(exp-simples)   => {num, ide, (}
+first(soma)          => {+, -}
+first(termo)         => {ide, num, (}
+first(mult)          => {/, *}
+first(fator)         => {ide, num, (}
+
+------------------------FOLLOW-------------------------
+follow(Programa)     => {$}
+follow(decl-sequencia) => {end, until, $}
+follow(declaracao)   => {end, until, $, ;}
+follow(cond-decl)    => {end, ;, until, $}
+follow(repet-decl)   => {end, ;, until, $}
+follow(atrib-decl)   => {end, ;, until, $}
+follow(leit-decl)    => {end, ;, until, $}
+follow(escr-decl)    => {end, ;, until, $}
+follow(exp)          => {end, $, ;, until, ), then}
+follow(comp-op)      => {ide, (, num}
+follow(exp-simples)  => {end, <, =, $, ;, until, ), then}
+follow(soma)         => {num, ide, (}
+follow(termo)        => {end, +, <, -, =, $, ;, until, ), then}
+follow(mult)         => {ide, (, num}
+follow(fator)        => {<, *, =, /, $, ), then, end, +, -, ;, until}
+
+-----------------------Subsets-----------------------
+==> Fecho-(0-0) = (0-0, @ -> .Programa, Programa -> .decl-sequencia, decl-sequencia -> .declaracao;.declaracao, declaracao -> .cond-decl, cond-decl -> .ifexpthendecl-sequenciaend, declaracao -> .repet-decl, repet-decl -> .repeatdecl-sequenciauntilexp, declaracao -> .atrib-decl, atrib-decl -> .ide:=exp, declaracao -> .leit-decl, leit-decl -> .readide, declaracao -> .escr-decl, escr-decl -> .writeexp, decl-sequencia -> .declaracao) = 0
+    δ(0, Programa): {@ -> Programa.}    δ(0, decl-sequencia): {Programa -> decl-sequencia.}    δ(0, declaracao): {decl-sequencia -> declaracao.;declaracao, decl-sequencia -> declaracao.}    δ(0, cond-decl): {declaracao -> cond-decl.}    δ(0, repet-decl): {declaracao -> repet-decl.}    δ(0, atrib-decl): {declaracao -> atrib-decl.}    δ(0, leit-decl): {declaracao -> leit-decl.}    δ(0, escr-decl): {declaracao -> escr-decl.}    δ(0, if): {cond-decl -> if.expthendecl-sequenciaend}    δ(0, repeat): {repet-decl -> repeat.decl-sequenciauntilexp}    δ(0, ide): {atrib-decl -> ide.:=exp}    δ(0, read): {leit-decl -> read.ide}    δ(0, write): {escr-decl -> write.exp}
+
+==> Fecho-(@ -> Programa.) = (@ -> Programa.) = 1
+
+
+==> Fecho-(Programa -> decl-sequencia.) = (Programa -> decl-sequencia.) = 2
+
+
+==> Fecho-(decl-sequencia -> declaracao.;declaracao, decl-sequencia -> declaracao.) = (decl-sequencia -> declaracao.;declaracao, decl-sequencia -> declaracao.) = 3
+    δ(3, ;): {decl-sequencia -> .declaracao;.declaracao}
+
+==> Fecho-(declaracao -> cond-decl.) = (declaracao -> cond-decl.) = 4
+
+
+==> Fecho-(declaracao -> repet-decl.) = (declaracao -> repet-decl.) = 5
+
+
+==> Fecho-(declaracao -> atrib-decl.) = (declaracao -> atrib-decl.) = 6
+
+
+==> Fecho-(declaracao -> leit-decl.) = (declaracao -> leit-decl.) = 7
+
+
+==> Fecho-(declaracao -> escr-decl.) = (declaracao -> escr-decl.) = 8
+
+
+==> Fecho-(cond-decl -> if.expthendecl-sequenciaend) = (cond-decl -> if.expthendecl-sequenciaend, exp -> .exp-simplescomp-op.exp-simples, exp-simples -> .termosoma.termo, termo -> .fatormult.fator, fator -> .(exp), fator -> .num, fator -> .ide, termo -> .fator, exp-simples -> .termo, exp -> .exp-simples) = 9
+    δ(9, ide): {fator -> ide.}    δ(9, exp): {cond-decl -> ifexp.thendecl-sequenciaend}    δ(9, exp-simples): {exp -> exp-simples.comp-opexp-simples, exp -> exp-simples.}    δ(9, termo): {exp-simples -> termo.somatermo, exp-simples -> termo.}    δ(9, fator): {termo -> fator.multfator, termo -> fator.}    δ(9, (): {fator -> (.exp)}    δ(9, num): {fator -> num.}
+
+==> Fecho-(repet-decl -> repeat.decl-sequenciauntilexp) = (repet-decl -> repeat.decl-sequenciauntilexp, decl-sequencia -> .declaracao;.declaracao, declaracao -> .cond-decl, cond-decl -> .ifexpthendecl-sequenciaend, declaracao -> .repet-decl, repet-decl -> .repeatdecl-sequenciauntilexp, declaracao ->.atrib-decl, atrib-decl -> .ide:=exp, declaracao -> .leit-decl, leit-decl -> .readide, declaracao -> .escr-decl, escr-decl -> .writeexp, decl-sequencia -> .declaracao) = 10
+    δ(10, decl-sequencia): {repet-decl -> repeatdecl-sequencia.untilexp}    δ(10, declaracao): {decl-sequencia -> declaracao.;declaracao, decl-sequencia -> declaracao.}    δ(10, cond-decl): {declaracao -> cond-decl.}    δ(10, repet-decl): {declaracao -> repet-decl.}    δ(10, atrib-decl): {declaracao-> atrib-decl.}    δ(10, leit-decl): {declaracao -> leit-decl.}    δ(10, escr-decl): {declaracao -> escr-decl.}    δ(10, if): {cond-decl -> if.expthendecl-sequenciaend}    δ(10, repeat): {repet-decl -> repeat.decl-sequenciauntilexp}    δ(10, ide): {atrib-decl -> ide.:=exp}    δ(10, read): {leit-decl-> read.ide}    δ(10, write): {escr-decl -> write.exp}
+
+==> Fecho-(atrib-decl -> ide.:=exp) = (atrib-decl -> ide.:=exp) = 11
+    δ(11, :=): {atrib-decl -> ide:=.exp}
+
+==> Fecho-(leit-decl -> read.ide) = (leit-decl -> read.ide) = 12
+    δ(12, ide): {leit-decl -> readide.}
+
+==> Fecho-(escr-decl -> write.exp) = (escr-decl -> write.exp, exp -> .exp-simplescomp-op.exp-simples, exp-simples -> .termosoma.termo, termo -> .fatormult.fator, fator -> .(exp), fator -> .num, fator -> .ide, termo -> .fator, exp-simples -> .termo, exp -> .exp-simples) = 13
+    δ(13, ide): {fator -> ide.}    δ(13, exp): {escr-decl -> writeexp.}    δ(13, exp-simples): {exp -> exp-simples.comp-opexp-simples, exp -> exp-simples.}    δ(13, termo): {exp-simples -> termo.somatermo, exp-simples -> termo.}    δ(13, fator): {termo -> fator.multfator, termo -> fator.}    δ(13, (): {fator -> (.exp)}    δ(13, num): {fator -> num.}
+
+==> Fecho-(decl-sequencia -> .declaracao;.declaracao) = (decl-sequencia -> .declaracao;.declaracao, declaracao -> .cond-decl, cond-decl -> .ifexpthendecl-sequenciaend, declaracao -> .repet-decl, repet-decl -> .repeatdecl-sequenciauntilexp, declaracao -> .atrib-decl, atrib-decl -> .ide:=exp, declaracao -> .leit-decl, leit-decl -> .readide, declaracao -> .escr-decl, escr-decl -> .writeexp) = 14
+    δ(14, declaracao): {decl-sequencia -> declaracao;declaracao.}    δ(14, cond-decl): {declaracao -> cond-decl.}    δ(14, repet-decl): {declaracao -> repet-decl.}    δ(14, atrib-decl): {declaracao -> atrib-decl.}    δ(14, leit-decl): {declaracao -> leit-decl.}    δ(14, escr-decl): {declaracao -> escr-decl.}    δ(14, if): {cond-decl -> if.expthendecl-sequenciaend}    δ(14, repeat): {repet-decl -> repeat.decl-sequenciauntilexp}    δ(14, ide): {atrib-decl -> ide.:=exp}    δ(14, read): {leit-decl -> read.ide}    δ(14, write): {escr-decl -> write.exp}
+
+==> Fecho-(fator -> ide.) = (fator -> ide.) = 15
+
+
+==> Fecho-(cond-decl -> ifexp.thendecl-sequenciaend) = (cond-decl -> ifexp.thendecl-sequenciaend) = 16
+    δ(16, then): {cond-decl -> ifexpthen.decl-sequenciaend}
+
+==> Fecho-(exp -> exp-simples.comp-opexp-simples, exp -> exp-simples.) = (exp -> exp-simples.comp-opexp-simples, comp-op -> .<, comp-op -> .=, exp -> exp-simples.) = 17
+    δ(17, comp-op): {exp -> .exp-simplescomp-op.exp-simples}    δ(17, <): {comp-op -> <.}    δ(17, =): {comp-op -> =.}
+
+==> Fecho-(exp-simples -> termo.somatermo, exp-simples -> termo.) = (exp-simples -> termo.somatermo, soma -> .+, soma -> .-, exp-simples -> termo.) = 18
+    δ(18, soma): {exp-simples -> .termosoma.termo}    δ(18, +): {soma -> +.}    δ(18, -): {soma -> -.}
+
+==> Fecho-(termo -> fator.multfator, termo -> fator.) = (termo -> fator.multfator, mult -> .*, mult -> ./, termo -> fator.) = 19
+    δ(19, mult): {termo -> .fatormult.fator}    δ(19, *): {mult -> *.}    δ(19, /): {mult -> /.}
+
+==> Fecho-(fator -> (.exp)) = (fator -> (.exp), exp -> .exp-simplescomp-op.exp-simples, exp-simples -> .termosoma.termo, termo -> .fatormult.fator, fator -> .(exp), fator -> .num, fator -> .ide, termo -> .fator, exp-simples -> .termo, exp -> .exp-simples) = 20
+    δ(20, ide): {fator -> ide.}    δ(20, exp): {fator -> (exp.)}    δ(20, exp-simples): {exp -> exp-simples.comp-opexp-simples, exp -> exp-simples.}    δ(20, termo): {exp-simples -> termo.somatermo, exp-simples -> termo.}    δ(20, fator): {termo -> fator.multfator, termo -> fator.}    δ(20, (): {fator -> (.exp)}    δ(20, num): {fator -> num.}
+
+==> Fecho-(fator -> num.) = (fator -> num.) = 21
+
+
+==> Fecho-(repet-decl -> repeatdecl-sequencia.untilexp) = (repet-decl -> repeatdecl-sequencia.untilexp) = 22
+    δ(22, until): {repet-decl -> repeatdecl-sequenciauntil.exp}
+
+==> Fecho-(atrib-decl -> ide:=.exp) = (atrib-decl -> ide:=.exp, exp -> .exp-simplescomp-op.exp-simples, exp-simples -> .termosoma.termo, termo -> .fatormult.fator, fator -> .(exp), fator -> .num, fator -> .ide, termo -> .fator, exp-simples -> .termo, exp -> .exp-simples) = 23
+    δ(23, ide): {fator -> ide.}    δ(23, exp): {atrib-decl -> ide:=exp.}    δ(23, exp-simples): {exp -> exp-simples.comp-opexp-simples, exp -> exp-simples.}    δ(23, termo): {exp-simples -> termo.somatermo, exp-simples -> termo.}    δ(23, fator): {termo -> fator.multfator, termo -> fator.}    δ(23, (): {fator -> (.exp)}    δ(23, num): {fator -> num.}
+
+==> Fecho-(leit-decl -> readide.) = (leit-decl -> readide.) = 24
+
+
+==> Fecho-(escr-decl -> writeexp.) = (escr-decl -> writeexp.) = 25
+
+
+==> Fecho-(decl-sequencia -> declaracao;declaracao.) = (decl-sequencia -> declaracao;declaracao.) = 26
+
+
+==> Fecho-(cond-decl -> ifexpthen.decl-sequenciaend) = (cond-decl -> ifexpthen.decl-sequenciaend, decl-sequencia -> .declaracao;.declaracao, declaracao -> .cond-decl, cond-decl -> .ifexpthendecl-sequenciaend, declaracao -> .repet-decl, repet-decl -> .repeatdecl-sequenciauntilexp, declaracao -> .atrib-decl, atrib-decl -> .ide:=exp, declaracao -> .leit-decl, leit-decl -> .readide, declaracao -> .escr-decl, escr-decl -> .writeexp, decl-sequencia -> .declaracao) = 27
+    δ(27, decl-sequencia): {cond-decl -> ifexpthendecl-sequencia.end}    δ(27, declaracao): {decl-sequencia -> declaracao.;declaracao, decl-sequencia -> declaracao.}    δ(27, cond-decl): {declaracao -> cond-decl.}    δ(27, repet-decl): {declaracao -> repet-decl.}    δ(27, atrib-decl): {declaracao ->atrib-decl.}    δ(27, leit-decl): {declaracao -> leit-decl.}    δ(27, escr-decl): {declaracao -> escr-decl.}    δ(27, if): {cond-decl -> if.expthendecl-sequenciaend}    δ(27, repeat): {repet-decl -> repeat.decl-sequenciauntilexp}    δ(27, ide): {atrib-decl -> ide.:=exp}    δ(27, read): {leit-decl ->read.ide}    δ(27, write): {escr-decl -> write.exp}
+
+==> Fecho-(exp -> .exp-simplescomp-op.exp-simples) = (exp -> .exp-simplescomp-op.exp-simples, exp-simples -> .termosoma.termo, termo -> .fatormult.fator, fator -> .(exp), fator -> .num, fator -> .ide, termo -> .fator, exp-simples -> .termo) = 28
+    δ(28, ide): {fator -> ide.}    δ(28, exp-simples): {exp -> exp-simplescomp-opexp-simples.}    δ(28, termo): {exp-simples -> termo.somatermo, exp-simples -> termo.}    δ(28, fator): {termo -> fator.multfator, termo -> fator.}    δ(28, (): {fator -> (.exp)}    δ(28, num): {fator -> num.}
+
+==> Fecho-(comp-op -> <.) = (comp-op -> <.) = 29
+
+
+==> Fecho-(comp-op -> =.) = (comp-op -> =.) = 30
+
+
+==> Fecho-(exp-simples -> .termosoma.termo) = (exp-simples -> .termosoma.termo, termo -> .fatormult.fator, fator -> .(exp), fator -> .num, fator -> .ide, termo -> .fator) = 31
+    δ(31, ide): {fator -> ide.}    δ(31, termo): {exp-simples -> termosomatermo.}    δ(31, fator): {termo -> fator.multfator, termo -> fator.}    δ(31, (): {fator -> (.exp)}    δ(31, num): {fator -> num.}
+
+==> Fecho-(soma -> +.) = (soma -> +.) = 32
+
+
+==> Fecho-(soma -> -.) = (soma -> -.) = 33
+
+
+==> Fecho-(termo -> .fatormult.fator) = (termo -> .fatormult.fator, fator -> .(exp), fator -> .num, fator -> .ide) = 34
+    δ(34, ide): {fator -> ide.}    δ(34, fator): {termo -> fatormultfator.}    δ(34, (): {fator -> (.exp)}    δ(34, num): {fator -> num.}
+
+==> Fecho-(mult -> *.) = (mult -> *.) = 35
+
+
+==> Fecho-(mult -> /.) = (mult -> /.) = 36
+
+
+==> Fecho-(fator -> (exp.)) = (fator -> (exp.)) = 37
+    δ(37, )): {fator -> (exp).}
+
+==> Fecho-(repet-decl -> repeatdecl-sequenciauntil.exp) = (repet-decl -> repeatdecl-sequenciauntil.exp, exp -> .exp-simplescomp-op.exp-simples, exp-simples -> .termosoma.termo, termo -> .fatormult.fator, fator -> .(exp), fator -> .num, fator -> .ide, termo -> .fator, exp-simples -> .termo, exp -> .exp-simples) = 38
+    δ(38, ide): {fator -> ide.}    δ(38, exp): {repet-decl -> repeatdecl-sequenciauntilexp.}    δ(38, exp-simples): {exp -> exp-simples.comp-opexp-simples, exp -> exp-simples.}    δ(38, termo): {exp-simples -> termo.somatermo, exp-simples -> termo.}    δ(38, fator): {termo -> fator.multfator, termo -> fator.}    δ(38, (): {fator -> (.exp)}    δ(38, num): {fator -> num.}
+
+==> Fecho-(atrib-decl -> ide:=exp.) = (atrib-decl -> ide:=exp.) = 39
+
+
+==> Fecho-(cond-decl -> ifexpthendecl-sequencia.end) = (cond-decl -> ifexpthendecl-sequencia.end) = 40
+    δ(40, end): {cond-decl -> ifexpthendecl-sequenciaend.}
+
+==> Fecho-(exp -> exp-simplescomp-opexp-simples.) = (exp -> exp-simplescomp-opexp-simples.) = 41
+
+
+==> Fecho-(exp-simples -> termosomatermo.) = (exp-simples -> termosomatermo.) = 42
+
+
+==> Fecho-(termo -> fatormultfator.) = (termo -> fatormultfator.) = 43
+
+
+==> Fecho-(fator -> (exp).) = (fator -> (exp).) = 44
+
+
+==> Fecho-(repet-decl -> repeatdecl-sequenciauntilexp.) = (repet-decl -> repeatdecl-sequenciauntilexp.) = 45
+
+
+==> Fecho-(cond-decl -> ifexpthendecl-sequenciaend.) = (cond-decl -> ifexpthendecl-sequenciaend.) = 46
+
+
+
+------------------Sintatic-Matrix-------------------
+
+  k\Σ   | grama | encia | racao | -decl | -decl | -decl | -decl | -decl |   ;   |   if  | epeat |  ide  |  read | write |  exp  |   :=  | mples |  then | until | termo | mp-op | fator |  soma |   <   |   =   |  end  |   (   |  num  |  mult |   +   |   -   |   *   |   /   |   )   |   $   |
+    0   |   1   |   2   |   3   |   4   |   5   |   6   |   7   |   8   |   -   |   S9  |  S10  |  S11  |  S12  |  S13  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |
+    1   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  ACC  |
+    2   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   R1  |
+    3   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  S14  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   R3  |   -   |   -   |   -   |   -   |   -   |   -   |   R3  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   R3  |
+    4   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   R4  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   R4  |   -   |   -   |   -   |   -   |   -   |   -   |   R4  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   R4  |
+    5   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   R5  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   R5  |   -   |   -   |   -   |   -   |   -   |   -   |   R5  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   R5  |
+    6   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   R6  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   R6  |   -   |   -   |   -   |   -   |   -   |   -   |   R6  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   R6  |
+    7   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   R7  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   R7  |   -   |   -   |   -   |   -   |   -   |   -   |   R7  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   R7  |
+    8   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   R8  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   R8  |   -   |   -   |   -   |   -   |   -   |   -   |   R8  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   R8  |
+    9   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  S15  |   -   |   -   |   16  |   -   |   17  |   -   |   -   |   18  |   -   |   19  |   -   |   -   |   -   |   -   |  S20  |  S21  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |
+   10   |   -   |   22  |   3   |   4   |   5   |   6   |   7   |   8   |   -   |   S9  |  S10  |  S11  |  S12  |  S13  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |
+   11   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  S23  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |
+   12   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  S24  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |
+   13   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  S15  |   -   |   -   |   25  |   -   |   17  |   -   |   -   |   18  |   -   |   19  |   -   |   -   |   -   |   -   |  S20  |  S21  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |
+   14   |   -   |   -   |   26  |   4   |   5   |   6   |   7   |   8   |   -   |   S9  |  S10  |  S11  |  S12  |  S13  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |
+   15   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R28  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R28  |  R28  |   -   |   -   |   -   |   -   |  R28  |  R28  |  R28  |   -   |   -   |   -   |  R28  |  R28  |  R28  |  R28  |  R28  |  R28  |
+   16   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  S27  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |
+   17   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R15  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R15  |  R15  |   -   |   28  |   -   |   -   |  S29  |  S30  |  R15  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R15  |  R15  |
+   18   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R19  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R19  |  R19  |   -   |   -   |   -   |   31  |  R19  |  R19  |  R19  |   -   |   -   |   -   |  S32  |  S33  |   -   |   -   |  R19  |  R19  |
+   19   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R23  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R23  |  R23  |   -   |   -   |   -   |   -   |  R23  |  R23  |  R23  |   -   |   -   |   34  |  R23  |  R23  |  S35  |  S36  |  R23  |  R23  |
+   20   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  S15  |   -   |   -   |   37  |   -   |   17  |   -   |   -   |   18  |   -   |   19  |   -   |   -   |   -   |   -   |  S20  |  S21  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |
+   21   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R27  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R27  |  R27  |   -   |   -   |   -   |   -   |  R27  |  R27  |  R27  |   -   |   -   |   -   |  R27  |  R27  |  R27  |  R27  |  R27  |  R27  |
+   22   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  S38  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |
+   23   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  S15  |   -   |   -   |   39  |   -   |   17  |   -   |   -   |   18  |   -   |   19  |   -   |   -   |   -   |   -   |  S20  |  S21  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |
+   24   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R12  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R12  |   -   |   -   |   -   |   -   |   -   |   -   |  R12  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R12  |
+   25   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R13  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R13  |   -   |   -   |   -   |   -   |   -   |   -   |  R13  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R13  |
+   26   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   R2  |   -   |   -   |   -   |   -   |   -   |   -   |   R2  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   R2  |
+   27   |   -   |   40  |   3   |   4   |   5   |   6   |   7   |   8   |   -   |   S9  |  S10  |  S11  |  S12  |  S13  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |
+   28   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  S15  |   -   |   -   |   -   |   -   |   41  |   -   |   -   |   18  |   -   |   19  |   -   |   -   |   -   |   -   |  S20  |  S21  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |
+   29   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R16  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R16  |  R16  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |
+   30   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R17  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R17  |  R17  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |
+   31   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  S15  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   42  |   -   |   19  |   -   |   -   |   -   |   -   |  S20  |  S21  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |
+   32   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R20  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R20  |  R20  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |
+   33   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R21  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R21  |  R21  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |
+   34   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  S15  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   43  |   -   |   -   |   -   |   -   |  S20  |  S21  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |
+   35   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R24  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R24  |  R24  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |
+   36   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R25  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R25  |  R25  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |
+   37   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  S44  |   -   |
+   38   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  S15  |   -   |   -   |   45  |   -   |   17  |   -   |   -   |   18  |   -   |   19  |   -   |   -   |   -   |   -   |  S20  |  S21  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |
+   39   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R11  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R11  |   -   |   -   |   -   |   -   |   -   |   -   |  R11  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R11  |
+   40   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  S46  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |
+   41   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R14  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R14  |  R14  |   -   |   -   |   -   |   -   |   -   |   -   |  R14  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R14  |  R14  |
+   42   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R18  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R18  |  R18  |   -   |   -   |   -   |   -   |  R18  |  R18  |  R18  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R18  |  R18  |
+   43   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R22  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R22  |  R22  |   -   |   -   |   -   |   -   |  R22  |  R22  |  R22  |   -   |   -   |   -   |  R22  |  R22  |   -   |   -   |  R22  |  R22  |
+   44   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R26  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R26  |  R26  |   -   |   -   |   -   |   -   |  R26  |  R26  |  R26  |   -   |   -   |   -   |  R26  |  R26  |  R26  |  R26  |  R26  |  R26  |
+   45   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R10  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R10  |   -   |   -   |   -   |   -   |   -   |   -   |  R10  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |  R10  |
+   46   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   R9  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   R9  |   -   |   -   |   -   |   -   |   -   |   -   |   R9  |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   -   |   R9  |
+
+-----------------Reduction-Table--------------------
+R1    Programa -> decl-sequencia                         ['2_$']
+R2    decl-sequencia -> declaracao ; declaracao          ['26_end', '26_until', '26_$']
+R3    decl-sequencia -> declaracao                       ['3_end', '3_until', '3_$']
+R4    declaracao -> cond-decl                            ['4_end', '4_until', '4_$', '4_;']
+R5    declaracao -> repet-decl                           ['5_end', '5_until', '5_$', '5_;']
+R6    declaracao -> atrib-decl                           ['6_end', '6_until', '6_$', '6_;']
+R7    declaracao -> leit-decl                            ['7_end', '7_until', '7_$', '7_;']
+R8    declaracao -> escr-decl                            ['8_end', '8_until', '8_$', '8_;']
+R9    cond-decl -> if exp then decl-sequencia end        ['46_end', '46_;', '46_until', '46_$']
+R10   repet-decl -> repeat decl-sequencia until exp      ['45_end', '45_;', '45_until', '45_$']
+R11   atrib-decl -> ide := exp                           ['39_end', '39_;', '39_until', '39_$']
+R12   leit-decl -> read ide                              ['24_end', '24_;', '24_until', '24_$']
+R13   escr-decl -> write exp                             ['25_end', '25_;', '25_until', '25_$']
+R14   exp -> exp-simples comp-op exp-simples             ['41_end', '41_$', '41_;', '41_until', '41_)', '41_then']
+R15   exp -> exp-simples                                 ['17_end', '17_$', '17_;', '17_until', '17_)', '17_then']
+R16   comp-op -> <                                       ['29_ide', '29_(', '29_num']
+R17   comp-op -> =                                       ['30_ide', '30_(', '30_num']
+R18   exp-simples -> termo soma termo                    ['42_end', '42_<', '42_=', '42_$', '42_;', '42_until', '42_)', '42_then']
+R19   exp-simples -> termo                               ['18_end', '18_<', '18_=', '18_$', '18_;', '18_until', '18_)', '18_then']
+R20   soma -> +                                          ['32_num', '32_ide', '32_(']
+R21   soma -> -                                          ['33_num', '33_ide', '33_(']
+R22   termo -> fator mult fator                          ['43_end', '43_+', '43_<', '43_-', '43_=', '43_$', '43_;', '43_until', '43_)', '43_then']
+R23   termo -> fator                                     ['19_end', '19_+', '19_<', '19_-', '19_=', '19_$', '19_;', '19_until', '19_)', '19_then']
+R24   mult -> *                                          ['35_ide', '35_(', '35_num']
+R25   mult -> /                                          ['36_ide', '36_(', '36_num']
+R26   fator -> ( exp )                                   ['44_<', '44_*', '44_=', '44_/', '44_$', '44_)', '44_then', '44_end', '44_+', '44_-', '44_;', '44_until']
+R27   fator -> num                                       ['21_<', '21_*', '21_=', '21_/', '21_$', '21_)', '21_then', '21_end', '21_+', '21_-', '21_;', '21_until']
+R28   fator -> ide                                       ['15_<', '15_*', '15_=', '15_/', '15_$', '15_)', '15_then', '15_end', '15_+', '15_-', '15_;', '15_until']
+
+-------------------------INPUT-------------------------
+
+
+read x;
+if 0<x then
+    fact := 12;
+    repeat
+        fact :=fact*x;
+        x := x - 1
+    until x = 0 ;
+    write fact
+end
+-------------------Compile-Process---------------------
+read                 [0]
+
+x                    [0, 'read', 12]
+
+;                    [0, 'read', 12, 'x', 24]
+
+;                    [0, 'leit-decl', 7]
+
+;                    [0, 'declaracao', 3]
+
+if                   [0, 'declaracao', 3, ';', 14]
+
+0                    [0, 'declaracao', 3, ';', 14, 'if', 9]
+
+<                    [0, 'declaracao', 3, ';', 14, 'if', 9, '0', 21]
+
+<                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'fator', 19]
+
+<                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'termo', 18]
+
+<                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp-simples', 17]
+
+x                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp-simples', 17, '<', 29]
+
+x                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp-simples', 17, 'comp-op', 28]
+
+then                 [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp-simples', 17, 'comp-op', 28, 'x', 15]
+
+then                 [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp-simples', 17, 'comp-op', 28, 'fator', 19]
+
+then                 [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp-simples', 17, 'comp-op', 28, 'termo', 18]
+
+then                 [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp-simples', 17, 'comp-op', 28, 'exp-simples', 41]
+
+then                 [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16]
+
+fact                 [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27]
+
+:=                   [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'fact', 11]
+
+12                   [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'fact', 11, ':=', 23]
+
+;                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'fact', 11, ':=', 23, '12', 21]
+
+;                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'fact', 11, ':=', 23, 'fator', 19]
+
+;                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'fact', 11, ':=', 23, 'termo', 18]
+
+;                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'fact', 11, ':=', 23, 'exp-simples', 17]
+
+;                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'fact', 11, ':=', 23, 'exp', 39]
+
+;                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'atrib-decl', 6]
+
+;                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3]
+
+repeat               [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14]
+
+fact                 [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10]
+
+:=                   [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'fact', 11]
+
+fact                 [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'fact', 11, ':=', 23]
+
+*                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'fact', 11, ':=', 23, 'fact', 15]
+
+*                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'fact', 11, ':=', 23, 'fator', 19]
+
+x                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'fact', 11, ':=', 23, 'fator', 19, '*', 35]
+
+x                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'fact', 11, ':=', 23, 'fator', 19, 'mult', 34]
+
+;                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'fact', 11, ':=', 23, 'fator', 19, 'mult', 34, 'x', 15]
+
+;                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'fact', 11, ':=', 23, 'fator', 19, 'mult', 34, 'fator', 43]
+
+;                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'fact', 11, ':=', 23, 'termo', 18]
+
+;                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'fact', 11, ':=', 23, 'exp-simples', 17]
+
+;                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'fact', 11, ':=', 23, 'exp', 39]
+
+;                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'atrib-decl', 6]
+
+;                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'declaracao', 3]
+
+x                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'declaracao', 3, ';', 14]
+
+:=                   [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'declaracao', 3, ';', 14, 'x', 11]
+
+x                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'declaracao', 3, ';', 14, 'x', 11, ':=', 23]
+
+-                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'declaracao', 3, ';', 14, 'x', 11, ':=', 23, 'x', 15]
+
+-                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'declaracao', 3, ';', 14, 'x', 11, ':=', 23, 'fator', 19]
+
+-                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'declaracao', 3, ';', 14, 'x', 11, ':=', 23, 'termo', 18]
+
+1                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'declaracao', 3, ';', 14, 'x', 11, ':=', 23, 'termo', 18, '-', 33]
+
+1                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'declaracao', 3, ';', 14, 'x', 11, ':=', 23, 'termo', 18, 'soma', 31]
+
+until                [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'declaracao', 3, ';', 14, 'x', 11, ':=', 23, 'termo', 18, 'soma', 31, '1', 21]
+
+until                [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'declaracao', 3, ';', 14, 'x', 11, ':=', 23, 'termo', 18, 'soma', 31, 'fator', 19]
+
+until                [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'declaracao', 3, ';', 14, 'x', 11, ':=', 23, 'termo', 18, 'soma', 31, 'termo', 42]
+
+until                [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'declaracao', 3, ';', 14, 'x', 11, ':=', 23, 'exp-simples', 17]
+
+until                [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'declaracao', 3, ';', 14, 'x', 11, ':=', 23, 'exp', 39]
+
+until                [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'declaracao', 3, ';', 14, 'atrib-decl', 6]
+
+until                [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'declaracao', 3, ';', 14, 'declaracao', 26]
+
+until                [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'decl-sequencia', 22]
+
+x                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'decl-sequencia', 22, 'until', 38]
+
+=                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'decl-sequencia', 22, 'until', 38, 'x', 15]
+
+=                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'decl-sequencia', 22, 'until', 38, 'fator', 19]
+
+=                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'decl-sequencia', 22, 'until', 38, 'termo', 18]
+
+=                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'decl-sequencia', 22, 'until', 38, 'exp-simples', 17]
+
+0                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'decl-sequencia', 22, 'until', 38, 'exp-simples', 17, '=', 30]
+
+0                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'decl-sequencia', 22, 'until', 38, 'exp-simples', 17, 'comp-op', 28]
+
+;                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'decl-sequencia', 22, 'until', 38, 'exp-simples', 17, 'comp-op', 28, '0', 21]
+
+;                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'decl-sequencia', 22, 'until', 38, 'exp-simples', 17, 'comp-op', 28, 'fator', 19]
+
+;                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'decl-sequencia', 22, 'until', 38, 'exp-simples', 17, 'comp-op', 28, 'termo', 18]
+
+;                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'decl-sequencia', 22, 'until', 38, 'exp-simples', 17, 'comp-op', 28, 'exp-simples', 41]
+
+;                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repeat', 10, 'decl-sequencia', 22, 'until', 38, 'exp', 45]
+
+;                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'repet-decl', 5]
+
+;                    [0, 'declaracao', 3, ';', 14, 'if', 9, 'exp', 16, 'then', 27, 'declaracao', 3, ';', 14, 'declaracao', 26]
+
+Traceback (most recent call last):
+  File "Analisador Sintático Ascendente/main.py", line 56, in <module>
+    tokens, history = tservice.compile(fileTxt)
+  File "/home/daniel/Documentos/Git/Compiler/Python/Analisador Sintático Ascendente/Core/Services/AscendentSintaticAnalyzer.py", line 220, in compile
+    raise Exception('Erro no símbolo: ' + str(current.value))
+Exception: Erro no símbolo: ;
