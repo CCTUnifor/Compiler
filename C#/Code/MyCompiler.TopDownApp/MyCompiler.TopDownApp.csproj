@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CCTUnifor.Logger" Version="1.0.0" />
+    <PackageReference Include="CCTUnifor.Logger" Version="1.0.1" />
     <PackageReference Include="PostSharp" Version="5.0.50" />
   </ItemGroup>
 
