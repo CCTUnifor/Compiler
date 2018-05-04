@@ -47,6 +47,7 @@ namespace MyCompiler.Tokenization
 
         public void Parser(string input)
         {
+            Logger.PrintLn("Parser!");
             HandleLines();
             Analyse(input);
         }
@@ -78,7 +79,7 @@ namespace MyCompiler.Tokenization
         {
             PrintHeaderStack();
 
-            var lines = input.Split("\n").Select(x => x.Replace("\t", "").Replace("\r", "").Trim()).ToArray();
+            var lines = input.Split('\n').Select(x => x.Replace("\t", "").Replace("\r", "").Trim()).ToArray();
             lines[lines.Length - 1] = lines[lines.Length - 1] + " $";
 
             var count = 0;

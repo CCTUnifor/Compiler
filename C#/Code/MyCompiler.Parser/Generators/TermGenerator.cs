@@ -14,9 +14,11 @@ namespace MyCompiler.Tokenization.Generators
 
         public IEnumerable<NonTerminalToken> CalculateNonTerminals(IEnumerable<string> lines)
         {
-            NonTerminalTokens = lines.Select(line => line.Split("->").FirstOrDefault()?.Trim().ToNonTerminal()).ToList();
+            NonTerminalTokens = lines.Select(line => SeparateForPremise(line).FirstOrDefault()?.Trim().ToNonTerminal()).ToList();
             return NonTerminalTokens;
         }
+
+        private static string[] SeparateForPremise(string line) => line.Split(new string[] { "->" }, System.StringSplitOptions.None);
 
         public ICollection<Term> CalculateTerms(IEnumerable<NonTerminalToken> nonTerminals, IEnumerable<string> lines)
         {
@@ -24,8 +26,8 @@ namespace MyCompiler.Tokenization.Generators
 
             foreach (var line in lines)
             {
-                var caller = line.Split("->").FirstOrDefault()?.Trim().ToNonTerminal();
-                var called = line.Split("->").LastOrDefault()?.Trim() ?? "";
+                var caller = SeparateForPremise(line).FirstOrDefault()?.Trim().ToNonTerminal();
+                var called = SeparateForPremise(line).LastOrDefault()?.Trim() ?? "";
 
                 var productions = called.GetProductions();
                 var p = new List<Production>();
