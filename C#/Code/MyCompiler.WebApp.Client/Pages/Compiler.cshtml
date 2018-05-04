@@ -1,18 +1,21 @@
 ﻿@page "/compiler"
+@using MyCompiler.Tokenization
+@using CCTUnifor.Logger;
 
 <h1>Compiler</h1>
 
-<form>
+<form onsubmit="@TextAreaOneChanged">
     <div class="form-row">
         <div class="form-group col-md-6">
             <label for="grammar">Grammar</label>
-            <textarea id="grammar" class="form-control" rows="@row" value="@grammarValue" onkeydown="@TextAreaOneChanged"></textarea>
+            <textarea id="grammar" class="form-control" rows="@row" bind=@grammarValue></textarea>
         </div>
         <div class="form-group col-md-6">
             <label for="input">Input</label>
-            <textarea id="input" class="form-control" rows="@row" value="@inputValue" onkeydown="@TextAreaOneChanged"></textarea>
+            <textarea id="input" class="form-control" rows="@row" bind=@inputValue></textarea>
         </div>
     </div>
+    <button type="submit">Compiler</button>
 </form>
 
 <form action="/" method="post">
@@ -37,5 +40,7 @@
 
         var syntacticAnalysis = new TopDownParser(grammarValue);
         syntacticAnalysis.Parser(inputValue);
+
+        result = Logger.History;
     }
 }

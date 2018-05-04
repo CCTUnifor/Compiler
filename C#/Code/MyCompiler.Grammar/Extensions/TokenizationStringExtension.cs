@@ -11,7 +11,7 @@ namespace MyCompiler.Grammar.Extensions
         public static bool IsNumber(this string value) => value.All(char.IsNumber);
 
         public static string[] GetLines(this string value)
-            => value.IgnoreNewLineInWindows().Split("\n").ToArray();
+            => value.IgnoreNewLineInWindows().Split('\n').ToArray();
 
         public static string IgnoreNewLineInWindows(this string value)
             => value.Replace("\r", "");
@@ -20,7 +20,7 @@ namespace MyCompiler.Grammar.Extensions
             => values.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
 
         public static string[] GetProductions(this string value)
-            => value.Split("|").Select(x => x.Trim()).ToArray();
+            => value.Split('|').Select(x => x.Trim()).ToArray();
 
         public static IEnumerable<Token> RemoveSpacesTokens(this IEnumerable<Token> tokens)
         {
