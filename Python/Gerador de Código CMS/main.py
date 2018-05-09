@@ -7,6 +7,10 @@ from Core.Services.CodeGenerator import CodeGenerator
 
 import printer
 
+def create_file(b, file_name):
+    f = open('misc/saidas/' + file_name, 'ab')
+    f.write(b)
+    f.close()
 
 input_file_directory = "misc/inputs/input "
 grammar_file_directory = "misc/grammars/Gramática "
@@ -37,11 +41,14 @@ with io.open(input_file_name, "r", encoding='utf8') as file_obj:
     fileTxt = file_obj.read()
 
     tokens, historic = compileGrammarService.compile(fileTxt)
-    generator = CodeGenerator(create_file, tokens)
+    generator = CodeGenerator(tokens)
+    generator.compile()
+
+    string_of_bytes = generator.bytecode
+
+    create_file(string_of_bytes, grammar_name)
     
 
-def create_file():
-    pass
 
 printer.Grammar_Printer(g)
 printer.Grammar_Table_Printer(compileGrammarService)
