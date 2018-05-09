@@ -1,5 +1,5 @@
 N = {Programa,vars-decl,decl-sequencia,decl-sequencia',declaracao,cond-decl,repet-decl,while-decl,atrib-decl,leit-decl,escr-decl,exp,X,comp-op,exp-simples,exp-simples',soma,termo,termo',mult,fator}
-Sigma = {PROGRAM,VAR,INTEGER,:,BEGIN,END,;,IF,THEN,else,REPEAT,UNTIL,WHILE,DO,:=,ide,READ,WRITE,<,=,!=,+,-,*,/,(,),num}
+Sigma = {PROGRAM,VAR,INTEGER,:,BEGIN,END,;,IF,THEN,else,REPEAT,UNTIL,WHILE,DO,:=,ide,READ,WRITE,<,<=,>,>=,=,!=,+,-,*,/,(,),num}
 S = {Programa}
 P = {
     Programa -> PROGRAM vars-decl BEGIN decl-sequencia END
@@ -26,7 +26,7 @@ P = {
     exp -> exp-simples X
     X -> comp-op exp-simples | ɛ
 
-    comp-op -> < | = | !=
+    comp-op -> < | = | != | >= | <=
 
     exp-simples -> termo exp-simples'
     exp-simples'-> soma termo exp-simples' | ɛ

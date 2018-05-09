@@ -1,3 +1,6 @@
+from Core.Entities.Token import Token
+
+
 class CodeGenerator:
     command_dict = {
         'LSP':  0x4F, # Stack Pointer<-endereço
@@ -24,11 +27,16 @@ class CodeGenerator:
     # t = (4096).to_bytes(2, byteorder='little')
     # int.from_bytes(t, byteorder='little')
 
-    def __init__(self, Tokens=None):
+    def __init__(self, Tokens:Token=None):
         self.Tokens = Tokens
         self.bytecode = bytes([CodeGenerator.command_dict['LSP'], 0x00, 0x10, CodeGenerator.command_dict['JMP']])
         self.variables = None
+        self.state = None
         # print(self.bytecode)
+    
+    def add_variables(self):
+        n_variables = len(self.variables)
+        # self.bytecode = self.bytecode + bytes([])
 
     def compile(self):
         if self.Tokens is None:
@@ -37,9 +45,25 @@ class CodeGenerator:
         for token in self.Tokens:
             self.process_token(token)
     
-    def process_token(self, token):
+    def process_token(self, token: Token):
         """
         Called by the compile process or the sintatic analyzer right after the token has been accepted
         """
-        if token.value == 'Program':
-            self.variables = {}
+        if self.state == None:
+            if token.value == 'PROGRAM':
+                self.variables = {}
+                self.state = 'Start'
+        
+        elif self.state == 'Start':
+            if token.unit.text == 'ide':
+                if token.value in self.variables:
+                    raise Exception('this variable has already been declared: ' + token.value)
+                
+                variable_location = len(self.variables) * 2 + 6
+                self.variables[token.value] = variable_location
+            
+            elif token.unit.text == 'BEGIN':
+                self.state = 'main program'
+            
+        elif self.state == 'main program':
+            pass

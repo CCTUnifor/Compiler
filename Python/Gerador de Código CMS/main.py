@@ -55,11 +55,13 @@ with io.open(input_file_name, "r", encoding='utf8') as file_obj:
     string_of_bytes = generator.bytecode
 
     create_file(string_of_bytes, grammar_name)
+
+    print(generator.variables)
     
 
 
-printer.Grammar_Printer(g)
-printer.Grammar_Table_Printer(compileGrammarService)
-printer.LexicPrint(tokens)
-printer.CompileHistoric(historic)
+# printer.Grammar_Printer(g)
+# printer.Grammar_Table_Printer(compileGrammarService)
+# printer.LexicPrint(tokens)
+# printer.CompileHistoric(historic)
 
