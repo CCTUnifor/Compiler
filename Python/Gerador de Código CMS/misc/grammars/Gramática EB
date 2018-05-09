@@ -1,0 +1,7 @@
+N = {E,B}
+Sigma = {a,b}
+S = {E}
+P = {
+    E -> B a
+    B -> b | ɛ
+}

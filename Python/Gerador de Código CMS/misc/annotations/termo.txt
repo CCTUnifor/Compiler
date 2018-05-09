@@ -1,0 +1,9 @@
+(eliminar recursão à esquerda)
+    A -> Aα|β
+        A -> βA' | β
+        A'-> αA'| α
+
+termo → termo mult fator | fator
+
+termo -> fator termo' | fator
+termo'-> mult fator termo' | mult fator
