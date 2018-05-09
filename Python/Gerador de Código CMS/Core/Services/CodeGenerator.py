@@ -27,13 +27,19 @@ class CodeGenerator:
     def __init__(self, Tokens=None):
         self.Tokens = Tokens
         self.bytecode = bytes([CodeGenerator.command_dict['LSP'], 0x00, 0x10, CodeGenerator.command_dict['JMP']])
+        self.variables = None
+        # print(self.bytecode)
 
     def compile(self):
         if self.Tokens is None:
             raise Exception('Invalid Compile process: the argument "Tokens" should not be None at this point')
+
+        for token in self.Tokens:
+            self.process_token(token)
     
     def process_token(self, token):
         """
         Called by the compile process or the sintatic analyzer right after the token has been accepted
         """
-        pass
+        if token.value == 'Program':
+            self.variables = {}

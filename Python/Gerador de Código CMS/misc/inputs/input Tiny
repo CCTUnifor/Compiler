@@ -1,11 +1,15 @@
-
-
-read x;
-if 0<x then
-    fact := 12;
-    repeat
-        fact :=fact*x;
-        x := x - 1
-    until x = 0 ;
-    write fact
-end
+PROGRAM
+VAR x : INTEGER;
+VAR fact : INTEGER;
+BEGIN
+    READ x;
+    IF 0<x THEN
+        fact := 12;
+        WHILE x != 0 DO
+        BEGIN
+            fact :=fact*x;
+            x := x - 1
+        END;
+        WRITE fact
+    END
+END

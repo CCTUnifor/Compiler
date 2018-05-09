@@ -6,11 +6,19 @@ from Core.Services.TableDescendentSintaticAnalyzer import TableService
 from Core.Services.CodeGenerator import CodeGenerator
 
 import printer
+import os
 
 def create_file(b, file_name):
-    f = open('misc/saidas/' + file_name, 'ab')
+    path = 'misc/saidas/' + file_name
+
+    if not os.path.exists(path):
+        f = open(path, 'ab') # a from create if not exists and append; b from byte reading
+    else:
+        f = open(path, 'wb') # w from truncate and write in a existent file; b from byte reading
+
     f.write(b)
     f.close()
+    #hexdump misc/saidas/Tiny -C
 
 input_file_directory = "misc/inputs/input "
 grammar_file_directory = "misc/grammars/Gramática "

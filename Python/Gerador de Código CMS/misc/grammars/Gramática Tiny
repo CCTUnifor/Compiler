@@ -1,28 +1,32 @@
-N = {Programa,decl-sequencia,decl-sequencia',declaracao,cond-decl,repet-decl,atrib-decl,leit-decl,escr-decl,exp,X,comp-op,exp-simples,exp-simples',soma,termo,termo',mult,fator}
-Sigma = {;,if,then,else,end,repeat,until,:=,ide,read,write,<,=,+,-,*,/,(,),num}
+N = {Programa,vars-decl,decl-sequencia,decl-sequencia',declaracao,cond-decl,repet-decl,while-decl,atrib-decl,leit-decl,escr-decl,exp,X,comp-op,exp-simples,exp-simples',soma,termo,termo',mult,fator}
+Sigma = {PROGRAM,VAR,INTEGER,:,BEGIN,END,;,IF,THEN,else,REPEAT,UNTIL,WHILE,DO,:=,ide,READ,WRITE,<,=,!=,+,-,*,/,(,),num}
 S = {Programa}
 P = {
-    Programa -> decl-sequencia
+    Programa -> PROGRAM vars-decl BEGIN decl-sequencia END
+
+    vars-decl -> VAR ide : INTEGER ; vars-decl | ɛ
 
     decl-sequencia -> declaracao decl-sequencia'
     decl-sequencia'-> ; declaracao decl-sequencia'| ɛ
 
-    declaracao -> cond-decl | repet-decl | atrib-decl | leit-decl | escr-decl 
+    declaracao -> cond-decl | repet-decl | while-decl | atrib-decl | leit-decl | escr-decl 
 
-    cond-decl -> if exp then decl-sequencia end
+    cond-decl -> IF exp THEN decl-sequencia END
 
-    repet-decl -> repeat decl-sequencia until exp
+    repet-decl -> REPEAT decl-sequencia UNTIL exp
+
+    while-decl -> WHILE exp DO BEGIN decl-sequencia END
 
     atrib-decl -> ide := exp
 
-    leit-decl -> read ide
+    leit-decl -> READ ide
 
-    escr-decl -> write exp
+    escr-decl -> WRITE exp
 
     exp -> exp-simples X
     X -> comp-op exp-simples | ɛ
 
-    comp-op -> < | =
+    comp-op -> < | = | !=
 
     exp-simples -> termo exp-simples'
     exp-simples'-> soma termo exp-simples' | ɛ
