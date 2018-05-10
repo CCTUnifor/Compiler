@@ -56,8 +56,6 @@ with io.open(input_file_name, "r", encoding='utf8') as file_obj:
 
     create_file(string_of_bytes, grammar_name)
 
-    print(generator.variables)
-    
 
 
 # printer.Grammar_Printer(g)
