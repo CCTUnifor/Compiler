@@ -17,12 +17,21 @@ class CodeGenerator:
         'IN':   0x57, # ler do teclado e coloca na pilha
         'JF':   0x5C, # endereço | pula para o endereço se falso
         'EQ':   0x20, #  (=)  verdade empilha $FFFF falso $0000
-        'NE':   0x21, #  (not =) verdade empilha $FFFF falso $0000
+        'NE':   0x21, #  (!=) verdade empilha $FFFF falso $0000
         'GT':   0x22, #  (>) verdade empilha $FFFF falso $0000
         'GE':   0x23, #  (>=) verdade empilha $FFFF falso $0000
         'LT':   0x24, #  (<) verdade empilha $FFFF falso $0000
         'LE':   0x25, #  (<=) verdade empilha $FFFF falso $0000
         'STOP': 0x61 # encerra a execuçäo do programa
+    }
+    # TINYP tem a máquina
+    operators_dict = {
+        "=": 'EQ',
+        "!=": 'NE',
+        ">": 'GT',
+        ">=": 'GE',
+        "<": 'LT',
+        "<=": 'LE'
     }
 
     byteorder = 'little'
@@ -30,7 +39,7 @@ class CodeGenerator:
     operator_regex = re.compile('(<=|>=|>|<|=|!=)')
 
     @staticmethod
-    def __int_to_byte(integer):
+    def __int_to_byte(integer:int):
         return integer.to_bytes(CodeGenerator.int_byte_size, byteorder=CodeGenerator.byteorder)
 
     # t = (4096).to_bytes(2, byteorder='little')
@@ -42,7 +51,7 @@ class CodeGenerator:
         self.bytecode = bytes([CodeGenerator.command_dict['LSP'], 0x00, 0x10, CodeGenerator.command_dict['JMP']])
         self.variables = None
         self.state = None
-        self.end_stack = []
+        self.backpatching_stack = []
         # print(self.bytecode)
     
     def __concat_to_bytecode(self, byte:bytes):
@@ -50,12 +59,14 @@ class CodeGenerator:
     
     def add_variables(self):
         n_variables = len(self.variables)
+
         code_start = self.prefix_size + n_variables * 2
         code_index = CodeGenerator.__int_to_byte(code_start)
-        self.bytecode += code_index
+
+        self.__concat_to_bytecode(code_index)
 
         for i in range(n_variables):
-            self.bytecode += bytes([0,0])
+            self.__concat_to_bytecode(bytes([0,0]))
 
     def compile(self):
         if self.Tokens is None:
@@ -78,7 +89,7 @@ class CodeGenerator:
                 if token.value in self.variables:
                     raise Exception('this variable has already been declared: ' + token.value)
                 
-                variable_location = len(self.variables) * 2 + 6
+                variable_location = len(self.variables) * 2 + self.prefix_size
                 self.variables[token.value] = variable_location
             
             elif token.unit.text == 'BEGIN':
@@ -105,17 +116,21 @@ class CodeGenerator:
             operator = CodeGenerator.operator_regex.match(token.unit.text)
             
             if token.unit.text == 'ide':
-                # carrega IDE
-                pass
+                var_adress = CodeGenerator.__int_to_byte(self.variables[token.value])
+                self.__concat_to_bytecode(bytes([CodeGenerator.command_dict['LOD'], var_adress]))
             
             elif operator:
                 # carrega sinal - regex (< | = | != | >= | <=)
                 operator = operator.group(1)
+                operator_hex = CodeGenerator.command_dict[CodeGenerator.operators_dict[operator]]
+                self.__concat_to_bytecode(bytes(operator_hex))
+
             elif token.unit.text == 'num':
-                # carrega num
-                pass
+                self.__concat_to_bytecode(bytes(CodeGenerator.command_dict['LDI']) + CodeGenerator.__int_to_byte(int(token.value)))
+                ta errado bem aqui
+
             elif token.unit.text == 'THEN':
                 # por JF no código e salvar o endereço
-                self.end_stack.append(('IF', 'endereço do byte após o JF'))
+                self.backpatching_stack.append(('IF', 'endereço do byte após o JF'))
                 self.state = 'main program'
             
