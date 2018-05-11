@@ -7,6 +7,7 @@ class CodeGenerator:
         'ADD':  0x01, # soma os inteiros do topo da pilha
         'SUB':  0x02, # subtrai os inteiros do topo da pilha
         'MUL':  0x03, # multiplica os inteiro do topo da pilha
+        'DIV':  0x04, # divide os inteiro do topo da pilha !!!NÃO UTILIZAR, POIS NÃO CONFIRMEI A EXISTÊNCIA DESTE OPERADOR!!!
         'LSP':  0x4F, # Stack Pointer<-endereço
         'JMP':  0x5A, # endereço | Instruction P<-endereço
         'LDI':  0x44, # move inteiro para o topo da pilha
@@ -34,12 +35,17 @@ class CodeGenerator:
         ">": 'GT',
         ">=": 'GE',
         "<": 'LT',
-        "<=": 'LE'
+        "<=": 'LE',
+        "*": 'MUL',
+        "/": 'DIV',
+        "-": 'SUB',
+        "+": 'ADD'
     }
 
     byteorder = 'little'
     int_byte_size = 2
-    operator_regex = re.compile('(<=|>=|>|<|=|!=)')
+    operator_regex = re.compile(r'(<=|>=|>|<|=|!=)')
+    algebric_operator_regex = re.compile(r'(\*|\/|\+|-)')
 
     @staticmethod
     def __int_to_byte(integer:int):
@@ -55,6 +61,9 @@ class CodeGenerator:
         self.variables = None
         self.state = None
         self.backpatching_stack = []
+        self.while_stack = []
+        self.operator_cache = None
+        self.ide_cache = None
         # print(self.bytecode)
     
     def __concat_to_bytecode(self, byte:bytes):
@@ -103,38 +112,131 @@ class CodeGenerator:
             if(token.unit is None):
                 return
 
+            elif token.unit.text == 'ide':
+                if token.value not in self.variables:
+                    raise Exception('the variable "'+token.value+'" must be declared')
+
+                self.ide_cache = CodeGenerator.__int_to_byte(self.variables[token.value])
+                self.state = 'ATRIB'
+
             elif token.unit.text == 'READ':
                 self.__concat_to_bytecode(bytes([CodeGenerator.command_dict['IN'],CodeGenerator.command_dict['STO']]))
                 self.state = 'READ'
+            
+            elif token.unit.text == 'WRITE':
+                self.__concat_to_bytecode(bytes([CodeGenerator.command_dict['LOD']]))
+                self.state = 'WRITE'
 
             elif token.unit.text == 'IF':
                 self.state = 'IF'
+            
+            elif token.unit.text == 'WHILE':
+                self.state = 'WHILE'
+                self.while_stack.append(self.__int_to_byte(self.bytecode_next_position()))
+                
+
+            elif token.unit.text == 'END':
+                if len(self.backpatching_stack):
+                    command, position = self.backpatching_stack.pop()
+
+                    if command == 'IF' or command == 'WHILE':
+                        if command == 'WHILE':
+                            while_position = self.while_stack.pop()
+                            self.__concat_to_bytecode(bytes([CodeGenerator.command_dict['JMP']]))
+                            self.__concat_to_bytecode(while_position)
+
+                        self.change_bytecode(position + 1, position + 3, CodeGenerator.__int_to_byte(self.bytecode_next_position()))
+                else:
+                    self.__concat_to_bytecode(bytes([CodeGenerator.command_dict['STOP']]))
 
         elif self.state == 'READ':
             var_adress = CodeGenerator.__int_to_byte(self.variables[token.value])
             self.__concat_to_bytecode(var_adress)
             self.state = 'main program'
         
+        elif self.state == 'WRITE':
+            var_adress = CodeGenerator.__int_to_byte(self.variables[token.value])
+            self.__concat_to_bytecode(var_adress)
+            self.__concat_to_bytecode(bytes([CodeGenerator.command_dict['OUT']]))            
+            self.state = 'main program'
+        
         elif self.state == 'IF':
-            operator = CodeGenerator.operator_regex.match(token.unit.text)
+            
+            self.boolean_exp(token)
+
+            if token.unit.text == 'THEN':
+                self.__concat_to_bytecode(self.operator_cache)
+                self.operator_cache = None
+
+                self.backpatching_stack.append(('IF', self.bytecode_next_position()))
+                self.__concat_to_bytecode(bytes([CodeGenerator.command_dict['JF'], 0, 0]))
+
+                self.state = 'main program'
+        
+        elif self.state == 'WHILE':
+            self.boolean_exp(token)
+
+            if token.unit.text == 'DO':
+                self.__concat_to_bytecode(self.operator_cache)
+                self.operator_cache = None
+                
+                self.backpatching_stack.append(('WHILE', self.bytecode_next_position()))
+                self.__concat_to_bytecode(bytes([CodeGenerator.command_dict['JF'], 0, 0]))
+
+                self.state = 'main program'
+
+        
+        elif self.state == 'ATRIB':
+            algebric_operator = CodeGenerator.algebric_operator_regex.match(token.unit.text)
             
             if token.unit.text == 'ide':
                 var_adress = CodeGenerator.__int_to_byte(self.variables[token.value])
-                self.__concat_to_bytecode(bytes(CodeGenerator.command_dict['LOD']) + var_adress)
-            
-            elif operator:
-                # carrega sinal - regex (< | = | != | >= | <=)
-                operator = operator.group(1)
-                operator_hex = CodeGenerator.command_dict[CodeGenerator.operators_dict[operator]]
-                self.__concat_to_bytecode(bytes(operator_hex))
+                self.__concat_to_bytecode(bytes([CodeGenerator.command_dict['LOD']]) + var_adress)
+                
+            elif algebric_operator:
+                # regex (* | / | + | - | )
+                algebric_operator = algebric_operator.group(1)
+                operator_hex = CodeGenerator.command_dict[CodeGenerator.operators_dict[algebric_operator]]
+                self.operator_cache = bytes([operator_hex])
 
             elif token.unit.text == 'num':
                 num_hex = CodeGenerator.__int_to_byte(int(token.value))
-                self.__concat_to_bytecode(bytes(CodeGenerator.command_dict['LDI']) + num_hex)
-                # ta errado bem aqui
-
-            elif token.unit.text == 'THEN':
-                # por JF no código e salvar o endereço
-                self.backpatching_stack.append(('IF', 'endereço do byte após o JF'))
-                self.state = 'main program'
+                self.__concat_to_bytecode(bytes([CodeGenerator.command_dict['LDI']]) + num_hex)
             
+            elif token.unit.text == ':=':
+                pass
+
+            else:
+                if self.operator_cache:
+                    self.__concat_to_bytecode(self.operator_cache)
+                    self.operator_cache = None
+
+                self.__concat_to_bytecode(bytes([CodeGenerator.command_dict['STO']]) + self.ide_cache)
+                self.state = 'main program'
+                
+                self.process_token(token)
+    
+    def boolean_exp(self, token:Token):
+        operator = CodeGenerator.operator_regex.match(token.unit.text)
+
+        if token.unit.text == 'ide':
+                var_adress = CodeGenerator.__int_to_byte(self.variables[token.value])
+                self.__concat_to_bytecode(bytes([CodeGenerator.command_dict['LOD']]) + var_adress)
+            
+        elif operator:
+            # carrega sinal - regex (< | = | != | >= | <=)
+            operator = operator.group(1)
+            operator_hex = CodeGenerator.command_dict[CodeGenerator.operators_dict[operator]]
+            self.operator_cache = bytes([operator_hex])
+
+        elif token.unit.text == 'num':
+            num_hex = CodeGenerator.__int_to_byte(int(token.value))
+            self.__concat_to_bytecode(bytes([CodeGenerator.command_dict['LDI']]) + num_hex)
+    
+    def change_bytecode(self, interval_b, interval_e, subst:bytes):
+        self.bytecode = self.bytecode[0:interval_b:] + subst + self.bytecode[interval_e::]
+    
+    def bytecode_next_position(self):
+        return len(self.bytecode)
+            
+# byte 22,23 0x43,0x00 but 00,00
