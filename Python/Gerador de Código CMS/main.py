@@ -9,7 +9,7 @@ import printer
 import os
 
 def create_file(b, file_name):
-    path = 'misc/saidas/' + file_name
+    path = 'misc/saidas/' + file_name # + '.obj'
 
     if not os.path.exists(path):
         f = open(path, 'ab') # a from create if not exists and append; b from byte reading
@@ -20,7 +20,7 @@ def create_file(b, file_name):
     f.close()
     #hexdump misc/saidas/Tiny -C
 
-input_file_directory = "misc/inputs/input "
+input_file_directory = "misc/inputs/"
 grammar_file_directory = "misc/grammars/Gramática "
 
 grammar_name = "EB"
@@ -34,9 +34,10 @@ grammar_name = "Tiny"
 grammar_file_name = grammar_file_directory + grammar_name
 input_file_name = input_file_directory + grammar_name
 
-if(len(sys.argv) > 2):
-    grammar_name = str(sys.argv[1])
-    input_name = str(sys.argv[2])
+if(len(sys.argv) > 1):
+    # grammar_name = str(sys.argv[1])
+    input_name = str(sys.argv[1])
+    input_file_name = input_file_directory + input_name
 
 with io.open(grammar_file_name, "r", encoding='utf8') as file_obj:
     fileTxt = file_obj.read()
@@ -54,7 +55,7 @@ with io.open(input_file_name, "r", encoding='utf8') as file_obj:
 
     string_of_bytes = generator.bytecode
 
-    create_file(string_of_bytes, grammar_name)
+    create_file(string_of_bytes, input_name if input_name else grammar_name)
 
 
 

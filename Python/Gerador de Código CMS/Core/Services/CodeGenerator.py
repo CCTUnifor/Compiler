@@ -31,7 +31,10 @@ class CodeGenerator:
     # TINYP tem a máquina
     operators_dict = {
         "=": 'EQ',
+        "IS": 'EQ',
         "!=": 'NE',
+        "<>": 'NE',
+        "NOT": 'NE',
         ">": 'GT',
         ">=": 'GE',
         "<": 'LT',
@@ -44,7 +47,7 @@ class CodeGenerator:
 
     byteorder = 'little'
     int_byte_size = 2
-    operator_regex = re.compile(r'(<=|>=|>|<|=|!=)')
+    operator_regex = re.compile(r'(<=|>=|<>|NOT|IS|>|<|=|!=)')
     algebric_operator_regex = re.compile(r'(\*|\/|\+|-)')
 
     @staticmethod
@@ -133,6 +136,9 @@ class CodeGenerator:
             elif token.unit.text == 'WHILE':
                 self.state = 'WHILE'
                 self.while_stack.append(self.__int_to_byte(self.bytecode_next_position()))
+            
+            elif token.unit.text == 'REPEAT':
+                self.state = 'REPEAT'
                 
 
             elif token.unit.text == 'END':
@@ -146,6 +152,11 @@ class CodeGenerator:
                             self.__concat_to_bytecode(while_position)
 
                         self.change_bytecode(position + 1, position + 3, CodeGenerator.__int_to_byte(self.bytecode_next_position()))
+                    
+                    elif command == 'REPEAT':                        
+                        self.state = 'UNTIL'
+                        self.backpatching_stack.append((command, position))
+
                 else:
                     self.__concat_to_bytecode(bytes([CodeGenerator.command_dict['STOP']]))
 
@@ -215,16 +226,34 @@ class CodeGenerator:
                 self.state = 'main program'
                 
                 self.process_token(token)
-    
-    def boolean_exp(self, token:Token):
-        operator = CodeGenerator.operator_regex.match(token.unit.text)
+        
+        elif self.state == 'REPEAT':
+            self.backpatching_stack.append(('REPEAT', self.bytecode_next_position()))
+            self.state = 'main program'
+        
+        elif self.state == 'UNTIL':
+            if token.unit.text == 'UNTIL':
+                pass
 
+            elif not self.boolean_exp(token):
+                self.__concat_to_bytecode(self.operator_cache + bytes([CodeGenerator.command_dict['JF']]))
+
+                command, position = self.backpatching_stack.pop()
+                self.__concat_to_bytecode(self.__int_to_byte(position))
+                self.state = 'main program'
+
+                self.process_token(token)                
+
+    def boolean_exp(self, token:Token):
+        """
+        In case of an expression try to treat the Token and return True, if not return False
+        """
+        operator = CodeGenerator.operator_regex.match(token.unit.text)
         if token.unit.text == 'ide':
-                var_adress = CodeGenerator.__int_to_byte(self.variables[token.value])
-                self.__concat_to_bytecode(bytes([CodeGenerator.command_dict['LOD']]) + var_adress)
+            var_adress = CodeGenerator.__int_to_byte(self.variables[token.value])
+            self.__concat_to_bytecode(bytes([CodeGenerator.command_dict['LOD']]) + var_adress)
             
         elif operator:
-            # carrega sinal - regex (< | = | != | >= | <=)
             operator = operator.group(1)
             operator_hex = CodeGenerator.command_dict[CodeGenerator.operators_dict[operator]]
             self.operator_cache = bytes([operator_hex])
@@ -232,6 +261,11 @@ class CodeGenerator:
         elif token.unit.text == 'num':
             num_hex = CodeGenerator.__int_to_byte(int(token.value))
             self.__concat_to_bytecode(bytes([CodeGenerator.command_dict['LDI']]) + num_hex)
+        
+        else:        
+            return False
+
+        return True
     
     def change_bytecode(self, interval_b, interval_e, subst:bytes):
         self.bytecode = self.bytecode[0:interval_b:] + subst + self.bytecode[interval_e::]
