@@ -4,7 +4,7 @@ VAR fact : INTEGER;
 BEGIN
     READ x;
     IF 0<x THEN
-        fact := 12;
+        fact := 1;
         WHILE x <= 0 DO
         BEGIN
             fact :=fact*x;

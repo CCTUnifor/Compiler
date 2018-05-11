@@ -4,6 +4,9 @@ import re
 
 class CodeGenerator:
     command_dict = {
+        'ADD':  0x01, # soma os inteiros do topo da pilha
+        'SUB':  0x02, # subtrai os inteiros do topo da pilha
+        'MUL':  0x03, # multiplica os inteiro do topo da pilha
         'LSP':  0x4F, # Stack Pointer<-endereço
         'JMP':  0x5A, # endereço | Instruction P<-endereço
         'LDI':  0x44, # move inteiro para o topo da pilha
@@ -117,7 +120,7 @@ class CodeGenerator:
             
             if token.unit.text == 'ide':
                 var_adress = CodeGenerator.__int_to_byte(self.variables[token.value])
-                self.__concat_to_bytecode(bytes([CodeGenerator.command_dict['LOD'], var_adress]))
+                self.__concat_to_bytecode(bytes(CodeGenerator.command_dict['LOD']) + var_adress)
             
             elif operator:
                 # carrega sinal - regex (< | = | != | >= | <=)
@@ -126,8 +129,9 @@ class CodeGenerator:
                 self.__concat_to_bytecode(bytes(operator_hex))
 
             elif token.unit.text == 'num':
-                self.__concat_to_bytecode(bytes(CodeGenerator.command_dict['LDI']) + CodeGenerator.__int_to_byte(int(token.value)))
-                ta errado bem aqui
+                num_hex = CodeGenerator.__int_to_byte(int(token.value))
+                self.__concat_to_bytecode(bytes(CodeGenerator.command_dict['LDI']) + num_hex)
+                # ta errado bem aqui
 
             elif token.unit.text == 'THEN':
                 # por JF no código e salvar o endereço
