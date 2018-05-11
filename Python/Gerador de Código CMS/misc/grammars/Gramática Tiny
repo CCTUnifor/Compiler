@@ -26,7 +26,7 @@ P = {
     exp -> exp-simples X
     X -> comp-op exp-simples | ɛ
 
-    comp-op -> < | equals-op | not-op | >= | <=
+    comp-op -> < | > | equals-op | not-op | >= | <=
 
     equals-op -> = | IS
 

@@ -43,8 +43,8 @@ with io.open(grammar_file_name, "r", encoding='utf8') as file_obj:
     fileTxt = file_obj.read()
     g = Grammar(fileTxt)
 
-compileGrammarService = TableService(g)
-compileGrammarService.compileGrammar()
+    compileGrammarService = TableService(g)
+    compileGrammarService.compileGrammar()
 
 with io.open(input_file_name, "r", encoding='utf8') as file_obj:
     fileTxt = file_obj.read()
@@ -60,7 +60,7 @@ with io.open(input_file_name, "r", encoding='utf8') as file_obj:
 
 
 # printer.Grammar_Printer(g)
-# printer.Grammar_Table_Printer(compileGrammarService)
 # printer.LexicPrint(tokens)
+# printer.Grammar_Table_Printer(compileGrammarService)
 # printer.CompileHistoric(historic)
 
