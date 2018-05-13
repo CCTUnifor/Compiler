@@ -4,6 +4,9 @@ using System.Linq;
 using CCTUnifor.Logger;
 using MyCompiler.CodeGenerator.Aspects;
 using MyCompiler.CodeGenerator.Code;
+using MyCompiler.CodeGenerator.Enums;
+using MyCompiler.CodeGenerator.Interfaces;
+using MyCompiler.CodeGenerator.StatmentHandlers;
 using MyCompiler.Core.Exceptions;
 using MyCompiler.Core.Extensions;
 using MyCompiler.Core.Interfaces;
@@ -24,7 +27,6 @@ namespace MyCompiler.CodeGenerator
         public Stack<CmsCode> Stack { get; set; }
         public Token Token { get; set; }
         public CmsCodeState State { get; set; }
-        public CmsCodeIfStatmentState IfStatmentState { get; set; }
         public Stack<Token> TokenStack { get; set; }
         public CmsCodeReference JFCode { get; set; }
 
@@ -86,7 +88,6 @@ namespace MyCompiler.CodeGenerator
             if (!Token.IsBegin())
                 throw new ExpectedException("BEGIN", Token.Value, null);
 
-            State = CmsCodeState.Initial;
             HandleBody();
         }
 
@@ -94,141 +95,46 @@ namespace MyCompiler.CodeGenerator
 
         private void HandleBody()
         {
+            State = CmsCodeState.Initial;
             while (Token != null)
             {
                 Token = Tokenization.GetTokenIgnoreSpace();
                 if (Token == null) continue;
 
+                IStatmentHandler statmentHandler;
                 switch (State)
                 {
                     case CmsCodeState.Initial:
-                        HandleInitialState();
+                        statmentHandler = new InitialStatmentHandler();
                         break;
                     case CmsCodeState.Read:
-                        HandleReadStatment();
+                        statmentHandler = new ReadStatmentHandler();
                         break;
                     case CmsCodeState.Write:
-                        HandleWriteStatment();
+                        statmentHandler = new WriteStatmentHandler();
                         break;
                     case CmsCodeState.If:
-                        IfStatmentState = CmsCodeIfStatmentState.Initial;
-                        HandleIfStatment();
+                        statmentHandler = new IfStatmentHandler();
                         break;
                     case CmsCodeState.End:
-                        HandleEndStatment();
+                        statmentHandler = new EndStatmentHandler();
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
+                statmentHandler.Handler(this);
             }
-        }
-
-        private void HandleInitialState()
-        {
-            switch (Token.Value.ToLower())
-            {
-                case "read":
-                    State = CmsCodeState.Read;
-                    break;
-                case "write":
-                    State = CmsCodeState.Write;
-                    break;
-                case "if":
-                    State = CmsCodeState.If;
-                    TokenStack.Push(Token);
-                    break;
-                case "end":
-                    State = CmsCodeState.End;
-                    break;
-            }
-        }
-
-        private void HandleReadStatment()
-        {
-            AddCode(CmsCodeFactory.IN);
-            AddCode(CmsCodeFactory.STO(VariableArea[Token.Value]));
-            State = CmsCodeState.Initial;
-        }
-
-        private void HandleWriteStatment()
-        {
-            AddCode(CmsCodeFactory.LOD(VariableArea[Token.Value]));
-            AddCode(CmsCodeFactory.OUT);
-            State = CmsCodeState.Initial;
-        }
-
-        private void HandleIfStatment()
-        {
-            CmsCode compReference = null;
-            while (Token.Value.ToLower() != "then")
-            {
-                switch (IfStatmentState)
-                {
-                    case CmsCodeIfStatmentState.Initial:
-                        if (Token.IsIdentifier())
-                            IfStatmentState = CmsCodeIfStatmentState.Adress;
-                        else if (Token.IsNumber())
-                            IfStatmentState = CmsCodeIfStatmentState.Number;
-                        else if (Token.Value == ">")
-                            IfStatmentState = CmsCodeIfStatmentState.GreatThen;
-                        else
-                            Token = Tokenization.GetTokenIgnoreSpace();
-                        break;
-                    case CmsCodeIfStatmentState.Adress:
-                        AddCode(CmsCodeFactory.LOD(VariableArea[Token.Value]));
-                        if (compReference != null)
-                            AddCode(compReference);
-                        GoToInitialIfState();
-                        break;
-                    case CmsCodeIfStatmentState.Number:
-                        AddCode(CmsCodeFactory.LDI(new CmsCode(int.Parse(Token.Value))));
-                        if (compReference != null)
-                            AddCode(compReference);
-                        GoToInitialIfState();
-                        break;
-                    case CmsCodeIfStatmentState.GreatThen:
-                        compReference = CmsCodeFactory.GT;
-                        GoToInitialIfState();
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
-
-            JFCode = (CmsCodeReference) CmsCodeFactory.JF(new CmsCode(CodesLengh));
-            AddCode(JFCode);
-
-            State = CmsCodeState.Initial;
-        }
-
-        private void HandleEndStatment()
-        {
-            var pop = TokenStack.Pop();
-            switch (pop.Value.ToLower())
-            {
-                case "if":
-                    JFCode.Reference.ValueDecimal = CodesLengh;
-                    break;
-            }
-
-            State = CmsCodeState.Initial;
         }
 
         [AddCodeAspect]
-        private void AddCode(CmsCode code)
+        public void AddCode(CmsCode code)
         {
             Codes.Add(code);
             IncrementStopReference();
         }
 
-        private void GoToInitialIfState()
-        {
-            Token = Tokenization.GetTokenIgnoreSpace();
-            IfStatmentState = CmsCodeIfStatmentState.Initial;
-        }
-
         private void IncrementStopReference() => StopReference.ValueDecimal = CodesLengh;
-        private int CodesLengh => Codes.Sum(x => x.Length);
+        public int CodesLengh => Codes.Sum(x => x.Length);
         private void Malock() => AddCode(new CmsCode(0X00));
         private void Print()
         {
@@ -239,22 +145,5 @@ namespace MyCompiler.CodeGenerator
                 length += code.Length;
             }
         }
-    }
-
-    public enum CmsCodeState
-    {
-        Initial,
-        Read,
-        Write,
-        If,
-        End
-    }
-
-    public enum CmsCodeIfStatmentState
-    {
-        Initial,
-        Adress,
-        Number,
-        GreatThen
     }
 }
