@@ -1,8 +1,11 @@
 ﻿using System;
 using System.IO;
+using AspectCore.DynamicProxy;
+using AspectCore.DynamicProxy.Parameters;
 using CCTUnifor.Logger;
 using MyCompiler.CodeGenerator;
 using MyCompiler.Core.Aspects;
+using MyCompiler.Core.Interfaces.Parsers;
 using MyCompiler.Parser;
 
 namespace MyCompiler.CodeGenaretorCMS
@@ -14,6 +17,15 @@ namespace MyCompiler.CodeGenaretorCMS
         {
             try
             {
+
+                var generator = new ProxyGeneratorBuilder()
+                    .Configure(config =>
+                    {
+                        config.EnableParameterAspect();
+                    })
+                    .Build();
+                //var service = generator.CreateInterfaceProxy<IParser, TopDownParser>();
+
                 const string grammarFile = "grammar(0).txt";
                 const string inputFile = "input(0).txt";
 

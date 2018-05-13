@@ -3,10 +3,10 @@ using System.Linq;
 using MyCompiler.Grammar;
 using MyCompiler.Grammar.Extensions;
 using MyCompiler.Grammar.Tokens;
+using MyCompiler.Parser.Aspects;
 using MyCompiler.Parser.TopDown;
-using MyCompiler.Tokenization.Aspects;
 
-namespace MyCompiler.Tokenization.Generators
+namespace MyCompiler.Parser.Generators
 {
     public class TableGenerator
     {

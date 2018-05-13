@@ -7,9 +7,9 @@ using MyCompiler.Core.Interfaces.Parsers;
 using MyCompiler.Grammar;
 using MyCompiler.Grammar.Extensions;
 using MyCompiler.Grammar.Tokens;
+using MyCompiler.Parser.Aspects;
 using MyCompiler.Parser.Generators;
 using MyCompiler.Parser.TopDown;
-using MyCompiler.Tokenization.Aspects;
 using MyCompiler.Tokenization.Generators;
 using MyCompiler.Tokenization.TopDown;
 
@@ -48,7 +48,6 @@ namespace MyCompiler.Parser
 
         public void Parser(string input)
         {
-            Logger.PrintLn("Parser!");
             HandleLines();
             Analyse(input);
         }

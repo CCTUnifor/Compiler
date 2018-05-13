@@ -20,4 +20,8 @@
     <Folder Include="Interfaces\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="AspectCore.Core" Version="0.4.0" />
+  </ItemGroup>
+
 </Project>
