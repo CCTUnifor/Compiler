@@ -3,6 +3,7 @@ using System.Linq;
 using CCTUnifor.Logger;
 using MyCompiler.Core.Exceptions;
 using MyCompiler.Core.Extensions;
+using MyCompiler.Core.Interfaces.Parsers;
 using MyCompiler.Grammar;
 using MyCompiler.Grammar.Extensions;
 using MyCompiler.Grammar.Tokens;
@@ -10,10 +11,11 @@ using MyCompiler.Parser.Generators;
 using MyCompiler.Parser.TopDown;
 using MyCompiler.Tokenization.Aspects;
 using MyCompiler.Tokenization.Generators;
+using MyCompiler.Tokenization.TopDown;
 
-namespace MyCompiler.Tokenization
+namespace MyCompiler.Parser
 {
-    public class TopDownParser
+    public class TopDownParser : IParser
     {
         private string Grammar { get; }
 
@@ -30,7 +32,6 @@ namespace MyCompiler.Tokenization
         public IEnumerable<Follow> Follows => FollowGenerator.Follows;
 
         public TableGenerator TableGenerator { get; private set; }
-
 
         public TopDownParser(string grammar) => Grammar = grammar;
 

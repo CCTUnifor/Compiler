@@ -14,7 +14,7 @@ namespace MyCompiler.Parser
         public static string Operations => "+-/*";
         public static string Digits => "0123456789";
 
-        public IToken<MathExpressionGrammarClass> LastToken { get; set; }
+        public _IToken<MathExpressionGrammarClass> LastToken { get; set; }
         public bool IsToAdd { get; set; }
         public MathExpressionStateType CurrentState { get; set; }
 
@@ -23,11 +23,11 @@ namespace MyCompiler.Parser
             CurrentState = MathExpressionStateType.Initial;
         }
 
-        public IEnumerable<IToken<MathExpressionGrammarClass>> LoadTokens(string input)
+        public IEnumerable<_IToken<MathExpressionGrammarClass>> LoadTokens(string input)
         {
             input = input.Replace(" ", "");
 
-            var tokens = new List<IToken<MathExpressionGrammarClass>>();
+            var tokens = new List<_IToken<MathExpressionGrammarClass>>();
             var i = 0;
 
             while (i < input.Length)
@@ -81,7 +81,7 @@ namespace MyCompiler.Parser
             return tokens;
         }
 
-        public void PrintTokens(IEnumerable<IToken<MathExpressionGrammarClass>> tokens)
+        public void PrintTokens(IEnumerable<_IToken<MathExpressionGrammarClass>> tokens)
         {
             throw new NotImplementedException();
         }

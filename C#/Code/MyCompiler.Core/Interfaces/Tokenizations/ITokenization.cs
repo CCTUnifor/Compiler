@@ -5,7 +5,7 @@ namespace MyCompiler.Core.Interfaces.Tokenizations
 {
     public interface ITokenization<T>
     {
-        IEnumerable<IToken<T>> LoadTokens(string input);
-        void PrintTokens(IEnumerable<IToken<T>> tokens);
+        IEnumerable<_IToken<T>> LoadTokens(string input);
+        void PrintTokens(IEnumerable<_IToken<T>> tokens);
     }
 }

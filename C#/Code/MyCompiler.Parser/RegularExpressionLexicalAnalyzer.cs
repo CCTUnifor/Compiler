@@ -17,16 +17,16 @@ namespace MyCompiler.Parser
         public static string Or => "|";
         public static string Terminal => "abcd";
 
-        public IToken<RegularExpressionGrammarClass> LastToken { get; set; }
+        public _IToken<RegularExpressionGrammarClass> LastToken { get; set; }
         public bool IsToAdd { get; set; }
         public RegularExpressionStateType CurrentState { get; set; }
 
         public RegularExpressionLexicalAnalyzer()
             => CurrentState = RegularExpressionStateType.Initial;
 
-        public IEnumerable<IToken<RegularExpressionGrammarClass>> LoadTokens(string input)
+        public IEnumerable<_IToken<RegularExpressionGrammarClass>> LoadTokens(string input)
         {
-            var tokens = new List<IToken<RegularExpressionGrammarClass>>();
+            var tokens = new List<_IToken<RegularExpressionGrammarClass>>();
 
             var i = 0;
 
@@ -136,7 +136,7 @@ namespace MyCompiler.Parser
             IsToAdd = false;
         }
 
-        public void PrintTokens(IEnumerable<IToken<RegularExpressionGrammarClass>> tokens)
+        public void PrintTokens(IEnumerable<_IToken<RegularExpressionGrammarClass>> tokens)
         {
             Console.WriteLine("\n-----------------------------------------------------\n");
 

@@ -6,7 +6,7 @@ using MyCompiler.Grammar;
 using MyCompiler.Grammar.Extensions;
 using MyCompiler.Grammar.Tokens;
 
-namespace MyCompiler.Tokenization
+namespace MyCompiler.Tokenization.TopDown
 {
     public class TopDownTokenization
     {

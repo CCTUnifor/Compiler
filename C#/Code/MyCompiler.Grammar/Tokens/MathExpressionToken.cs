@@ -3,7 +3,7 @@ using MyCompiler.Core.Interfaces.Graph;
 
 namespace MyCompiler.Grammar.Tokens
 {
-    public class MathExpressionToken : IToken<MathExpressionGrammarClass>
+    public class MathExpressionToken : _IToken<MathExpressionGrammarClass>
     {
         public string Value { get; private set; }
         public MathExpressionGrammarClass GrammarClass { get; private set; }
@@ -18,10 +18,10 @@ namespace MyCompiler.Grammar.Tokens
             Collumn = collumn;
         }
 
-        public bool SameGramarClassTo(IToken<MathExpressionGrammarClass> currentToken)
+        public bool SameGramarClassTo(_IToken<MathExpressionGrammarClass> currentToken)
             => GrammarClass == currentToken?.GrammarClass;
 
-        void IToken<MathExpressionGrammarClass>.ConcatValue(string value)
+        void _IToken<MathExpressionGrammarClass>.ConcatValue(string value)
             => Value += value;
 
         public override bool Equals(object obj)

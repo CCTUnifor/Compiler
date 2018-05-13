@@ -3,8 +3,9 @@ using System.Linq;
 using MyCompiler.Grammar;
 using MyCompiler.Grammar.Extensions;
 using MyCompiler.Grammar.Tokens;
+using MyCompiler.Tokenization.TopDown;
 
-namespace MyCompiler.Tokenization.Generators
+namespace MyCompiler.Parser.Generators
 {
     public class TermGenerator
     {

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
 using CCTUnifor.Logger;
-using MyCompiler.Tokenization;
-using MyCompiler.TopDownApp.Aspects;
+using MyCompiler.Core.Aspects;
+using MyCompiler.Parser;
 
 namespace MyCompiler.TopDownApp
 {

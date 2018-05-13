@@ -2,10 +2,10 @@
 using PostSharp.Aspects;
 using PostSharp.Serialization;
 
-namespace MyCompiler.TopDownApp.Aspects
+namespace MyCompiler.Core.Aspects
 {
     [PSerializable]
-    internal class LogReadFileAspect : OnMethodBoundaryAspect
+    public class LogReadFileAspect : OnMethodBoundaryAspect
     {
         public override void OnExit(MethodExecutionArgs args)
         {

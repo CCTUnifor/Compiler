@@ -4,7 +4,7 @@ using CCTUnifor.Logger;
 using PostSharp.Aspects;
 using PostSharp.Serialization;
 
-namespace MyCompiler.TopDownApp.Aspects
+namespace MyCompiler.Core.Aspects
 {
     [PSerializable]
     public class ConfigConsoleAspect : OnMethodBoundaryAspect
