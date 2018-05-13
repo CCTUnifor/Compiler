@@ -6,6 +6,6 @@ namespace MyCompiler.Core.Extensions
 {
     public static class NumberExtension
     {
-        public static string ToHexadecimal(this int value) => value.ToString("X4");
+        public static string ToHexadecimal(this int value, string hexadecimalFormat = "X4") => value.ToString(hexadecimalFormat);
     }
 }

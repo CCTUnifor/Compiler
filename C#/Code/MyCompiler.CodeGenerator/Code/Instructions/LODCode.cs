@@ -2,9 +2,9 @@
 
 namespace MyCompiler.CodeGenerator.Code.Instructions
 {
-    public class LODCode : CmsCode
+    public class LODCode : CmsCodeReference
     {
-        public LODCode() : base(Instruction.LOD, 0X40)
+        public LODCode(CmsCode reference) : base(Instruction.LOD, 0X40, reference)
         {
         }
     }

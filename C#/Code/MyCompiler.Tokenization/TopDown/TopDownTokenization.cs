@@ -30,7 +30,7 @@ namespace MyCompiler.Tokenization.TopDown
         public Token GetTokenIgnoreSpace()
         {
             var token = GetToken();
-            while (token != null && token is SpaceToken)
+            while (token != null && token is SpaceToken || token is NewLineToken)
                 token = GetToken();
             return token;
         }
@@ -62,15 +62,11 @@ namespace MyCompiler.Tokenization.TopDown
                         HandleInitial();
                         break;
                     case LexicAnalyserState.Letter:
-                        if (IsNonTerminal() && NextCharacter == ' ')
+                        if (IsNonTerminal() && NextIsSpaceOrNewline())
                             State = LexicAnalyserState.NonTerminal;
                         else if (Value.IsEmpty())
                             State = LexicAnalyserState.Empty;
-                        //else if (Value.ToLower() == "ide" || !IsNonTerminal() && NextCharacter == ' ')
-                        //    State = LexicAnalyserState.Identifier;
-                        //else if (Value.ToLower() == "num" || Value.IsNumber() && NextCharacter == ' ')
-                        //    State = LexicAnalyserState.Number;
-                        else if (!IsNonTerminal() && NextCharacter == ' ')
+                        else if (!IsNonTerminal() && NextIsSpaceOrNewline())
                             State = LexicAnalyserState.Terminal;
                         else if (IsSpace())
                             State = LexicAnalyserState.Space;
@@ -99,14 +95,10 @@ namespace MyCompiler.Tokenization.TopDown
                         token = new EmptyToken();
                         CurrentIndex++;
                         break;
-                    //case LexicAnalyserState.Identifier:
-                    //    token = new IdentifierToken(Value);
-                    //    CurrentIndex++;
-                    //    break;
-                    //case LexicAnalyserState.Number:
-                    //    token = new NumberToken(Value);
-                    //    CurrentIndex++;
-                    //    break;
+                    case LexicAnalyserState.NewLine:
+                        token = new NewLineToken(Value);
+                        CurrentIndex++;
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
@@ -123,11 +115,15 @@ namespace MyCompiler.Tokenization.TopDown
                 State = LexicAnalyserState.NonTerminal;
             else if (IsSpace())
                 State = LexicAnalyserState.Space;
+            else if (IsNewLine(Value))
+                State = LexicAnalyserState.NewLine;
             else
                 State = LexicAnalyserState.Letter;
         }
 
         private bool IsNonTerminal() =>
             _nonTerminals.OrderByDescending(x => x.Value.Length).Any(x => x.Value == Value);
+        private bool IsNewLine(string v) => v == "\r" || v == "\t" || v == "\n";
+        private bool NextIsSpaceOrNewline() => NextCharacter == ' ' || IsNewLine(NextCharacter.ToString());
     }
 }

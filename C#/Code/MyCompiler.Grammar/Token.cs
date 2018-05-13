@@ -26,5 +26,9 @@ namespace MyCompiler.Grammar
 
         public static bool operator ==(Token token1, Token token2) => Equals(token1, token2);
         public static bool operator !=(Token token1, Token token2) => !Equals(token1, token2);
+
+        public bool IsProgram() => Value.ToLower() == "program";
+        public bool IsBegin() => Value.ToLower() == "begin";
+        public bool IsVar() => Value.ToLower() == "var";
     }
 }

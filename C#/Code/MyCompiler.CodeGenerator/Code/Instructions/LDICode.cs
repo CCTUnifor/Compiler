@@ -2,9 +2,9 @@
 
 namespace MyCompiler.CodeGenerator.Code.Instructions
 {
-    public class LDICode : CmsCode
+    public class LDICode : CmsCodeReference
     {
-        public LDICode() : base(Instruction.LDI, 0X44)
+        public LDICode(CmsCode reference) : base(Instruction.LDI, 0X44, reference)
         {
         }
     }

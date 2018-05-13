@@ -5,24 +5,28 @@ namespace MyCompiler.CodeGenerator.Code
 {
     public class CmsCode
     {
+        private readonly string _hexadecimalFormat;
         public Instruction Instruction { get; set; }
 
         public int ValueDecimal { get; set; }
-        public string Value { get; set; }
+        public string Value => ValueDecimal.ToHexadecimal(_hexadecimalFormat);
+        protected int PadRigth { get; set; } = 5;
 
-        public CmsCode(int value)
+        public CmsCode(int value, string hexadecimalFormat = "X4")
         {
             ValueDecimal = value;
-            Value = value.ToHexadecimal();
+            Instruction = Instruction.Reference;
+            _hexadecimalFormat = hexadecimalFormat;
         }
 
-        public CmsCode(Instruction instruction, int valueDecimal)
+        public CmsCode(Instruction instruction, int valueDecimal, string hexadecimalFormat = "X4")
         {
             ValueDecimal = valueDecimal;
             Instruction = instruction;
-            Value = ValueDecimal.ToHexadecimal();
+            _hexadecimalFormat = hexadecimalFormat;
         }
 
-        public override string ToString() => $"{Value} - [{Instruction}]";
+        public override string ToString() => $"{Value.PadRight(PadRigth)} {"".PadRight(PadRigth, ' ')} - [{Instruction}]";
+        public virtual int Length => 2;
     }
 }

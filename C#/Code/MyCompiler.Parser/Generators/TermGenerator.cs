@@ -51,7 +51,7 @@ namespace MyCompiler.Parser.Generators
         public ICollection<TerminalToken> CalculateTerminals(IEnumerable<Term> terms)
         {
             var selectMany = terms.SelectMany(x => x.Productions).SelectMany(x => x.Elements).ToArray();
-            var terminalTokens = selectMany.OfType<TerminalToken>().ToList();
+            var terminalTokens = selectMany.OfType<TerminalToken>().Distinct().ToList();
 
             //terminalTokens.AddRange(selectMany.OfType<NumberToken>().Select(x => x.ToTerminalToken()).Distinct().ToArray());
             //terminalTokens.AddRange(selectMany.OfType<IdentifierToken>().Select(x => x.ToTerminalToken()).Distinct().ToArray());

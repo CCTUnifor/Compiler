@@ -20,6 +20,7 @@
         GE, // >=
         LT, // <
         LE, //<=
-        STOP
+        STOP,
+        Reference
     }
 }

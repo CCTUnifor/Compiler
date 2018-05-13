@@ -2,9 +2,9 @@
 
 namespace MyCompiler.CodeGenerator.Code.Instructions
 {
-    public class STOCode : CmsCode
+    public class STOCode : CmsCodeReference
     {
-        public STOCode() : base(Instruction.STO, 0X41)
+        public STOCode(CmsCode reference) : base(Instruction.STO, 0X41, reference)
         {
         }
     }

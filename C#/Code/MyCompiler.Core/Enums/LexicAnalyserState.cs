@@ -9,6 +9,7 @@
         Terminal,
         Empty,
         Identifier,
-        Number
+        Number,
+        NewLine
     }
 }

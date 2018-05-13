@@ -1,9 +1,9 @@
-read x ;
-if ( 0 < x ) then
-    fact := 1 ;
-    repeat
-        fact := fact * x ;
-        x := x - 1 
-    until x = 0 ;
-    write fact
-end
+PROGRAM  
+VAR test : INTEGER ; 
+VAR xtest2 : INTEGER ; 
+BEGIN 
+    READ test ;
+	IF ( test > 0 ) THEN
+		WRITE test
+	END
+END

@@ -2,6 +2,7 @@
 using System.IO;
 using AspectCore.DynamicProxy;
 using AspectCore.DynamicProxy.Parameters;
+using CCTUnifor.ConsoleTable;
 using CCTUnifor.Logger;
 using MyCompiler.CodeGenerator;
 using MyCompiler.Core.Aspects;
@@ -12,9 +13,20 @@ namespace MyCompiler.CodeGenaretorCMS
 {
     public class Program
     {
+        public static void ConfigConsole()
+        {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+            ConsoleTableOptions.Pad = 60;
+            ConsoleTableOptions.DefaultIfNull = "Error";
+            Logger.PathToSave = $"Logs/log{DateTime.Now.Millisecond}.txt";
+
+            Logger.PrintHeader("# Code Generator - CMS");
+        }
+
         [ConfigConsoleAspect]
         private static void Main(string[] args)
         {
+            ConfigConsole();
             try
             {
 

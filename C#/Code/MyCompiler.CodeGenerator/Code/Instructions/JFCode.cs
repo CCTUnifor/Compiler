@@ -2,9 +2,9 @@
 
 namespace MyCompiler.CodeGenerator.Code.Instructions
 {
-    public class JFCode : CmsCode
+    public class JFCode : CmsCodeReference
     {
-        public JFCode() : base(Instruction.JF, 0X5C)
+        public JFCode(CmsCode reference) : base(Instruction.JF, 0X5C, reference)
         {
         }
     }
