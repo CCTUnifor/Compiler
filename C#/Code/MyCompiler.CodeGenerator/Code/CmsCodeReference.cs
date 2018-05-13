@@ -5,7 +5,7 @@ namespace MyCompiler.CodeGenerator.Code
 {
     public class CmsCodeReference : CmsCode
     {
-        protected readonly CmsCode Reference;
+        public readonly CmsCode Reference;
 
         public CmsCodeReference(Instruction instruction, int valueDecimal, CmsCode reference, string hexadecimalFormat = "X2") : base(instruction, valueDecimal, hexadecimalFormat)
         {
