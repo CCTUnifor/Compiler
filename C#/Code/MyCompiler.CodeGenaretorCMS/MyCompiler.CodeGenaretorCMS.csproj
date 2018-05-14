@@ -14,21 +14,23 @@
     <None Remove="grammars\grammar(0).txt" />
     <None Remove="grammars\_grammar(0).txt" />
     <None Remove="inputs\input(0).txt" />
-    <None Remove="inputs\__input(0).txt" />
+    <None Remove="inputs\_input(0).txt" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="grammars\grammar(0).txt" />
     <EmbeddedResource Include="grammars\_grammar(0).txt" />
-    <EmbeddedResource Include="inputs\input(0).txt" />
-    <EmbeddedResource Include="inputs\__input(0).txt" />
+    <EmbeddedResource Include="inputs\_input%280%29.txt" />
+    <EmbeddedResource Include="inputs\input%280%29.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Update="grammars\grammar%280%29.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Update="inputs\input%280%29.txt">
+    <EmbeddedResource Update="inputs\_input%280%29.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>

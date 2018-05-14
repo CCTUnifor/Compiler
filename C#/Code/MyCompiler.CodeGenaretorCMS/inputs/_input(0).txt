@@ -1,0 +1,9 @@
+PROGRAM  
+VAR test : INTEGER ; 
+VAR xtest2 : INTEGER ; 
+BEGIN 
+    READ test ;
+	IF ( test > 0 ) THEN
+		WRITE test
+	END
+END

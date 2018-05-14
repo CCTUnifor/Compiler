@@ -4,7 +4,7 @@ namespace MyCompiler.CodeGenerator.Code.Instructions
 {
     public class GECode : CmsCode
     {
-        public GECode() : base(Instruction.GE, 0X23)
+        public GECode() : base(Instruction.GE, 0X23, "X2")
         {
         }
     }

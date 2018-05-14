@@ -28,7 +28,8 @@ namespace MyCompiler.CodeGenerator
         public Token Token { get; set; }
         public CmsCodeState State { get; set; }
         public Stack<Token> TokenStack { get; set; }
-        public CmsCodeReference JFCode { get; set; }
+        public Stack<CmsCodeReference> JFCode { get; set; }
+        public Stack<CmsCodeReference> InitialWhileCode { get; set; }
 
         public CmsCodeGenerator(TopDownParser parser, string input)
         {
@@ -39,6 +40,8 @@ namespace MyCompiler.CodeGenerator
             VariableArea = new Dictionary<string, CmsCode>();
             StopReference = new CmsCode(0X0000);
             TokenStack = new Stack<Token>();
+            JFCode = new Stack<CmsCodeReference>();
+            InitialWhileCode = new Stack<CmsCodeReference>();
         }
 
         public void Generator()
@@ -88,12 +91,12 @@ namespace MyCompiler.CodeGenerator
             if (!Token.IsBegin())
                 throw new ExpectedException("BEGIN", Token.Value, null);
 
-            HandleBody();
+            HandlerBody();
         }
 
         private void End() => AddCode(CmsCodeFactory.STOP);
 
-        private void HandleBody()
+        private void HandlerBody()
         {
             State = CmsCodeState.Initial;
             while (Token != null)
@@ -119,6 +122,9 @@ namespace MyCompiler.CodeGenerator
                     case CmsCodeState.End:
                         statmentHandler = new EndStatmentHandler();
                         break;
+                    case CmsCodeState.While:
+                        statmentHandler = new WhileStatmentHandler();
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
@@ -135,6 +141,7 @@ namespace MyCompiler.CodeGenerator
 
         private void IncrementStopReference() => StopReference.ValueDecimal = CodesLengh;
         public int CodesLengh => Codes.Sum(x => x.Length);
+
         private void Malock() => AddCode(new CmsCode(0X00));
         private void Print()
         {

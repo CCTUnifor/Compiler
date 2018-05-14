@@ -15,7 +15,11 @@ namespace MyCompiler.CodeGenerator.StatmentHandlers
             switch (pop.Value.ToLower())
             {
                 case "if":
-                    generator.JFCode.Reference.ValueDecimal = generator.CodesLengh;
+                    generator.JFCode.Pop().Reference.ValueDecimal = generator.CodesLengh;
+                    break;
+                case "while":
+                    generator.AddCode(generator.InitialWhileCode.Pop());
+                    generator.JFCode.Pop().Reference.ValueDecimal = generator.CodesLengh;
                     break;
             }
 

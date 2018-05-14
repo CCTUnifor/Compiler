@@ -6,6 +6,7 @@
         Read,
         Write,
         If,
-        End
+        End,
+        While
     }
 }

@@ -23,6 +23,10 @@ namespace MyCompiler.CodeGenerator.StatmentHandlers
                     generator.State = CmsCodeState.If;
                     generator.TokenStack.Push(generator.Token);
                     break;
+                case "while":
+                    generator.State = CmsCodeState.While;
+                    generator.TokenStack.Push(generator.Token);
+                    break;
                 case "end":
                     generator.State = CmsCodeState.End;
                     break;
