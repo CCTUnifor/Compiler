@@ -125,6 +125,9 @@ namespace MyCompiler.CodeGenerator
                     case CmsCodeState.While:
                         statmentHandler = new WhileStatmentHandler();
                         break;
+                    case CmsCodeState.Attribution:
+                        statmentHandler = new AttributionStatmentHandler();
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }

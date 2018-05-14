@@ -7,6 +7,7 @@
         Write,
         If,
         End,
-        While
+        While,
+        Attribution
     }
 }

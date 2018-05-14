@@ -27,6 +27,9 @@ namespace MyCompiler.CodeGenerator.StatmentHandlers
                     generator.State = CmsCodeState.While;
                     generator.TokenStack.Push(generator.Token);
                     break;
+                case ":=":
+                    generator.State = CmsCodeState.Attribution;
+                    break;
                 case "end":
                     generator.State = CmsCodeState.End;
                     break;
