@@ -1,3 +1,4 @@
+## exemplo 1
 PROGRAM  
 VAR test : INTEGER ; 
 VAR xtest2 : INTEGER ; 
@@ -5,5 +6,16 @@ BEGIN
     READ test ;
 	IF ( test > 0 ) THEN
 		WRITE test
+	END
+END
+
+## exemplo 2
+PROGRAM
+VAR x1 : INTEGER ;
+BEGIN
+	WHILE x1 < 100 DO
+	BEGIN
+		x1 := x1 + 1 ;
+		WRITE ( x1 )
 	END
 END

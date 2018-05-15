@@ -1,9 +1,5 @@
 PROGRAM
-VAR x1 : INTEGER ;
+VAR x : INTEGER ;
 BEGIN
-	WHILE x1 < 100 DO
-	BEGIN
-		x1 := x1 + 1 ;
-		WRITE x1
-	END
+    READ ( x )
 END

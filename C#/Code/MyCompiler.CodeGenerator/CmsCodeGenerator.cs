@@ -162,14 +162,18 @@ namespace MyCompiler.CodeGenerator
         public void Export()
         {
             var path = $"Logs/export-{DateTime.Now.Millisecond}";
-            Check(path);
+            Logger.PathToSave = path;
+            foreach (var code in Codes)
+                Logger.Print(code.Export());
 
-            var byteArray = Codes.SelectMany(x => Convert.ToByte(x.Export())).ToArray();
+            //Check(path);
 
-            using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write))
-            {
-                fs.Write(byteArray, 0, byteArray.Length);
-            }
+            //var byteArray = Codes.SelectMany(x => Convert.ToByte(x.Export())).ToArray();
+
+            //using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write))
+            //{
+            //    fs.Write(byteArray, 0, byteArray.Length);
+            //}
         }
 
         private static void Check(string path)
