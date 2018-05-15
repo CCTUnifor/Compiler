@@ -238,6 +238,9 @@ class CodeGenerator:
             elif not self.boolean_exp(token):
                 self.__concat_to_bytecode(self.operator_cache + bytes([CodeGenerator.command_dict['JF']]))
 
+                self.__concat_to_bytecode(self.__int_to_byte(self.bytecode_next_position(5)))
+
+                self.__concat_to_bytecode(bytes([CodeGenerator.command_dict['JMP']]))
                 command, position = self.backpatching_stack.pop()
                 self.__concat_to_bytecode(self.__int_to_byte(position))
                 self.state = 'main program'
@@ -270,7 +273,7 @@ class CodeGenerator:
     def change_bytecode(self, interval_b, interval_e, subst:bytes):
         self.bytecode = self.bytecode[0:interval_b:] + subst + self.bytecode[interval_e::]
     
-    def bytecode_next_position(self):
-        return len(self.bytecode)
+    def bytecode_next_position(self, offset=0):
+        return len(self.bytecode) + offset
             
 # byte 22,23 0x43,0x00 but 00,00

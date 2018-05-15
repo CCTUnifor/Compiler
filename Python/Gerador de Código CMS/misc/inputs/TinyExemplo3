@@ -1,10 +1,10 @@
 PROGRAM
-VAR X1:INTEGER;
+VAR x:INTEGER;
 BEGIN
     REPEAT
     BEGIN
-        X1:=X1+1;
-        WRITE X1
+        x:=x+1;
+        WRITE x
     END
-    UNTIL X1 < 100
+    UNTIL x < 100
 END
