@@ -10,6 +10,7 @@ namespace MyCompiler.CodeGenerator.Code
 
         public int ValueDecimal { get; set; }
         public string Value => ValueDecimal.ToHexadecimal(_hexadecimalFormat);
+        public virtual byte[] Bytes => Value.ToConvertByte();
         protected int PadRigth { get; set; } = 5;
 
         public CmsCode(int value, string hexadecimalFormat = "X4")

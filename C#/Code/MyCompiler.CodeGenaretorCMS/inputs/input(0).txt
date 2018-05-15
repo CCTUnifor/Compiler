@@ -1,5 +1,6 @@
-PROGRAM
-VAR x : INTEGER ;
+PROGRAM  
+VAR a : INTEGER ; 
 BEGIN
-    READ ( x )
+	READ ( a ) ;
+	WRITE ( a )
 END

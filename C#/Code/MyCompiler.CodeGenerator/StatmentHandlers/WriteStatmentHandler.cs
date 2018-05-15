@@ -12,7 +12,10 @@ namespace MyCompiler.CodeGenerator.StatmentHandlers
     {
         public void Handler(CmsCodeGenerator generator)
         {
+            generator.Token = generator.Tokenization.GetTokenIgnoreSpace();
             generator.AddCode(CmsCodeFactory.LOD(generator.VariableArea[generator.Token.Value]));
+            generator.Token = generator.Tokenization.GetTokenIgnoreSpace();
+
             generator.AddCode(CmsCodeFactory.OUT);
             generator.State = CmsCodeState.Initial;
         }

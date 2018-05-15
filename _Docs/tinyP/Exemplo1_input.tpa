@@ -1,0 +1,6 @@
+PROGRAM  
+VAR ab : INTEGER ; 
+BEGIN 
+    READ ( ab ) ;
+	IF ( ab = 10 ) THEN WRITE ( ab ) END
+END

@@ -1,11 +1,10 @@
 ## exemplo 1
 PROGRAM  
-VAR test : INTEGER ; 
-VAR xtest2 : INTEGER ; 
+VAR a : INTEGER ; 
 BEGIN 
-    READ test ;
-	IF ( test > 0 ) THEN
-		WRITE test
+    READ ( a ) ;
+	IF ( a > 10 ) THEN
+		WRITE ( a )
 	END
 END
 

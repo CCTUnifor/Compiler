@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using CCTUnifor.Logger;
+using Microsoft.CodeAnalysis.CSharp;
 using MyCompiler.CodeGenerator.Aspects;
 using MyCompiler.CodeGenerator.Code;
 using MyCompiler.CodeGenerator.Enums;
@@ -20,6 +22,8 @@ namespace MyCompiler.CodeGenerator
 {
     public class CmsCodeGenerator : ICodeGenerator
     {
+        public static int Milliseconds = DateTime.Now.Millisecond;
+
         private readonly TopDownParser _parser;
         private readonly string _input;
         public ICollection<CmsCode> Codes { get; set; }
@@ -29,6 +33,8 @@ namespace MyCompiler.CodeGenerator
         public Stack<CmsCode> Stack { get; set; }
         public Token Token { get; set; }
         public CmsCodeState State { get; set; }
+        public string CodeGenerated { get; set; }
+
 
         public Stack<Token> TokenStack { get; set; }
         public Stack<CmsCodeReference> JFCode { get; set; }
@@ -151,6 +157,7 @@ namespace MyCompiler.CodeGenerator
         private void Malock() => AddCode(new CmsCode(0X00));
         private void Print()
         {
+            Logger.PrintLn("");
             var length = 0;
             foreach (var code in Codes)
             {
@@ -161,25 +168,71 @@ namespace MyCompiler.CodeGenerator
 
         public void Export()
         {
-            var path = $"Logs/export-{DateTime.Now.Millisecond}";
-            Logger.PathToSave = path;
-            foreach (var code in Codes)
-                Logger.Print(code.Export());
+            var file = $"export{Milliseconds}";
+            var path = $"{file}.OBJ";
+            Check(path);
 
-            //Check(path);
+            using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write))
+            {
+                var selectMany = Codes.SelectMany(x => x.Bytes).ToArray();
+                foreach (var code in selectMany)
+                    fs.WriteByte(code);
+                fs.WriteByte("FF".ToConvertByte()[0]);
+            }
 
-            //var byteArray = Codes.SelectMany(x => Convert.ToByte(x.Export())).ToArray();
+            CodeGenerated = file;
+        }
 
-            //using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write))
+        public void ExecuteVM()
+        {
+            Logger.PrintLn("\n\nExecuting CMS VM");
+            Logger.PrintLn($"File -> '{CodeGenerated}'");
+
+            // java - jar CmsJava.jar
+
+            var info = new ProcessStartInfo()
+            {
+                FileName = "cmd.exe",
+                RedirectStandardInput = true,
+            };
+            try
+            {
+                using (Process exe = Process.Start(info))
+                {
+                    exe.StandardInput.WriteLine($"java -jar CmsJava.jar {CodeGenerated}");
+                    exe.StandardInput.WriteLine(Console.ReadLine());
+
+                    exe.WaitForExit();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            
+
+            Console.ReadLine();
+
+            // var info = new ProcessStartInfo()
             //{
-            //    fs.Write(byteArray, 0, byteArray.Length);
+            //    FileName = "cms.exe",
+            //    RedirectStandardInput = true,
+            //};
+
+            //using (Process exe = Process.Start(info))
+            //{
+            //    exe.StandardInput.WriteLine(Path.GetFileName(CodeGenerated));
+
+            //    exe.WaitForExit();
             //}
         }
 
+
         private static void Check(string path)
         {
-            if (!Directory.Exists(Path.GetDirectoryName(path)))
-                Directory.CreateDirectory(Path.GetDirectoryName(path));
+            //if (!Directory.Exists(path))
+            //    Directory.CreateDirectory(Path.GetDirectoryName(path));
         }
     }
 }

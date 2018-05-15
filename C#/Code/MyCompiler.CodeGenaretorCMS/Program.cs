@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using AspectCore.DynamicProxy;
 using AspectCore.DynamicProxy.Parameters;
@@ -13,12 +14,13 @@ namespace MyCompiler.CodeGenaretorCMS
 {
     public class Program
     {
+
         public static void ConfigConsole()
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             ConsoleTableOptions.Pad = 60;
             ConsoleTableOptions.DefaultIfNull = "Error";
-            Logger.PathToSave = $"Logs/log{DateTime.Now.Millisecond}.txt";
+            Logger.PathToSave = $"Logs/log{CmsCodeGenerator.Milliseconds}.txt";
 
             Logger.PrintHeader("# Code Generator - CMS");
         }
@@ -50,6 +52,7 @@ namespace MyCompiler.CodeGenaretorCMS
                 var codeGenerator = new CmsCodeGenerator(parser, input);
                 codeGenerator.Generator();
                 codeGenerator.Export();
+                codeGenerator.ExecuteVM();
 
             }
             catch (Exception e)
@@ -59,6 +62,8 @@ namespace MyCompiler.CodeGenaretorCMS
 
             Console.ReadLine();
         }
+
+        
 
         [LogReadFileAspect]
         private static string Read(string type, string path)
