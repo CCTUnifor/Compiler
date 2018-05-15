@@ -11,7 +11,7 @@ namespace MyCompiler.CodeGenerator.Code
         public static CmsCode LSP(CmsCode reference) => new LSPCode(reference);
         public static CmsCode JMP(CmsCode reference) => new JMPCode(reference);
         public static CmsCode LDI(CmsCode reference) => new LDICode(reference);
-        public static CmsCode ADI => new ADICode();
+        public static CmsCode ADI(CmsCode reference) => new ADICode(reference);
         public static CmsCode SUI => new SUICode();
         public static CmsCode MUI => new MUICode();
         public static CmsCode DVI => new DVICode();

@@ -4,6 +4,8 @@ using System.Text;
 using MyCompiler.CodeGenerator.Enums;
 using MyCompiler.CodeGenerator.Interfaces;
 using MyCompiler.Grammar;
+using MyCompiler.Grammar.Tokens.Terminals;
+using MyCompiler.Tokenization.TopDown;
 
 namespace MyCompiler.CodeGenerator.StatmentHandlers
 {
@@ -11,27 +13,34 @@ namespace MyCompiler.CodeGenerator.StatmentHandlers
     {
         public void Handler(CmsCodeGenerator generator)
         {
-            switch (generator.Token.Value.ToLower())
+            switch (generator.Token)
             {
-                case "read":
+                case ReadToken token:
                     generator.State = CmsCodeState.Read;
                     break;
-                case "write":
+                case WriteToken token:
                     generator.State = CmsCodeState.Write;
                     break;
-                case "if":
+                case IfToken token:
                     generator.State = CmsCodeState.If;
                     generator.TokenStack.Push(generator.Token);
                     break;
-                case "while":
+                case WhileToken token:
                     generator.State = CmsCodeState.While;
                     generator.TokenStack.Push(generator.Token);
                     break;
-                case ":=":
+                case AttributionToken token:
                     generator.State = CmsCodeState.Attribution;
                     break;
-                case "end":
+                case EndToken token:
                     generator.State = CmsCodeState.End;
+                    break;
+                case IdentifierToken token:
+                    generator.Token = generator.Tokenization.GetTokenIgnoreSpace();
+                    if (generator.Token is AttributionToken)
+                        generator.State = CmsCodeState.Attribution;
+                    else
+                        generator.State = CmsCodeState.Identifier;
                     break;
             }
         }

@@ -11,9 +11,7 @@ LEIT-DECL -> READ ide
 ESCR-DECL -> WRITE EXP
 EXP -> EXP-SIMPLES X
 X -> COMP-OP EXP-SIMPLES | ε
-COMP-OP -> < | > | EQUALS-OP | NOT-OP | >= | <=
-EQUALS-OP -> = | IS
-NOT-OP -> <> | != | NOT
+COMP-OP -> < | > | = | != | >= | <=
 EXP-SIMPLES -> TERMO EXP-SIMPLES'
 EXP-SIMPLES'-> SOMA TERMO EXP-SIMPLES' | ε
 SOMA -> + | -

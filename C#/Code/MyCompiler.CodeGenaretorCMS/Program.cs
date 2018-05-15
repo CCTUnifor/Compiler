@@ -49,6 +49,7 @@ namespace MyCompiler.CodeGenaretorCMS
 
                 var codeGenerator = new CmsCodeGenerator(parser, input);
                 codeGenerator.Generator();
+                codeGenerator.Export();
 
             }
             catch (Exception e)

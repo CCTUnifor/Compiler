@@ -1,0 +1,5 @@
+PROGRAM
+VAR x : INTEGER;
+BEGIN
+    READ x
+END

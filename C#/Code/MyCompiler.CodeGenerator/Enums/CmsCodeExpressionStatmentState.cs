@@ -11,5 +11,7 @@
         NotEqualsThen,
         GreatEqualThen,
         LessEqualThen,
+        Plus,
+        Sub
     }
 }

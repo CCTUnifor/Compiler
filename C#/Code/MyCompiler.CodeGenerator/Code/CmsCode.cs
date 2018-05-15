@@ -27,6 +27,7 @@ namespace MyCompiler.CodeGenerator.Code
         }
 
         public override string ToString() => $"{Value.PadRight(PadRigth)} {"".PadRight(PadRigth, ' ')} - [{Instruction}]";
+        public string Export() => Value;
         public virtual int Length => 2;
     }
 }

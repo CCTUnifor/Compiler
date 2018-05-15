@@ -4,6 +4,7 @@ using System.Text;
 using MyCompiler.CodeGenerator.Code.Instructions;
 using MyCompiler.CodeGenerator.Enums;
 using MyCompiler.CodeGenerator.Interfaces;
+using MyCompiler.Grammar.Tokens.Terminals;
 
 namespace MyCompiler.CodeGenerator.StatmentHandlers
 {
@@ -12,12 +13,12 @@ namespace MyCompiler.CodeGenerator.StatmentHandlers
         public void Handler(CmsCodeGenerator generator)
         {
             var pop = generator.TokenStack.Pop();
-            switch (pop.Value.ToLower())
+            switch (pop)
             {
-                case "if":
+                case IfToken token:
                     generator.JFCode.Pop().Reference.ValueDecimal = generator.CodesLengh;
                     break;
-                case "while":
+                case WhileToken token:
                     generator.AddCode(generator.InitialWhileCode.Pop());
                     generator.JFCode.Pop().Reference.ValueDecimal = generator.CodesLengh;
                     break;

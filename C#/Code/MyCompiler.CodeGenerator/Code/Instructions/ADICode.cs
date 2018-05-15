@@ -2,9 +2,9 @@
 
 namespace MyCompiler.CodeGenerator.Code.Instructions
 {
-    public class ADICode : CmsCode
+    public class ADICode : CmsCodeReference
     {
-        public ADICode() : base(Instruction.ADI, 0X14)
+        public ADICode(CmsCode reference) : base(Instruction.ADI, 0X14, reference)
         {
         }
     }

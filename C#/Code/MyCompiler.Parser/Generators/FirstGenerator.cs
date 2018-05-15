@@ -54,7 +54,7 @@ namespace MyCompiler.Tokenization.Generators
                     var firstsOfNonTerminal = GenerateFirst(termOfNonTerminal).RemoveEmpty().Terminals;
                     currentFirst.AddTerminal(firstsOfNonTerminal);
 
-                    var productionElements = production.Elements.ToArray();
+                    var productionElements = production.ElementsWithoutSpace.ToArray();
                     for (var i = 1; i < productionElements.Length; i++)
                     {
                         var X1 = GetTermByElement(productionElements[i - 1]);

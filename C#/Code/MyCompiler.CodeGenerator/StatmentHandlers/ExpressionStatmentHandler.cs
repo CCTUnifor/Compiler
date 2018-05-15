@@ -4,6 +4,9 @@ using System.Text;
 using MyCompiler.CodeGenerator.Code;
 using MyCompiler.CodeGenerator.Enums;
 using MyCompiler.CodeGenerator.Interfaces;
+using MyCompiler.Grammar.Tokens;
+using MyCompiler.Grammar.Tokens.Terminals;
+using MyCompiler.Tokenization.TopDown;
 
 namespace MyCompiler.CodeGenerator.StatmentHandlers
 {
@@ -16,7 +19,7 @@ namespace MyCompiler.CodeGenerator.StatmentHandlers
         {
             CmsCode compReference = null;
             ExpressionStatmentState = CmsCodeExpressionStatmentState.Initial;
-            while (!(generator.Token.Value.ToLower() == "then" || generator.Token.Value.ToLower() == "do"))
+            while (!(generator.Token is ThenToken || generator.Token is DoToken || generator.Token is SemiColonToken))
             {
                 switch (ExpressionStatmentState)
                 {
@@ -61,6 +64,15 @@ namespace MyCompiler.CodeGenerator.StatmentHandlers
                         compReference = CmsCodeFactory.NE;
                         GoToInitialIfState(generator);
                         break;
+                    case CmsCodeExpressionStatmentState.Plus:
+                        generator.Token = generator.Tokenization.GetTokenIgnoreSpace();
+                        generator.AddCode(CmsCodeFactory.ADI(new CmsCode(int.Parse(generator.Token.Value))));
+                        GoToInitialIfState(generator);
+                        break;
+                    case CmsCodeExpressionStatmentState.Sub:
+                        compReference = CmsCodeFactory.SUI;
+                        GoToInitialIfState(generator);
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
@@ -79,18 +91,24 @@ namespace MyCompiler.CodeGenerator.StatmentHandlers
                 ExpressionStatmentState = CmsCodeExpressionStatmentState.Adress;
             else if (generator.Token.IsNumber())
                 ExpressionStatmentState = CmsCodeExpressionStatmentState.Number;
-            else if (generator.Token.Value == "=")
+            else if (generator.Token is EqualToken)
                 ExpressionStatmentState = CmsCodeExpressionStatmentState.EqualsThen;
-            else if (generator.Token.Value == "!=" || generator.Token.Value == "<>")
+            else if (generator.Token is NotEqualToken)
                 ExpressionStatmentState = CmsCodeExpressionStatmentState.NotEqualsThen;
-            else if (generator.Token.Value == ">")
+            else if (generator.Token is GreatToken)
                 ExpressionStatmentState = CmsCodeExpressionStatmentState.GreatThen;
-            else if (generator.Token.Value == "<")
+            else if (generator.Token is LessToken)
                 ExpressionStatmentState = CmsCodeExpressionStatmentState.LessThen;
-            else if (generator.Token.Value == ">=")
+            else if (generator.Token is GreatOrEqualToken)
                 ExpressionStatmentState = CmsCodeExpressionStatmentState.GreatEqualThen;
-            else if (generator.Token.Value == "<=")
+            else if (generator.Token is LessOrEqualToken)
                 ExpressionStatmentState = CmsCodeExpressionStatmentState.LessEqualThen;
+            else if (generator.Token is PlusToken)
+                ExpressionStatmentState = CmsCodeExpressionStatmentState.Plus;
+            else if (generator.Token is SubToken)
+                ExpressionStatmentState = CmsCodeExpressionStatmentState.Sub;
+            //else if (generator.Token is Token)
+            //    ExpressionStatmentState = CmsCodeExpressionStatmentState.Plus;
             else
                 generator.Token = generator.Tokenization.GetTokenIgnoreSpace();
         }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using CCTUnifor.Logger;
 using MyCompiler.CodeGenerator.Aspects;
 using MyCompiler.CodeGenerator.Code;
@@ -27,6 +29,7 @@ namespace MyCompiler.CodeGenerator
         public Stack<CmsCode> Stack { get; set; }
         public Token Token { get; set; }
         public CmsCodeState State { get; set; }
+
         public Stack<Token> TokenStack { get; set; }
         public Stack<CmsCodeReference> JFCode { get; set; }
         public Stack<CmsCodeReference> InitialWhileCode { get; set; }
@@ -154,6 +157,25 @@ namespace MyCompiler.CodeGenerator
                 Logger.PrintLn($"Byte[{length.ToHexadecimal()}] - {code}");
                 length += code.Length;
             }
+        }
+
+        public void Export()
+        {
+            var path = $"Logs/export-{DateTime.Now.Millisecond}";
+            Check(path);
+
+            var byteArray = Codes.SelectMany(x => Convert.ToByte(x.Export())).ToArray();
+
+            using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write))
+            {
+                fs.Write(byteArray, 0, byteArray.Length);
+            }
+        }
+
+        private static void Check(string path)
+        {
+            if (!Directory.Exists(Path.GetDirectoryName(path)))
+                Directory.CreateDirectory(Path.GetDirectoryName(path));
         }
     }
 }
