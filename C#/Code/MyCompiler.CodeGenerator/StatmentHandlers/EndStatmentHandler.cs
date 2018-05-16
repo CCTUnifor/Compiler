@@ -16,11 +16,11 @@ namespace MyCompiler.CodeGenerator.StatmentHandlers
             switch (pop)
             {
                 case IfToken token:
-                    generator.JFCode.Pop().Reference.ValueDecimal = generator.CodesLengh;
+                    generator.JFCodeReferenceStack.Pop().Reference.ValueDecimal = generator.CodesLengh;
                     break;
                 case WhileToken token:
-                    generator.AddCode(generator.InitialWhileCode.Pop());
-                    generator.JFCode.Pop().Reference.ValueDecimal = generator.CodesLengh;
+                    generator.AddCode(generator.StartWhileCodeReference.Pop());
+                    generator.JFCodeReferenceStack.Pop().Reference.ValueDecimal = generator.CodesLengh;
                     break;
             }
 

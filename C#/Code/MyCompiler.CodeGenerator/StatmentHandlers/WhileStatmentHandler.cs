@@ -1,5 +1,4 @@
-﻿using System;
-using MyCompiler.CodeGenerator.Code;
+﻿using MyCompiler.CodeGenerator.Code;
 using MyCompiler.CodeGenerator.Enums;
 using MyCompiler.CodeGenerator.Interfaces;
 
@@ -9,15 +8,17 @@ namespace MyCompiler.CodeGenerator.StatmentHandlers
     {
         public void Handler(CmsCodeGenerator generator)
         {
+            var startWhileReference = new CmsCode(generator.CodesLengh);
+
             var expressionStatmentHandler = new ExpressionStatmentHandler();
             expressionStatmentHandler.Handler(generator);
 
-            var cmsCodeReference = (CmsCodeReference)CmsCodeFactory.JF(new CmsCode(generator.CodesLengh));
-            generator.JFCode.Push(cmsCodeReference);
+            var cmsCodeReference = (CmsCodeReference)CmsCodeFactory.JF(new CmsCode(0X00));
+            generator.JFCodeReferenceStack.Push(cmsCodeReference);
             generator.AddCode(cmsCodeReference);
 
-            var commeBackWhile = (CmsCodeReference)CmsCodeFactory.JMP(expressionStatmentHandler.InitialCode);
-            generator.InitialWhileCode.Push(commeBackWhile);
+            var commeBackWhile = (CmsCodeReference)CmsCodeFactory.JMP(startWhileReference);
+            generator.StartWhileCodeReference.Push(commeBackWhile);
 
             generator.State = CmsCodeState.Initial;
         }

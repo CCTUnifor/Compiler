@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using CCTUnifor.Logger;
-using Microsoft.CodeAnalysis.CSharp;
 using MyCompiler.CodeGenerator.Aspects;
 using MyCompiler.CodeGenerator.Code;
 using MyCompiler.CodeGenerator.Enums;
@@ -25,7 +23,7 @@ namespace MyCompiler.CodeGenerator
         public static int Milliseconds = DateTime.Now.Millisecond;
 
         private readonly TopDownParser _parser;
-        private readonly string _input;
+        public readonly string _input;
         public ICollection<CmsCode> Codes { get; set; }
         public TopDownTokenization Tokenization { get; private set; }
         public Dictionary<string, CmsCode> VariableArea { get; set; }
@@ -37,8 +35,9 @@ namespace MyCompiler.CodeGenerator
 
 
         public Stack<Token> TokenStack { get; set; }
-        public Stack<CmsCodeReference> JFCode { get; set; }
-        public Stack<CmsCodeReference> InitialWhileCode { get; set; }
+        public Stack<Token> AttributionTokenStack { get; set; }
+        public Stack<CmsCodeReference> JFCodeReferenceStack { get; set; }
+        public Stack<CmsCodeReference> StartWhileCodeReference { get; set; }
 
         public CmsCodeGenerator(TopDownParser parser, string input)
         {
@@ -49,8 +48,9 @@ namespace MyCompiler.CodeGenerator
             VariableArea = new Dictionary<string, CmsCode>();
             StopReference = new CmsCode(0X0000);
             TokenStack = new Stack<Token>();
-            JFCode = new Stack<CmsCodeReference>();
-            InitialWhileCode = new Stack<CmsCodeReference>();
+            AttributionTokenStack = new Stack<Token>();
+            JFCodeReferenceStack = new Stack<CmsCodeReference>();
+            StartWhileCodeReference = new Stack<CmsCodeReference>();
         }
 
         public void Generator()
@@ -169,7 +169,7 @@ namespace MyCompiler.CodeGenerator
         public void Export()
         {
             var file = $"export{Milliseconds}";
-            var path = $"{file}.OBJ";
+            var path = $"Logs/{file}.OBJ";
             Check(path);
 
             using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write))
@@ -194,13 +194,16 @@ namespace MyCompiler.CodeGenerator
             {
                 FileName = "cmd.exe",
                 RedirectStandardInput = true,
+                UseShellExecute = false
             };
             try
             {
-                using (Process exe = Process.Start(info))
+                using (var exe = Process.Start(info))
                 {
-                    exe.StandardInput.WriteLine($"java -jar CmsJava.jar {CodeGenerated}");
-                    exe.StandardInput.WriteLine(Console.ReadLine());
+                    using (var input = exe.StandardInput)
+                    {
+                        input.WriteLine($"java -jar CmsJava.jar Logs/{CodeGenerated}");
+                    }
 
                     exe.WaitForExit();
                 }
@@ -210,7 +213,7 @@ namespace MyCompiler.CodeGenerator
                 Console.WriteLine(e);
                 throw;
             }
-            
+
 
             Console.ReadLine();
 

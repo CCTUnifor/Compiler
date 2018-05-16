@@ -16,7 +16,7 @@ namespace MyCompiler.CodeGenerator.StatmentHandlers
             expressionStatmentHandler.Handler(generator);
 
             var jfReference = (CmsCodeReference) CmsCodeFactory.JF(new CmsCode(generator.CodesLengh));
-            generator.JFCode.Push(jfReference);
+            generator.JFCodeReferenceStack.Push(jfReference);
             generator.AddCode(jfReference);
 
             generator.State = CmsCodeState.Initial;

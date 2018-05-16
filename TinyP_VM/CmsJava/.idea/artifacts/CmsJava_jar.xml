@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="CmsJava:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/CmsJava_jar</output-path>
+    <root id="archive" name="CmsJava.jar">
+      <element id="module-output" name="CmsJava" />
+    </root>
+  </artifact>
+</component>

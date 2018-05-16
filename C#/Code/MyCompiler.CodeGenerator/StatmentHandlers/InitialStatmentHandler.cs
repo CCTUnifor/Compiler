@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using MyCompiler.CodeGenerator.Enums;
+﻿using MyCompiler.CodeGenerator.Enums;
 using MyCompiler.CodeGenerator.Interfaces;
-using MyCompiler.Grammar;
 using MyCompiler.Grammar.Tokens.Terminals;
 using MyCompiler.Tokenization.TopDown;
 
@@ -38,7 +34,10 @@ namespace MyCompiler.CodeGenerator.StatmentHandlers
                 case IdentifierToken token:
                     generator.Token = generator.Tokenization.GetTokenIgnoreSpace();
                     if (generator.Token is AttributionToken)
+                    {
+                        generator.AttributionTokenStack.Push(token);
                         generator.State = CmsCodeState.Attribution;
+                    }
                     else
                         generator.State = CmsCodeState.Identifier;
                     break;

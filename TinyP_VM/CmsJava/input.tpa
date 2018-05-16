@@ -1,0 +1,9 @@
+PROGRAM
+VAR x1 : INTEGER ;
+BEGIN
+	xc WHILE ( x1 <= 100 ) DO
+	BEGIN
+		x1 := x1 + 1 ;
+		WRITE ( x1 )
+	END
+END

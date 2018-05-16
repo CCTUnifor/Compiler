@@ -18,3 +18,37 @@ BEGIN
 		WRITE ( x1 )
 	END
 END
+
+## exemplo 3
+PROGRAM
+VAR x1 : INTEGER ;
+BEGIN
+	REPEAT
+	BEGIN
+		x1 := x1 + 1 ;
+		WRITE ( x1 )
+	END
+	UNTIL x1 < 100
+END
+
+## exemplo 4
+PROGRAM
+VAR num : INTEGER ;
+VAR max : INTEGER ;
+VAR min : INTEGER ;
+BEGIN
+	READ ( num ) ;
+	max := num ;
+	min := num ;
+	WHILE num != 999 DO
+	BEGIN
+		IF num > max THEN 
+			max := num 
+		END
+		IF num < min THEN
+			min := num
+		END
+	END
+	WRITE ( max ) ;
+	WRITE ( min ) ;
+END

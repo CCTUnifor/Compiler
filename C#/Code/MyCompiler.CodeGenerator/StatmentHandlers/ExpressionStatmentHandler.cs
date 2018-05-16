@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using MyCompiler.CodeGenerator.Code;
 using MyCompiler.CodeGenerator.Enums;
 using MyCompiler.CodeGenerator.Interfaces;
@@ -13,13 +11,12 @@ namespace MyCompiler.CodeGenerator.StatmentHandlers
     public class ExpressionStatmentHandler : IStatmentHandler
     {
         private CmsCodeExpressionStatmentState ExpressionStatmentState { get; set; }
-        public CmsCode InitialCode { get; set; }
 
         public void Handler(CmsCodeGenerator generator)
         {
             CmsCode compReference = null;
             ExpressionStatmentState = CmsCodeExpressionStatmentState.Initial;
-            while (!(generator.Token is ThenToken || generator.Token is DoToken || generator.Token is SemiColonToken))
+            while (!(generator.Token is ThenToken || generator.Token is DoToken || generator.Token is SemiColonToken || generator.Token is EndToken))
             {
                 switch (ExpressionStatmentState)
                 {
@@ -27,14 +24,12 @@ namespace MyCompiler.CodeGenerator.StatmentHandlers
                         HandleInitial(generator);
                         break;
                     case CmsCodeExpressionStatmentState.Adress:
-                        GenerateInitialCode(generator);
                         generator.AddCode(CmsCodeFactory.LOD(generator.VariableArea[generator.Token.Value]));
                         if (compReference != null)
                             generator.AddCode(compReference);
                         GoToInitialIfState(generator);
                         break;
                     case CmsCodeExpressionStatmentState.Number:
-                        GenerateInitialCode(generator);
                         generator.AddCode(CmsCodeFactory.LDI(new CmsCode(int.Parse(generator.Token.Value))));
                         if (compReference != null)
                             generator.AddCode(compReference);
@@ -77,12 +72,6 @@ namespace MyCompiler.CodeGenerator.StatmentHandlers
                         throw new ArgumentOutOfRangeException();
                 }
             }
-        }
-
-        private void GenerateInitialCode(CmsCodeGenerator generator)
-        {
-            if (InitialCode == null)
-                InitialCode = new CmsCode(generator.CodesLengh);
         }
 
         private void HandleInitial(CmsCodeGenerator generator)
