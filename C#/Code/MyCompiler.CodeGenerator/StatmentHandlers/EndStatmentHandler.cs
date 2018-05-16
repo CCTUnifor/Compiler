@@ -24,6 +24,7 @@ namespace MyCompiler.CodeGenerator.StatmentHandlers
                     break;
             }
 
+            generator.MoveNextToken();
             generator.State = CmsCodeState.Initial;
         }
     }

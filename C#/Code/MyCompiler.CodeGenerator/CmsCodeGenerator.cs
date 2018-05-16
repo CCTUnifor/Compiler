@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using CCTUnifor.Logger;
 using MyCompiler.CodeGenerator.Aspects;
 using MyCompiler.CodeGenerator.Code;
@@ -28,12 +29,12 @@ namespace MyCompiler.CodeGenerator
         public TopDownTokenization Tokenization { get; private set; }
         public Dictionary<string, CmsCode> VariableArea { get; set; }
         private CmsCode StopReference { get; set; }
-        public Stack<CmsCode> Stack { get; set; }
         public Token Token { get; set; }
         public CmsCodeState State { get; set; }
         public string CodeGenerated { get; set; }
 
 
+        public Stack<CmsCode> Stack { get; set; }
         public Stack<Token> TokenStack { get; set; }
         public Stack<Token> AttributionTokenStack { get; set; }
         public Stack<CmsCodeReference> JFCodeReferenceStack { get; set; }
@@ -67,6 +68,7 @@ namespace MyCompiler.CodeGenerator
             Token = Tokenization.GetToken();
             if (!Token.IsProgram())
                 throw new ExpectedException("PROGRAM", Token.Value, null);
+            TokenStack.Push(Token);
 
             AddCode(CmsCodeFactory.LSP(new CmsCode(0X0010)));
             GenerateVariableArea();
@@ -110,9 +112,6 @@ namespace MyCompiler.CodeGenerator
             State = CmsCodeState.Initial;
             while (Token != null)
             {
-                Token = Tokenization.GetTokenIgnoreSpace();
-                if (Token == null) continue;
-
                 IStatmentHandler statmentHandler;
                 switch (State)
                 {
@@ -170,7 +169,6 @@ namespace MyCompiler.CodeGenerator
         {
             var file = $"export{Milliseconds}";
             var path = $"Logs/{file}.OBJ";
-            Check(path);
 
             using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write))
             {
@@ -192,29 +190,38 @@ namespace MyCompiler.CodeGenerator
 
             var info = new ProcessStartInfo()
             {
-                FileName = "cmd.exe",
+                FileName = "Logs/cms.exe",
+                //FileName = "cmd.exe",
                 RedirectStandardInput = true,
                 RedirectStandardOutput = true,
+                RedirectStandardError = true,
                 UseShellExecute = false
             };
+
+
             try
             {
                 using (var exe = Process.Start(info))
                 {
                     using (var input = exe.StandardInput)
                     {
-                        input.WriteLine($"java -jar CmsJava.jar Logs/{CodeGenerated}");
+                        //input.WriteLine($"java -jar CmsJava.jar Logs/{CodeGenerated}");
+                        input.WriteLine($"{CodeGenerated}");
+                        //PrintProcess(exe);
+
+                        //Task.Delay(1000).Wait();
+                        //PrintProcess(exe);
+
+                        foreach (ProcessThread thread in exe.Threads)
+                            if (thread.ThreadState == ThreadState.Wait
+                                && thread.WaitReason == ThreadWaitReason.UserRequest)
+                                NewMethod(exe, input);
                     }
 
-                    using (var output = exe.StandardOutput)
-                    {
-                        string line;
-                        while ((line = output.ReadLine()) != null)
-                        {
-                            Logger.PrintLn(line);
+                    using (var error = exe.StandardError)
+                        Logger.PrintLn(error.ReadLine());
 
-                        }
-                    }
+                    PrintProcess(exe);
 
                     exe.WaitForExit();
                 }
@@ -224,29 +231,35 @@ namespace MyCompiler.CodeGenerator
                 Console.WriteLine(e);
                 throw;
             }
-
-
             Console.ReadLine();
-
-            // var info = new ProcessStartInfo()
-            //{
-            //    FileName = "cms.exe",
-            //    RedirectStandardInput = true,
-            //};
-
-            //using (Process exe = Process.Start(info))
-            //{
-            //    exe.StandardInput.WriteLine(Path.GetFileName(CodeGenerated));
-
-            //    exe.WaitForExit();
-            //}
         }
 
-
-        private static void Check(string path)
+        private static void NewMethod(Process exe, StreamWriter input)
         {
-            //if (!Directory.Exists(path))
-            //    Directory.CreateDirectory(Path.GetDirectoryName(path));
+            input.WriteLine(Console.ReadLine());
+        }
+
+        private static void PrintProcess(Process exe)
+        {
+            using (var output = exe.StandardOutput)
+            {
+                string line = output.ReadLine();
+                while (line != null)
+                {
+                    if (string.IsNullOrEmpty(line) && !line.Contains("Microsoft") && !line.Contains("java -jar") && !line.Contains("File:"))
+                        Logger.PrintLn(line);
+                    line = output.ReadLine();
+                }
+            }
+        }
+
+        public void MoveNextToken() => Token = Tokenization.GetTokenIgnoreSpace();
+        public void RemoveParentheses<T>() where T : Token
+        {
+            while (!(Token is T) && Token != null)
+                MoveNextToken();
+            if (Token is T)
+                MoveNextToken();
         }
     }
 }

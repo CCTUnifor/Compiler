@@ -45,7 +45,7 @@
     <None Update="cmd.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="cms.exe">
+    <None Update="Logs\cms.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="CmsJava.jar">

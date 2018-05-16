@@ -5,6 +5,7 @@ using MyCompiler.CodeGenerator.Code;
 using MyCompiler.CodeGenerator.Enums;
 using MyCompiler.CodeGenerator.Interfaces;
 using MyCompiler.Grammar;
+using MyCompiler.Grammar.Tokens.Terminals;
 
 namespace MyCompiler.CodeGenerator.StatmentHandlers
 {
@@ -12,9 +13,9 @@ namespace MyCompiler.CodeGenerator.StatmentHandlers
     {
         public void Handler(CmsCodeGenerator generator)
         {
-            generator.Token = generator.Tokenization.GetTokenIgnoreSpace();
+            generator.RemoveParentheses<OpenParenthesesToken>();
             generator.AddCode(CmsCodeFactory.LOD(generator.VariableArea[generator.Token.Value]));
-            generator.Token = generator.Tokenization.GetTokenIgnoreSpace();
+            generator.RemoveParentheses<OpenParenthesesToken>();
 
             generator.AddCode(CmsCodeFactory.OUT);
             generator.State = CmsCodeState.Initial;

@@ -1,0 +1,9 @@
+PROGRAM
+VAR num1 : INTEGER ;
+num2 : INTEGER ;
+max : INTEGER ;
+BEGIN
+	READ ( num1 ) ;
+	IF num1 > 10 THEN max := num1 END ;
+	write ( max ) ;
+END

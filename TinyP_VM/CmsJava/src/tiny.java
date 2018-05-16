@@ -315,14 +315,14 @@ public class tiny {
         int pontmem=memoria[2];
         boolean fixa=false;
         /****************************************************/
-        /***********************ATRIBUI��O*******************/
+        /***********************ATRIBUIÇÃO*******************/
         /****************************************************/
         x=memoria[1];
         linaux=result[x];
 
         pal=linaux.substring(y,y+3);
         if (pal.equalsIgnoreCase("IDE")) {
-            System.out.println("AS cmd atribui��o **");
+            System.out.println("AS cmd atribuição **");
             y=4;
             tempint2=0;
             palaux=linaux.substring(y,y+3);

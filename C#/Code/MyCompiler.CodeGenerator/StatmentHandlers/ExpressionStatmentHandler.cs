@@ -14,63 +14,72 @@ namespace MyCompiler.CodeGenerator.StatmentHandlers
 
         public void Handler(CmsCodeGenerator generator)
         {
-            CmsCode compReference = null;
-            ExpressionStatmentState = CmsCodeExpressionStatmentState.Initial;
-            while (!(generator.Token is ThenToken || generator.Token is DoToken || generator.Token is SemiColonToken || generator.Token is EndToken))
+            try
             {
-                switch (ExpressionStatmentState)
+                CmsCode compReference = null;
+                ExpressionStatmentState = CmsCodeExpressionStatmentState.Initial;
+                generator.MoveNextToken();
+
+                while (!(generator.Token is ThenToken || generator.Token is DoToken || generator.Token is SemiColonToken || generator.Token is EndToken))
                 {
-                    case CmsCodeExpressionStatmentState.Initial:
-                        HandleInitial(generator);
-                        break;
-                    case CmsCodeExpressionStatmentState.Adress:
-                        generator.AddCode(CmsCodeFactory.LOD(generator.VariableArea[generator.Token.Value]));
-                        if (compReference != null)
-                            generator.AddCode(compReference);
-                        GoToInitialIfState(generator);
-                        break;
-                    case CmsCodeExpressionStatmentState.Number:
-                        generator.AddCode(CmsCodeFactory.LDI(new CmsCode(int.Parse(generator.Token.Value))));
-                        if (compReference != null)
-                            generator.AddCode(compReference);
-                        GoToInitialIfState(generator);
-                        break;
-                    case CmsCodeExpressionStatmentState.GreatThen:
-                        compReference = CmsCodeFactory.GT;
-                        GoToInitialIfState(generator);
-                        break;
-                    case CmsCodeExpressionStatmentState.LessThen:
-                        compReference = CmsCodeFactory.LT;
-                        GoToInitialIfState(generator);
-                        break;
-                    case CmsCodeExpressionStatmentState.EqualsThen:
-                        compReference = CmsCodeFactory.EQ;
-                        GoToInitialIfState(generator);
-                        break;
-                    case CmsCodeExpressionStatmentState.GreatEqualThen:
-                        compReference = CmsCodeFactory.GE;
-                        GoToInitialIfState(generator);
-                        break;
-                    case CmsCodeExpressionStatmentState.LessEqualThen:
-                        compReference = CmsCodeFactory.LE;
-                        GoToInitialIfState(generator);
-                        break;
-                    case CmsCodeExpressionStatmentState.NotEqualsThen:
-                        compReference = CmsCodeFactory.NE;
-                        GoToInitialIfState(generator);
-                        break;
-                    case CmsCodeExpressionStatmentState.Plus:
-                        generator.Token = generator.Tokenization.GetTokenIgnoreSpace();
-                        generator.AddCode(CmsCodeFactory.ADI(new CmsCode(int.Parse(generator.Token.Value))));
-                        GoToInitialIfState(generator);
-                        break;
-                    case CmsCodeExpressionStatmentState.Sub:
-                        compReference = CmsCodeFactory.SUI;
-                        GoToInitialIfState(generator);
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    switch (ExpressionStatmentState)
+                    {
+                        case CmsCodeExpressionStatmentState.Initial:
+                            HandleInitial(generator);
+                            break;
+                        case CmsCodeExpressionStatmentState.Adress:
+                            generator.AddCode(CmsCodeFactory.LOD(generator.VariableArea[generator.Token.Value]));
+                            if (compReference != null)
+                                generator.AddCode(compReference);
+                            GoToInitialIfState(generator);
+                            break;
+                        case CmsCodeExpressionStatmentState.Number:
+                            generator.AddCode(CmsCodeFactory.LDI(new CmsCode(int.Parse(generator.Token.Value))));
+                            if (compReference != null)
+                                generator.AddCode(compReference);
+                            GoToInitialIfState(generator);
+                            break;
+                        case CmsCodeExpressionStatmentState.GreatThen:
+                            compReference = CmsCodeFactory.GT;
+                            GoToInitialIfState(generator);
+                            break;
+                        case CmsCodeExpressionStatmentState.LessThen:
+                            compReference = CmsCodeFactory.LT;
+                            GoToInitialIfState(generator);
+                            break;
+                        case CmsCodeExpressionStatmentState.EqualsThen:
+                            compReference = CmsCodeFactory.EQ;
+                            GoToInitialIfState(generator);
+                            break;
+                        case CmsCodeExpressionStatmentState.GreatEqualThen:
+                            compReference = CmsCodeFactory.GE;
+                            GoToInitialIfState(generator);
+                            break;
+                        case CmsCodeExpressionStatmentState.LessEqualThen:
+                            compReference = CmsCodeFactory.LE;
+                            GoToInitialIfState(generator);
+                            break;
+                        case CmsCodeExpressionStatmentState.NotEqualsThen:
+                            compReference = CmsCodeFactory.NE;
+                            GoToInitialIfState(generator);
+                            break;
+                        case CmsCodeExpressionStatmentState.Plus:
+                            generator.MoveNextToken();
+                            generator.AddCode(CmsCodeFactory.ADI(new CmsCode(int.Parse(generator.Token.Value))));
+                            GoToInitialIfState(generator);
+                            break;
+                        case CmsCodeExpressionStatmentState.Sub:
+                            compReference = CmsCodeFactory.SUI;
+                            GoToInitialIfState(generator);
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Token: {generator.Token}\nTokenStack: {generator.Stack}\nError: {e.Message}", e);
             }
         }
 
@@ -99,12 +108,12 @@ namespace MyCompiler.CodeGenerator.StatmentHandlers
             //else if (generator.Token is Token)
             //    ExpressionStatmentState = CmsCodeExpressionStatmentState.Plus;
             else
-                generator.Token = generator.Tokenization.GetTokenIgnoreSpace();
+                generator.MoveNextToken();
         }
 
         private void GoToInitialIfState(CmsCodeGenerator generator)
         {
-            generator.Token = generator.Tokenization.GetTokenIgnoreSpace();
+            generator.MoveNextToken();
             ExpressionStatmentState = CmsCodeExpressionStatmentState.Initial;
         }
     }
