@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using CCTUnifor.Logger;
 using MyCompiler.CodeGenerator.Aspects;
 using MyCompiler.CodeGenerator.Code;
@@ -137,7 +136,8 @@ namespace MyCompiler.CodeGenerator
                         statmentHandler = new AttributionStatmentHandler();
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException();
+                        statmentHandler = new InitialStatmentHandler();
+                        break;
                 }
                 statmentHandler.Handler(this);
             }
@@ -167,15 +167,15 @@ namespace MyCompiler.CodeGenerator
 
         public void Export()
         {
-            var file = $"export{Milliseconds}";
-            var path = $"Logs/{file}.OBJ";
+            var file = $"fonte";
+            var path = $"{file}.OBJ";
 
             using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write))
             {
                 var selectMany = Codes.SelectMany(x => x.Bytes).ToArray();
                 foreach (var code in selectMany)
                     fs.WriteByte(code);
-                fs.WriteByte("FF".ToConvertByte()[0]);
+                //fs.WriteByte("FF".ToConvertByte()[0]);
             }
 
             CodeGenerated = file;
@@ -186,45 +186,15 @@ namespace MyCompiler.CodeGenerator
             Logger.PrintLn("\n\nExecuting CMS VM");
             Logger.PrintLn($"File -> '{CodeGenerated}'");
 
-            // java - jar CmsJava.jar
-
             var info = new ProcessStartInfo()
             {
-                FileName = "Logs/cms.exe",
-                //FileName = "cmd.exe",
-                RedirectStandardInput = true,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false
+                FileName = "Logs/_cms.exe"
             };
-
 
             try
             {
                 using (var exe = Process.Start(info))
-                {
-                    using (var input = exe.StandardInput)
-                    {
-                        //input.WriteLine($"java -jar CmsJava.jar Logs/{CodeGenerated}");
-                        input.WriteLine($"{CodeGenerated}");
-                        //PrintProcess(exe);
-
-                        //Task.Delay(1000).Wait();
-                        //PrintProcess(exe);
-
-                        foreach (ProcessThread thread in exe.Threads)
-                            if (thread.ThreadState == ThreadState.Wait
-                                && thread.WaitReason == ThreadWaitReason.UserRequest)
-                                NewMethod(exe, input);
-                    }
-
-                    using (var error = exe.StandardError)
-                        Logger.PrintLn(error.ReadLine());
-
-                    PrintProcess(exe);
-
                     exe.WaitForExit();
-                }
             }
             catch (Exception e)
             {
@@ -232,25 +202,6 @@ namespace MyCompiler.CodeGenerator
                 throw;
             }
             Console.ReadLine();
-        }
-
-        private static void NewMethod(Process exe, StreamWriter input)
-        {
-            input.WriteLine(Console.ReadLine());
-        }
-
-        private static void PrintProcess(Process exe)
-        {
-            using (var output = exe.StandardOutput)
-            {
-                string line = output.ReadLine();
-                while (line != null)
-                {
-                    if (string.IsNullOrEmpty(line) && !line.Contains("Microsoft") && !line.Contains("java -jar") && !line.Contains("File:"))
-                        Logger.PrintLn(line);
-                    line = output.ReadLine();
-                }
-            }
         }
 
         public void MoveNextToken() => Token = Tokenization.GetTokenIgnoreSpace();

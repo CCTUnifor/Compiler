@@ -1,12 +1,11 @@
 PROGRAM
 VAR num : INTEGER ;
-VAR min : INTEGER ;
+VAR num2 : INTEGER ;
 VAR max : INTEGER ;
 BEGIN
 	READ ( num ) ;
-	WHILE num < 100
-	BEGIN
-		IF min > 10 THEN max := min END ;
-		WRITE ( num )
-	END
+	READ ( num2 ) ;
+	IF num > num2 THEN max := num END ;
+	IF num2 > num THEN max := num2 END ;
+	WRITE ( max )
 END
