@@ -68,7 +68,7 @@ namespace MyCompiler.CodeGenerator
             if (!Token.IsProgram())
                 throw new ExpectedException("PROGRAM", Token.Value, null);
 
-            AddCode(CmsCodeFactory.LSP(StopReference));
+            AddCode(CmsCodeFactory.LSP(new CmsCode(0X0010)));
             GenerateVariableArea();
         }
 
@@ -194,6 +194,7 @@ namespace MyCompiler.CodeGenerator
             {
                 FileName = "cmd.exe",
                 RedirectStandardInput = true,
+                RedirectStandardOutput = true,
                 UseShellExecute = false
             };
             try
@@ -203,6 +204,16 @@ namespace MyCompiler.CodeGenerator
                     using (var input = exe.StandardInput)
                     {
                         input.WriteLine($"java -jar CmsJava.jar Logs/{CodeGenerated}");
+                    }
+
+                    using (var output = exe.StandardOutput)
+                    {
+                        string line;
+                        while ((line = output.ReadLine()) != null)
+                        {
+                            Logger.PrintLn(line);
+
+                        }
                     }
 
                     exe.WaitForExit();

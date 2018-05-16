@@ -1,21 +1,15 @@
 PROGRAM
-VAR num : INTEGER ;
+VAR num1 : INTEGER ;
+VAR num2 : INTEGER ;
 VAR max : INTEGER ;
-VAR min : INTEGER ;
 BEGIN
-	READ ( num ) ;
-	max := num ;
-	min := num ;
-	WHILE num < 100 DO
-	BEGIN
-		IF num > max THEN 
-			max := num
-		END ;
-		IF num < min THEN 
-			min := num
-		END ;
-		READ ( num )
+	READ ( num1 ) ;
+	READ ( num2 ) ;
+	IF num1 > num2 THEN
+		max := num1
 	END ;
-	WRITE ( max ) ;
-	WRITE ( min ) 
+	IF num2 > num1 THEN
+		max := num2
+	END ;
+	WRITE ( max )
 END
