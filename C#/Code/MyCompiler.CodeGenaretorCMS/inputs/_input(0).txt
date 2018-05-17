@@ -2,7 +2,7 @@
 PROGRAM  
 VAR a : INTEGER ; 
 BEGIN 
-    READ ( a ) ;
+	READ ( a ) ;
 	IF ( a > 10 ) THEN
 		WRITE ( a )
 	END
@@ -44,13 +44,14 @@ BEGIN
 	BEGIN
 		IF num > max THEN 
 			max := num 
-		END
+		END ;
 		IF num < min THEN
 			min := num
-		END
-	END
+		END ;
+		READ ( num )
+	END ;
 	WRITE ( max ) ;
-	WRITE ( min ) ;
+	WRITE ( min ) 
 END
 
 ## maior valor

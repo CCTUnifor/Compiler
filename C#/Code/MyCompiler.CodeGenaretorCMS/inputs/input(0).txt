@@ -1,10 +1,21 @@
 PROGRAM
-VAR x1 : INTEGER ;
+VAR num : INTEGER ;
+VAR max : INTEGER ;
+VAR min : INTEGER ;
 BEGIN
-	REPEAT
+	READ ( num ) ;
+	max := num ;
+	min := num ;
+	WHILE num != 999 DO
 	BEGIN
-		x1 := x1 + 1 ;
-		WRITE ( x1 )
-	END
-	UNTIL x1 < 100
+		IF num > max THEN 
+			max := num 
+		END ;
+		IF num < min THEN
+			min := num
+		END ;
+		READ ( num )
+	END ;
+	WRITE ( max ) ;
+	WRITE ( min ) 
 END
