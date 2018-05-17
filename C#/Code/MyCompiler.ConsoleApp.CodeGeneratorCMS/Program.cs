@@ -1,18 +1,14 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
-using AspectCore.DynamicProxy;
-using AspectCore.DynamicProxy.Parameters;
 using CCTUnifor.ConsoleTable;
 using CCTUnifor.Logger;
 using MyCompiler.CodeGenerator;
-using MyCompiler.Core.Aspects;
-using MyCompiler.Core.Interfaces.Parsers;
+using MyCompiler.ConsoleApp.CodeGeneratorCMS.Mocks;
 using MyCompiler.Parser;
 
-namespace MyCompiler.CodeGenaretorCMS
+namespace MyCompiler.ConsoleApp.CodeGeneratorCMS
 {
-    public class Program
+    class Program
     {
 
         public static void ConfigConsole()
@@ -25,17 +21,14 @@ namespace MyCompiler.CodeGenaretorCMS
             Logger.PrintHeader("# Code Generator - CMS");
         }
 
-        [ConfigConsoleAspect]
+        //[ConfigConsoleAspect]
         private static void Main(string[] args)
         {
             ConfigConsole();
             try
             {
-                const string grammarFile = "grammar(0).txt";
-                const string inputFile = "input(0).txt";
-
-                var grammar = Read("Grammar", $"grammars/{grammarFile}");
-                var input = Read("Input", $"inputs/{inputFile}");
+                var grammar = Read("Grammar", GrammarMocks.Grammar1);
+                var input = Read("Code", CodeMocks.Input1);
 
                 var parser = new TopDownParser(grammar);
                 parser.Parser(input);
@@ -44,7 +37,6 @@ namespace MyCompiler.CodeGenaretorCMS
                 codeGenerator.Generator();
                 codeGenerator.Export();
                 codeGenerator.ExecuteVM();
-
             }
             catch (Exception e)
             {
@@ -54,11 +46,12 @@ namespace MyCompiler.CodeGenaretorCMS
             Console.ReadLine();
         }
 
-        [LogReadFileAspect]
-        private static string Read(string type, string path)
+        private static string Read(string type, string content)
         {
-            var input = new StreamReader($"{path}");
-            var code = input.ReadToEnd();
+            var code = content;
+
+            Logger.PrintHeader(type);
+            Logger.PrintLn(code);
 
             return code;
         }

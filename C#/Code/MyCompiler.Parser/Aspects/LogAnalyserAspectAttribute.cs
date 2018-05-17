@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using AspectCore.DynamicProxy;
-using AspectCore.DynamicProxy.Parameters;
 
 //using PostSharp.Aspects;
 //using PostSharp.Serialization;

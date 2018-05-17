@@ -1,13 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netstandard2.0</TargetFramework>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,14 +15,28 @@
   <ItemGroup>
     <EmbeddedResource Include="grammars\grammar(0).txt" />
     <EmbeddedResource Include="grammars\_grammar(0).txt" />
-    <EmbeddedResource Include="inputs\_input%280%29.txt" />
-    <EmbeddedResource Include="inputs\input%280%29.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
+    <EmbeddedResource Include="inputs\input(0).txt" />
+    <EmbeddedResource Include="inputs\_input(0).txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MyCompiler.CodeGenerator\MyCompiler.CodeGenerator.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="CCTUnifor.ConsoleTable">
+      <HintPath>..\..\..\..\..\..\.nuget\packages\cctunifor.consoletable\1.0.1\lib\netstandard2.0\CCTUnifor.ConsoleTable.dll</HintPath>
+    </Reference>
+    <Reference Include="CCTUnifor.Logger">
+      <HintPath>..\..\..\..\..\..\.nuget\packages\cctunifor.logger\1.0.2\lib\netstandard2.0\CCTUnifor.Logger.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Update="grammars\grammar%280%29.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Update="inputs\input%280%29.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Update="inputs\_input%280%29.txt">
@@ -36,22 +45,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MyCompiler.CodeGenerator\MyCompiler.CodeGenerator.csproj" />
-    <ProjectReference Include="..\MyCompiler.Core\MyCompiler.Core.csproj" />
-    <ProjectReference Include="..\MyCompiler.Parser\MyCompiler.Parser.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="cmd.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Logs\_cms.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="CmsJava.jar">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="Logs\tiny.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Logs\_cms.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

@@ -7,7 +7,6 @@ using MyCompiler.Core.Interfaces.Parsers;
 using MyCompiler.Grammar;
 using MyCompiler.Grammar.Extensions;
 using MyCompiler.Grammar.Tokens;
-using MyCompiler.Parser.Aspects;
 using MyCompiler.Parser.Generators;
 using MyCompiler.Parser.TopDown;
 using MyCompiler.Tokenization.Generators;
@@ -74,9 +73,12 @@ namespace MyCompiler.Parser
 
         private string[] GetLines() => Grammar.GetLines().IgnoreEmptyOrNull();
 
-        [LogAnalyserAspect]
+        //[LogAnalyserAspect]
         private void Analyse(string input)
         {
+            Logger.IsToPrintInConsole = true;
+            Logger.PrintHeader("Analyse the input:");
+
             PrintHeaderStack();
 
             var lines = input.Split('\n').Select(x => x.Replace("\t", "").Replace("\r", "").Trim()).ToArray();

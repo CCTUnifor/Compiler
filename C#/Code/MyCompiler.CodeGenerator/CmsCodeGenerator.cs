@@ -204,12 +204,12 @@ namespace MyCompiler.CodeGenerator
             {
                 using (var exe = Process.Start(info))
                 {
-                    using (var output = exe.StandardOutput)
-                    {
-                        var line = output.ReadLine();
-                        while (line != null)
-                            Logger.PrintLn(line);
-                    }
+                    //using (var output = exe.StandardOutput)
+                    //{
+                    //    var line = output.ReadLine();
+                    //    while (line != null)
+                    //        Logger.PrintLn(line);
+                    //}
                     exe.WaitForExit();
                 }
             }
