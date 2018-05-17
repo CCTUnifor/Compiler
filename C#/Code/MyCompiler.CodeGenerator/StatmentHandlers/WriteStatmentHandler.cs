@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using MyCompiler.CodeGenerator.Code;
+﻿using MyCompiler.CodeGenerator.Code;
 using MyCompiler.CodeGenerator.Enums;
 using MyCompiler.CodeGenerator.Interfaces;
-using MyCompiler.Grammar;
 using MyCompiler.Grammar.Tokens.Terminals;
 
 namespace MyCompiler.CodeGenerator.StatmentHandlers
@@ -15,7 +11,7 @@ namespace MyCompiler.CodeGenerator.StatmentHandlers
         {
             generator.RemoveParentheses<OpenParenthesesToken>();
             generator.AddCode(CmsCodeFactory.LOD(generator.VariableArea[generator.Token.Value]));
-            generator.RemoveParentheses<OpenParenthesesToken>();
+            generator.RemoveParentheses<CloseParenthesesToken>();
 
             generator.AddCode(CmsCodeFactory.OUT);
             generator.State = CmsCodeState.Initial;

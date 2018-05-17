@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using MyCompiler.CodeGenerator.Code.Instructions;
+﻿using System.Linq;
 using MyCompiler.CodeGenerator.Enums;
 using MyCompiler.CodeGenerator.Interfaces;
 using MyCompiler.Grammar.Tokens.Terminals;
@@ -12,16 +9,19 @@ namespace MyCompiler.CodeGenerator.StatmentHandlers
     {
         public void Handler(CmsCodeGenerator generator)
         {
-            var pop = generator.TokenStack.Pop();
-            switch (pop)
+            if (generator.TokenStack.Any())
             {
-                case IfToken token:
-                    generator.JFCodeReferenceStack.Pop().Reference.ValueDecimal = generator.CodesLengh;
-                    break;
-                case WhileToken token:
-                    generator.AddCode(generator.StartWhileCodeReference.Pop());
-                    generator.JFCodeReferenceStack.Pop().Reference.ValueDecimal = generator.CodesLengh;
-                    break;
+                var pop = generator.TokenStack.Pop();
+                switch (pop)
+                {
+                    case IfToken token:
+                        generator.JFCodeReferenceStack.Pop().Reference.ValueDecimal = generator.CodesLengh;
+                        break;
+                    case WhileToken token:
+                        generator.AddCode(generator.StartWhileCodeReference.Pop());
+                        generator.JFCodeReferenceStack.Pop().Reference.ValueDecimal = generator.CodesLengh;
+                        break;
+                }
             }
 
             generator.MoveNextToken();

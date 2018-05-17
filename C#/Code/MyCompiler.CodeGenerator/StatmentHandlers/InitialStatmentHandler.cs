@@ -1,6 +1,5 @@
 ﻿using MyCompiler.CodeGenerator.Enums;
 using MyCompiler.CodeGenerator.Interfaces;
-using MyCompiler.Grammar;
 using MyCompiler.Grammar.Tokens.Terminals;
 using MyCompiler.Tokenization.TopDown;
 
@@ -39,8 +38,15 @@ namespace MyCompiler.CodeGenerator.StatmentHandlers
                         generator.AttributionTokenStack.Push(token);
                         generator.State = CmsCodeState.Attribution;
                     }
-                    else
-                        generator.State = CmsCodeState.Identifier;
+                    //else
+                    //    generator.State = CmsCodeState.Identifier;
+                    break;
+                case RepeatToken token:
+                    generator.State = CmsCodeState.Repeat;
+                    //generator.TokenStack.Push(generator.Token);
+                    break;
+                case UntilToken token:
+                    generator.State = CmsCodeState.Until;
                     break;
                 default:
                     generator.MoveNextToken();

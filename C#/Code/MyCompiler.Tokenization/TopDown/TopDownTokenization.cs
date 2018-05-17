@@ -297,7 +297,7 @@ namespace MyCompiler.Tokenization.TopDown
                         State = LexicAnalyserState.Empty;
                         break;
                     case "repeat":
-                        State = LexicAnalyserState.Repeat;
+                        MoveNextIfNextIsSpace(LexicAnalyserState.Repeat);
                         break;
                     case "until":
                         State = LexicAnalyserState.Until;

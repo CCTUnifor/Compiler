@@ -38,6 +38,7 @@ namespace MyCompiler.CodeGenerator
         public Stack<Token> AttributionTokenStack { get; set; }
         public Stack<CmsCodeReference> JFCodeReferenceStack { get; set; }
         public Stack<CmsCodeReference> StartWhileCodeReference { get; set; }
+        public Stack<CmsCode> RepeatReferenceStack { get; set; }
 
         public CmsCodeGenerator(TopDownParser parser, string input)
         {
@@ -51,6 +52,7 @@ namespace MyCompiler.CodeGenerator
             AttributionTokenStack = new Stack<Token>();
             JFCodeReferenceStack = new Stack<CmsCodeReference>();
             StartWhileCodeReference = new Stack<CmsCodeReference>();
+            RepeatReferenceStack = new Stack<CmsCode>();
         }
 
         public void Generator()
@@ -134,6 +136,12 @@ namespace MyCompiler.CodeGenerator
                         break;
                     case CmsCodeState.Attribution:
                         statmentHandler = new AttributionStatmentHandler();
+                        break;
+                    case CmsCodeState.Repeat:
+                        statmentHandler = new RepeatStatmentHandler();
+                        break;
+                    case CmsCodeState.Until:
+                        statmentHandler = new UntilStatmentHandler();
                         break;
                     default:
                         statmentHandler = new InitialStatmentHandler();
