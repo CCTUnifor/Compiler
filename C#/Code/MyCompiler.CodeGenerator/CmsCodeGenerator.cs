@@ -198,17 +198,28 @@ namespace MyCompiler.CodeGenerator
             {
                 FileName = "Logs/_cms.exe"
             };
+            Logger.IsToPrintInConsole = false;
 
             try
             {
                 using (var exe = Process.Start(info))
+                {
+                    using (var output = exe.StandardOutput)
+                    {
+                        var line = output.ReadLine();
+                        while (line != null)
+                            Logger.PrintLn(line);
+                    }
                     exe.WaitForExit();
+                }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 throw;
             }
+
+            Logger.IsToPrintInConsole = false;
             Console.ReadLine();
         }
 

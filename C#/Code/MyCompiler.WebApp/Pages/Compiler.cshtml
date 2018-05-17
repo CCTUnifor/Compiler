@@ -1,4 +1,5 @@
 ﻿@page "/compiler"
+@using System
 @using MyCompiler.Tokenization
 @using CCTUnifor.Logger;
 @using MyCompiler.Parser
@@ -37,7 +38,7 @@
 
     void TextAreaOneChanged() {
         Console.WriteLine($"Grammar: {grammarValue}");
-        Console.WriteLine($"Input: {inputValue}");
+        Console.WriteLine($"Mocks: {inputValue}");
 
         var syntacticAnalysis = new TopDownParser(grammarValue);
         syntacticAnalysis.Parser(inputValue);

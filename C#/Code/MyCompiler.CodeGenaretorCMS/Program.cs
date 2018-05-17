@@ -31,15 +31,6 @@ namespace MyCompiler.CodeGenaretorCMS
             ConfigConsole();
             try
             {
-
-                var generator = new ProxyGeneratorBuilder()
-                    .Configure(config =>
-                    {
-                        config.EnableParameterAspect();
-                    })
-                    .Build();
-                //var service = generator.CreateInterfaceProxy<IParser, TopDownParser>();
-
                 const string grammarFile = "grammar(0).txt";
                 const string inputFile = "input(0).txt";
 
@@ -62,8 +53,6 @@ namespace MyCompiler.CodeGenaretorCMS
 
             Console.ReadLine();
         }
-
-        
 
         [LogReadFileAspect]
         private static string Read(string type, string path)
