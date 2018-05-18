@@ -1,0 +1,10 @@
+PROGRAM
+VAR x:INTEGER;
+BEGIN
+    REPEAT
+    BEGIN
+        x:=x+1;
+        WRITE x
+    END
+    UNTIL x < 100
+END

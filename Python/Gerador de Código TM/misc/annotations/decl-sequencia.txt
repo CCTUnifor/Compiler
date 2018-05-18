@@ -1,0 +1,10 @@
+(eliminar recursão à esquerda)
+    A -> Aα|β
+        A -> βA' | β
+        A'-> αA'| α
+
+decl-sequencia → decl-sequencia ; declaracao | declaracao
+
+decl-sequencia -> declaracao decl-sequencia' | declaracao
+decl-sequencia'-> ;declaracao decl-sequencia'| ;declaracao
+

@@ -1,0 +1,46 @@
+N = {Programa,vars-decl,decl-sequencia,decl-sequencia',declaracao,cond-decl,repet-decl,while-decl,atrib-decl,leit-decl,escr-decl,exp,X,comp-op,exp-simples,exp-simples',soma,termo,termo',mult,fator,equals-op,not-op}
+Sigma = {PROGRAM,VAR,INTEGER,:,BEGIN,END,;,IF,THEN,else,REPEAT,UNTIL,WHILE,DO,:=,ide,READ,WRITE,<,<=,>,>=,=,IS,<>,!=,NOT,+,-,*,/,(,),num}
+S = {Programa}
+P = {
+    Programa -> PROGRAM vars-decl BEGIN decl-sequencia END
+
+    vars-decl -> VAR ide : INTEGER ; vars-decl | ɛ
+
+    decl-sequencia -> declaracao decl-sequencia'
+    decl-sequencia'-> ; declaracao decl-sequencia'| ɛ
+
+    declaracao -> cond-decl | repet-decl | while-decl | atrib-decl | leit-decl | escr-decl 
+
+    cond-decl -> IF exp THEN decl-sequencia END
+
+    repet-decl -> REPEAT BEGIN decl-sequencia END UNTIL exp
+
+    while-decl -> WHILE exp DO BEGIN decl-sequencia END
+
+    atrib-decl -> ide := exp
+
+    leit-decl -> READ ide
+
+    escr-decl -> WRITE exp
+
+    exp -> exp-simples X
+    X -> comp-op exp-simples | ɛ
+
+    comp-op -> < | > | equals-op | not-op | >= | <=
+
+    equals-op -> = | IS
+
+    not-op -> <> | != | NOT
+
+    exp-simples -> termo exp-simples'
+    exp-simples'-> soma termo exp-simples' | ɛ
+
+    soma -> + | -
+
+    termo -> fator termo'
+    termo'-> mult fator termo' | ɛ
+
+    mult -> * | /
+
+    fator -> ( exp ) | num | ide
+}

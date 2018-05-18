@@ -1,0 +1,15 @@
+PROGRAM
+VAR x : INTEGER;
+VAR fact : INTEGER;
+BEGIN
+    READ x;
+    IF 0<x THEN
+        fact := 1;
+        WHILE x <= 0 DO
+        BEGIN
+            fact :=fact*x;
+            x := x - 1
+        END;
+        WRITE fact
+    END
+END

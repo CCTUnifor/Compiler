@@ -1,0 +1,256 @@
+-----------------------GRAMÁTICA-----------------------
+    Programa -> decl-sequencia
+
+    decl-sequencia -> declaracao decl-sequencia'
+    decl-sequencia'-> ; declaracao decl-sequencia'| ɛ
+
+    declaracao -> cond-decl | repet-decl | atrib-decl | leit-decl | escr-decl
+
+    cond-decl -> if exp then decl-sequencia end
+
+    repet-decl -> repeat decl-sequencia until exp
+
+    atrib-decl -> ide := exp
+
+    leit-decl -> read ide
+
+    escr-decl -> write exp
+
+    exp -> exp-simples X
+    X -> comp-op exp-simples | ɛ
+
+    comp-op -> < | =
+
+    exp-simples -> termo exp-simples'
+    exp-simples'-> soma termo exp-simples' | ɛ
+
+    soma -> + | -
+
+    termo -> fator termo'
+    termo'-> mult fator termo' | ɛ
+
+    mult -> * | /
+
+    fator -> ( exp ) | num | ide
+
+-------------------------FIRST-------------------------
+first(Programa)      => {if, write, repeat, read, ide}
+first(decl-sequencia) => {if, write, repeat, read, ide}
+first(decl-sequencia') => {ɛ, ;}
+first(declaracao)    => {if, write, repeat, read, ide}
+first(cond-decl)     => {if}
+first(repet-decl)    => {repeat}
+first(atrib-decl)    => {ide}
+first(leit-decl)     => {read}
+first(escr-decl)     => {write}
+first(exp)           => {(, num, ide}
+first(X)             => {<, =, ɛ}
+first(comp-op)       => {<, =}
+first(exp-simples)   => {(, num, ide}
+first(exp-simples')  => {ɛ, -, +}
+first(soma)          => {-, +}
+first(termo)         => {(, num, ide}
+first(termo')        => {ɛ, /, *}
+first(mult)          => {/, *}
+first(fator)         => {(, num, ide}
+
+------------------------FOLLOW-------------------------
+follow(Programa)     => {$}
+follow(decl-sequencia) => {until, $, end}
+follow(decl-sequencia') => {until, $, end}
+follow(declaracao)   => {until, $, ;, end}
+follow(cond-decl)    => {until, $, ;, end}
+follow(repet-decl)   => {until, $, ;, end}
+follow(atrib-decl)   => {until, $, ;, end}
+follow(leit-decl)    => {until, $, ;, end}
+follow(escr-decl)    => {until, $, ;, end}
+follow(exp)          => {;, until, ), then, $, end}
+follow(X)            => {until, ), then, $, ;, end}
+follow(comp-op)      => {(, num, ide}
+follow(exp-simples)  => {<, ;, =, until, ), then, $, end}
+follow(exp-simples') => {<, ;, =, until, ), then, $, end}
+follow(soma)         => {(, num, ide}
+follow(termo)        => {<, ;, =, +, until, -, ), then, $, end}
+follow(termo')       => {<, ;, =, +, until, -, ), then, $, end}
+follow(mult)         => {(, num, ide}
+follow(fator)        => {<, ;, =, then, end, *, /, +, until, -, ), $}
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------TABLE---------------------------------------------------------------------------------------------------------------------------------------------------------------
+|                      $              ;              if             then           end            repeat         until          ide            :=      read           write          <              =              +              -              *              /              (              )    num            |
+|Programa       Error          Error          [decl-sequencia]Error          Error          [decl-sequencia]Error          [decl-sequencia]Error  [decl-sequencia][decl-sequencia]Error          Error          Error          Error          Error          Error          Error          Error  Error          |
+|decl-sequencia Error          Error          [declaracao, decl-sequencia']Error          Error          [declaracao, decl-sequencia']Error          [declaracao, decl-sequencia']Error          [declaracao, decl-sequencia'][declaracao, decl-sequencia']Error          Error          Error          Error       Error          Error          Error          Error          Error          |
+|declaracao     Error          Error          [cond-decl]    Error          Error          [repet-decl]   Error          [atrib-decl]   Error          [leit-decl]    [escr-decl]    Error          Error          Error          Error          Error          Error          Error          Error          Error          |
+|decl-sequencia'[ɛ]            [;, declaracao, decl-sequencia']Error          Error          [ɛ]            Error          [ɛ]            Error Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          |
+|cond-decl      Error          Error          [if, exp, then, decl-sequencia, end]Error          Error          Error          Error          Error     Error          Error          Error          Error          Error          Error          Error          Error          Error          Error   Error          Error          |
+|repet-decl     Error          Error          Error          Error          Error          [repeat, decl-sequencia, until, exp]Error          Error     Error          Error          Error          Error          Error          Error          Error          Error          Error          Error   Error          Error          |
+|atrib-decl     Error          Error          Error          Error          Error          Error          Error          [ide, :=, exp] Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          |
+|leit-decl      Error          Error          Error          Error          Error          Error          Error          Error          Error          [read, ide]    Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          |
+|escr-decl      Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          [write, exp]   Error          Error          Error          Error          Error          Error          Error          Error          Error          |
+|exp            Error          Error          Error          Error          Error          Error          Error          [exp-simples, X]ErrorError          Error          Error          Error          Error          Error          Error          Error          [exp-simples, X]Error          [exp-simples, X]|
+|exp-simples    Error          Error          Error          Error          Error          Error          Error          [termo, exp-simples']Error     Error          Error          Error          Error          Error          Error          Error          Error          [termo, exp-simples']Error         [termo, exp-simples']|
+|X              [ɛ]            [ɛ]            Error          [ɛ]            [ɛ]            Error          [ɛ]            Error          Error          Error          Error          [comp-op, exp-simples][comp-op, exp-simples]Error          Error          Error          Error          Error          [ɛ]           Error          |
+|comp-op        Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          [<]            [=]            Error          Error          Error          Error          Error          Error          Error          |
+|termo          Error          Error          Error          Error          Error          Error          Error          [fator, termo']Error          Error          Error          Error          Error          Error          Error          Error          Error          [fator, termo']Error          [fator, termo']|
+|exp-simples'   [ɛ]            [ɛ]            Error          [ɛ]            [ɛ]            Error          [ɛ]            Error          Error          Error          Error          [ɛ]            [ɛ]            [soma, termo, exp-simples'][soma, termo, exp-simples']Error          Error          Error      [ɛ]            Error          |
+|soma           Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          [+]            [-]            Error          Error          Error          Error          Error          |
+|fator          Error          Error          Error          Error          Error          Error          Error          [ide]          Error          Error          Error          Error          Error          Error          Error          Error          Error          [(, exp, )]    Error          [num]          |
+|termo'         [ɛ]            [ɛ]            Error          [ɛ]            [ɛ]            Error          [ɛ]            Error          Error          Error          Error          [ɛ]            [ɛ]            [ɛ]            [ɛ]            [mult, fator, termo'][mult, fator, termo']Error          [ɛ]         Error          |
+|mult           Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          Error          [*]            [/]            Error          Error          Error          |
+
+-------------------------LEXIC-------------------------
+read = (read)
+ide = (x)
+; = (;)
+if = (if)
+num = (0)
+< = (<)
+ide = (x)
+then = (then)
+ide = (fact)
+:= = (:=)
+num = (12)
+; = (;)
+repeat = (repeat)
+ide = (fact)
+:= = (:=)
+ide = (fact)
+* = (*)
+ide = (x)
+; = (;)
+ide = (x)
+:= = (:=)
+ide = (x)
+- = (-)
+num = (1)
+until = (until)
+ide = (x)
+= = (=)
+num = (0)
+; = (;)
+write = (write)
+ide = (fact)
+end = (end)
+$ = ($)
+None = ()
+
+-----------------------HISTORIC-----------------------
+[$, Programa]                                      read
+[$, decl-sequencia]                                read
+[$, decl-sequencia', declaracao]                   read
+[$, decl-sequencia', leit-decl]                    read
+[$, decl-sequencia', ide, read]                    read
+[$, decl-sequencia', ide]                          x
+[$, decl-sequencia']                               ;
+[$, decl-sequencia', declaracao, ;]                ;
+[$, decl-sequencia', declaracao]                   if
+[$, decl-sequencia', cond-decl]                    if
+[$, decl-sequencia', end, decl-sequencia, then, exp, if] if
+[$, decl-sequencia', end, decl-sequencia, then, exp] 0
+[$, decl-sequencia', end, decl-sequencia, then, X, exp-simples] 0
+[$, decl-sequencia', end, decl-sequencia, then, X, exp-simples', termo] 0
+[$, decl-sequencia', end, decl-sequencia, then, X, exp-simples', termo', fator] 0
+[$, decl-sequencia', end, decl-sequencia, then, X, exp-simples', termo', num] 0
+[$, decl-sequencia', end, decl-sequencia, then, X, exp-simples', termo'] <
+[$, decl-sequencia', end, decl-sequencia, then, X, exp-simples'] <
+[$, decl-sequencia', end, decl-sequencia, then, X] <
+[$, decl-sequencia', end, decl-sequencia, then, exp-simples, comp-op] <
+[$, decl-sequencia', end, decl-sequencia, then, exp-simples, <] <
+[$, decl-sequencia', end, decl-sequencia, then, exp-simples] x
+[$, decl-sequencia', end, decl-sequencia, then, exp-simples', termo] x
+[$, decl-sequencia', end, decl-sequencia, then, exp-simples', termo', fator] x
+[$, decl-sequencia', end, decl-sequencia, then, exp-simples', termo', ide] x
+[$, decl-sequencia', end, decl-sequencia, then, exp-simples', termo'] then
+[$, decl-sequencia', end, decl-sequencia, then, exp-simples'] then
+[$, decl-sequencia', end, decl-sequencia, then]    then
+[$, decl-sequencia', end, decl-sequencia]          fact
+[$, decl-sequencia', end, decl-sequencia', declaracao] fact
+[$, decl-sequencia', end, decl-sequencia', atrib-decl] fact
+[$, decl-sequencia', end, decl-sequencia', exp, :=, ide] fact
+[$, decl-sequencia', end, decl-sequencia', exp, :=] :=
+[$, decl-sequencia', end, decl-sequencia', exp]    12
+[$, decl-sequencia', end, decl-sequencia', X, exp-simples] 12
+[$, decl-sequencia', end, decl-sequencia', X, exp-simples', termo] 12
+[$, decl-sequencia', end, decl-sequencia', X, exp-simples', termo', fator] 12
+[$, decl-sequencia', end, decl-sequencia', X, exp-simples', termo', num] 12
+[$, decl-sequencia', end, decl-sequencia', X, exp-simples', termo'] ;
+[$, decl-sequencia', end, decl-sequencia', X, exp-simples'] ;
+[$, decl-sequencia', end, decl-sequencia', X]      ;
+[$, decl-sequencia', end, decl-sequencia']         ;
+[$, decl-sequencia', end, decl-sequencia', declaracao, ;] ;
+[$, decl-sequencia', end, decl-sequencia', declaracao] repeat
+[$, decl-sequencia', end, decl-sequencia', repet-decl] repeat
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia, repeat] repeat
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia] fact
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia', declaracao] fact
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia', atrib-decl] fact
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia', exp, :=, ide] fact
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia', exp, :=] :=
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia', exp] fact
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia', X, exp-simples] fact
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia', X, exp-simples', termo] fact
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia', X, exp-simples', termo', fator] fact
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia', X, exp-simples', termo', ide] fact
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia', X, exp-simples', termo'] *
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia', X, exp-simples', termo', fator, mult] *
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia', X, exp-simples', termo', fator, *] *
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia', X, exp-simples', termo', fator] x
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia', X, exp-simples', termo', ide] x
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia', X, exp-simples', termo'] ;
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia', X, exp-simples'] ;
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia', X] ;
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia'] ;
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia', declaracao, ;] ;
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia', declaracao] x
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia', atrib-decl] x
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia', exp, :=, ide] x
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia', exp, :=] :=
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia', exp] x
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia', X, exp-simples] x
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia', X, exp-simples', termo] x
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia', X, exp-simples', termo', fator] x
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia', X, exp-simples', termo', ide] x
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia', X, exp-simples', termo'] -
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia', X, exp-simples'] -
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia', X, exp-simples', termo, soma] -
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia', X, exp-simples', termo, -] -
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia', X, exp-simples', termo] 1
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia', X, exp-simples', termo', fator] 1
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia', X, exp-simples', termo', num] 1
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia', X, exp-simples', termo'] until
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia', X, exp-simples'] until
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia', X] until
+[$, decl-sequencia', end, decl-sequencia', exp, until, decl-sequencia'] until
+[$, decl-sequencia', end, decl-sequencia', exp, until] until
+[$, decl-sequencia', end, decl-sequencia', exp]    x
+[$, decl-sequencia', end, decl-sequencia', X, exp-simples] x
+[$, decl-sequencia', end, decl-sequencia', X, exp-simples', termo] x
+[$, decl-sequencia', end, decl-sequencia', X, exp-simples', termo', fator] x
+[$, decl-sequencia', end, decl-sequencia', X, exp-simples', termo', ide] x
+[$, decl-sequencia', end, decl-sequencia', X, exp-simples', termo'] =
+[$, decl-sequencia', end, decl-sequencia', X, exp-simples'] =
+[$, decl-sequencia', end, decl-sequencia', X]      =
+[$, decl-sequencia', end, decl-sequencia', exp-simples, comp-op] =
+[$, decl-sequencia', end, decl-sequencia', exp-simples, =] =
+[$, decl-sequencia', end, decl-sequencia', exp-simples] 0
+[$, decl-sequencia', end, decl-sequencia', exp-simples', termo] 0
+[$, decl-sequencia', end, decl-sequencia', exp-simples', termo', fator] 0
+[$, decl-sequencia', end, decl-sequencia', exp-simples', termo', num] 0
+[$, decl-sequencia', end, decl-sequencia', exp-simples', termo'] ;
+[$, decl-sequencia', end, decl-sequencia', exp-simples'] ;
+[$, decl-sequencia', end, decl-sequencia']         ;
+[$, decl-sequencia', end, decl-sequencia', declaracao, ;] ;
+[$, decl-sequencia', end, decl-sequencia', declaracao] write
+[$, decl-sequencia', end, decl-sequencia', escr-decl] write
+[$, decl-sequencia', end, decl-sequencia', exp, write] write
+[$, decl-sequencia', end, decl-sequencia', exp]    fact
+[$, decl-sequencia', end, decl-sequencia', X, exp-simples] fact
+[$, decl-sequencia', end, decl-sequencia', X, exp-simples', termo] fact
+[$, decl-sequencia', end, decl-sequencia', X, exp-simples', termo', fator] fact
+[$, decl-sequencia', end, decl-sequencia', X, exp-simples', termo', ide] fact
+[$, decl-sequencia', end, decl-sequencia', X, exp-simples', termo'] end
+[$, decl-sequencia', end, decl-sequencia', X, exp-simples'] end
+[$, decl-sequencia', end, decl-sequencia', X]      end
+[$, decl-sequencia', end, decl-sequencia']         end
+[$, decl-sequencia', end]                          end
+[$, decl-sequencia']                               $
+[$]                                                $
