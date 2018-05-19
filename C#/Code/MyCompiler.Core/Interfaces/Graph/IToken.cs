@@ -1,12 +1,21 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
 namespace MyCompiler.Core.Interfaces.Graph
 {
-    public interface IToken<T>
+    public interface IToken
     {
         string Value { get; }
-        T GrammarClass { get; }
-        int Line { get; }
-        int? Collumn { get; }
 
-        void ConcatValue(string value);
+        bool IsEmpty();
+        bool IsTerminal();
+        bool IsIdentifier();
+        bool IsNumber();
+    }
+
+    public interface ITerminalToken
+    {
+
     }
 }

@@ -7,7 +7,7 @@ namespace MyCompiler.Grammar.Extensions
     public static class TokenizationStringExtension
     {
 
-        public static bool IsLetter(this string value) => value.All(char.IsLetter);
+        public static bool IsLetter(this string value) => char.IsLetter(value[0]);
         public static bool IsNumber(this string value) => value.All(char.IsNumber);
 
         public static string[] GetLines(this string value)
@@ -25,7 +25,7 @@ namespace MyCompiler.Grammar.Extensions
         public static IEnumerable<Token> RemoveSpacesTokens(this IEnumerable<Token> tokens)
         {
             var x = tokens.ToList();
-            x.RemoveAll(y => y == SpaceToken.Create());
+            x.RemoveAll(y => y == SpaceToken.Create() || y is NewLineToken);
             return x;
         }
     }

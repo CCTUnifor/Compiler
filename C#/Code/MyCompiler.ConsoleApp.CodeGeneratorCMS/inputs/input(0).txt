@@ -1,0 +1,21 @@
+PROGRAM
+VAR num : INTEGER ;
+VAR max : INTEGER ;
+VAR min : INTEGER ;
+BEGIN
+	READ ( num ) ;
+	max := num ;
+	min := num ;
+	WHILE num != 999 DO
+	BEGIN
+		IF num > max THEN 
+			max := num 
+		END ;
+		IF num < min THEN
+			min := num
+		END ;
+		READ ( num )
+	END ;
+	WRITE ( max ) ;
+	WRITE ( min ) 
+END

@@ -1,0 +1,48 @@
+﻿@page "/compiler"
+@using System
+@using MyCompiler.Tokenization
+@using CCTUnifor.Logger;
+@using MyCompiler.Parser
+
+<h1>Compiler</h1>
+
+<form onsubmit="@TextAreaOneChanged">
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="grammar">Grammar</label>
+            <textarea id="grammar" class="form-control" rows="@row" bind=@grammarValue></textarea>
+        </div>
+        <div class="form-group col-md-6">
+            <label for="input">Input</label>
+            <textarea id="input" class="form-control" rows="@row" bind=@inputValue></textarea>
+        </div>
+    </div>
+    <button type="submit">Compiler</button>
+</form>
+
+<form action="/" method="post">
+    <div class="form-group col-md-12">
+        <label for="result"></label>
+        <textarea id="result" class="form-control" rows="20" disabled value="@result"></textarea>
+    </div>
+</form>
+
+@functions {
+
+    string grammarValue = "";
+    string inputValue = "";
+
+    string row = "10";
+    string result = "result";
+
+
+    void TextAreaOneChanged() {
+        Console.WriteLine($"Grammar: {grammarValue}");
+        Console.WriteLine($"Mocks: {inputValue}");
+
+        var syntacticAnalysis = new TopDownParser(grammarValue);
+        syntacticAnalysis.Parser(inputValue);
+
+        result = Logger.History;
+    }
+}

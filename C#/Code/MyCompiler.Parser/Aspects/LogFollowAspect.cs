@@ -1,22 +1,28 @@
-﻿using CCTUnifor.Logger;
-using MyCompiler.Parser.Generators;
-using PostSharp.Aspects;
-using PostSharp.Serialization;
+﻿using System.Threading.Tasks;
+using AspectCore.DynamicProxy;
+using AspectCore.DynamicProxy.Parameters;
 
-namespace MyCompiler.Tokenization.Aspects
+//using PostSharp.Aspects;
+//using PostSharp.Serialization;
+
+namespace MyCompiler.Parser.Aspects
 {
-    [PSerializable]
-    public class LogFollowAspect : OnMethodBoundaryAspect
+    //[PSerializable]
+    public class LogFollowAspect : AbstractInterceptorAttribute// OnMethodBoundaryAspect
     {
-        public override void OnExit(MethodExecutionArgs args)
-        {
-            var model = (FollowGenerator)args.Instance;
-            Logger.PrintHeader("Follows");
-            foreach (var follow in model.Follows)
-                Logger.PrintLn(follow.ToString());
-            Logger.PrintLn("\n");
+        //public override void OnExit(MethodExecutionArgs args)
+        //{
+        //    var model = (FollowGenerator)args.Instance;
+        //    Logger.PrintHeader("Follows");
+        //    foreach (var follow in model.Follows)
+        //        Logger.PrintLn(follow.ToString());
+        //    Logger.PrintLn("\n");
 
-            base.OnExit(args);
+        //    base.OnExit(args);
+        //}
+        public override Task Invoke(AspectContext context, AspectDelegate next)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

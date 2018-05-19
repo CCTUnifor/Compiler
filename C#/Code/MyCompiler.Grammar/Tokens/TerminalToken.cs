@@ -1,6 +1,8 @@
-﻿namespace MyCompiler.Grammar.Tokens
+﻿using MyCompiler.Core.Interfaces.Graph;
+
+namespace MyCompiler.Grammar.Tokens
 {
-    public class TerminalToken : Token
+    public class TerminalToken : Token, ITerminalToken
     {
         public TerminalToken(string value) : base(value)
         {

@@ -8,16 +8,16 @@ namespace MyCompiler.Tokenization
 {
     public class RegularExpressionParserToken<T>
     {
-        private IEnumerable<IToken<T>> _tokens { get; set; }
+        private IEnumerable<_IToken<T>> _tokens { get; set; }
         private ICollection<string> _events { get; set; }
 
-        public RegularExpressionParserToken(IEnumerable<IToken<T>> tokens)
+        public RegularExpressionParserToken(IEnumerable<_IToken<T>> tokens)
         {
             _tokens = tokens;
             _events = new List<string>();
         }
 
-        public IToken<T> Peek
+        public _IToken<T> Peek
         {
             get
             {
@@ -27,7 +27,7 @@ namespace MyCompiler.Tokenization
             }
         }
 
-        public void Eat(IToken<T> c)
+        public void Eat(_IToken<T> c)
         {
             if (Peek == c)
                 _tokens = _tokens.Skip(1);
@@ -46,7 +46,7 @@ namespace MyCompiler.Tokenization
             AddEvent("Eat", $"'{c}'");
         }
 
-        public IToken<T> Next()
+        public _IToken<T> Next()
         {
             var c = Peek;
             Eat(c);

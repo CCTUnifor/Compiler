@@ -1,0 +1,28 @@
+﻿<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand" href="/">MyCompiler.WebApp</a>
+    <button class="navbar-toggler" onclick=@ToggleNavMenu>
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</div>
+
+<div class=@(collapseNavMenu ? "collapse" : null) onclick=@ToggleNavMenu>
+    <ul class="nav flex-column">
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="/compiler">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Compiler
+            </NavLink>
+            <NavLink class="nav-link" href="/code-generator-cms">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Code Generator - CMS
+            </NavLink>
+        </li>
+    </ul>
+</div>
+
+@functions {
+    bool collapseNavMenu = true;
+
+    void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

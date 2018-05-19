@@ -18,7 +18,7 @@ namespace MyCompiler.Core.Interfaces.Graph
             IsRepeat = isRepeat;
         }
 
-        public abstract void AddAdjacent(INode newEnd, IToken<RegularExpressionGrammarClass> token, bool isRepeat = false);
+        public abstract void AddAdjacent(INode newEnd, _IToken<RegularExpressionGrammarClass> token, bool isRepeat = false);
         public abstract string ToString();
         public abstract string ToStringAdjacents();
     }
@@ -29,7 +29,7 @@ namespace MyCompiler.Core.Interfaces.Graph
 
     public abstract class INodeAdjacent : INode
     {
-        public IToken<RegularExpressionGrammarClass> Token { get; set; }
+        public _IToken<RegularExpressionGrammarClass> Token { get; set; }
         public bool IsBlank => Token.GrammarClass == RegularExpressionGrammarClass.Empty;
         public bool IsTerminal => Token.GrammarClass == RegularExpressionGrammarClass.Terminal;
 

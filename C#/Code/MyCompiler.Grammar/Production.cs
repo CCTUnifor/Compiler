@@ -7,6 +7,7 @@ namespace MyCompiler.Grammar
     public class Production
     {
         public IEnumerable<Token> Elements { get; }
+        public IEnumerable<Token> ElementsWithoutSpace => Elements.Where(x => !(x is SpaceToken)).ToList();
 
         public Production(IEnumerable<Token> elements)
         {

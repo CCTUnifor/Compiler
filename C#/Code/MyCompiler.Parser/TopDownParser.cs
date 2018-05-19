@@ -3,17 +3,18 @@ using System.Linq;
 using CCTUnifor.Logger;
 using MyCompiler.Core.Exceptions;
 using MyCompiler.Core.Extensions;
+using MyCompiler.Core.Interfaces.Parsers;
 using MyCompiler.Grammar;
 using MyCompiler.Grammar.Extensions;
 using MyCompiler.Grammar.Tokens;
 using MyCompiler.Parser.Generators;
 using MyCompiler.Parser.TopDown;
-using MyCompiler.Tokenization.Aspects;
 using MyCompiler.Tokenization.Generators;
+using MyCompiler.Tokenization.TopDown;
 
-namespace MyCompiler.Tokenization
+namespace MyCompiler.Parser
 {
-    public class TopDownParser
+    public class TopDownParser : IParser
     {
         private string Grammar { get; }
 
@@ -31,7 +32,6 @@ namespace MyCompiler.Tokenization
 
         public TableGenerator TableGenerator { get; private set; }
 
-
         public TopDownParser(string grammar) => Grammar = grammar;
 
         private static int stackCounterPad = 3;
@@ -47,7 +47,6 @@ namespace MyCompiler.Tokenization
 
         public void Parser(string input)
         {
-            Logger.PrintLn("Parser!");
             HandleLines();
             Analyse(input);
         }
@@ -74,9 +73,12 @@ namespace MyCompiler.Tokenization
 
         private string[] GetLines() => Grammar.GetLines().IgnoreEmptyOrNull();
 
-        [LogAnalyserAspect]
+        //[LogAnalyserAspect]
         private void Analyse(string input)
         {
+            Logger.IsToPrintInConsole = true;
+            Logger.PrintHeader("Analyse the input:");
+
             PrintHeaderStack();
 
             var lines = input.Split('\n').Select(x => x.Replace("\t", "").Replace("\r", "").Trim()).ToArray();

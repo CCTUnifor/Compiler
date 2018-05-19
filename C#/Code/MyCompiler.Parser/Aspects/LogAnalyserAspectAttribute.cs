@@ -1,18 +1,25 @@
-﻿using CCTUnifor.Logger;
-using PostSharp.Aspects;
-using PostSharp.Serialization;
+﻿using System.Threading.Tasks;
+using AspectCore.DynamicProxy;
 
-namespace MyCompiler.Tokenization.Aspects
+//using PostSharp.Aspects;
+//using PostSharp.Serialization;
+
+namespace MyCompiler.Parser.Aspects
 {
-    [PSerializable]
-    public class LogAnalyserAspectAttribute : OnMethodBoundaryAspect
+    //[PSerializable]
+    public class LogAnalyserAspectAttribute : AbstractInterceptorAttribute// OnMethodBoundaryAspect
     {
-        public override void OnEntry(MethodExecutionArgs args)
+        //public override void OnEntry(MethodExecutionArgs args)
+        //{
+        //    Logger.IsToPrintInConsole = true;
+        //    Logger.PrintHeader("Analyse the input:");
+        //    base.OnEntry(args);
+        //}
+
+
+        public override Task Invoke(AspectContext context, AspectDelegate next)
         {
-            Logger.IsToPrintInConsole = true;
-            Logger.PrintHeader("Analyse the input:");
-            base.OnEntry(args);
+            throw new System.NotImplementedException();
         }
-        
     }
 }

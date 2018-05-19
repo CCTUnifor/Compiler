@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using MyCompiler.Core.Interfaces.Graph;
 
-namespace MyCompiler.Core.Interfaces
+namespace MyCompiler.Core.Interfaces.Parsers
 {
-    public interface IParser<T>
+    public interface IParser
     {
-        IGraph Check(IEnumerable<IToken<T>> tokens);
+        void Parser(string input);
     }
 }

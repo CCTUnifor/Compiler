@@ -1,0 +1,59 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="grammars\grammar(0).txt" />
+    <None Remove="grammars\_grammar(0).txt" />
+    <None Remove="inputs\input(0).txt" />
+    <None Remove="inputs\_input(0).txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="grammars\grammar(0).txt" />
+    <EmbeddedResource Include="grammars\_grammar(0).txt" />
+    <EmbeddedResource Include="inputs\input(0).txt" />
+    <EmbeddedResource Include="inputs\_input(0).txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MyCompiler.CodeGenerator\MyCompiler.CodeGenerator.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="CCTUnifor.ConsoleTable">
+      <HintPath>..\..\..\..\..\..\.nuget\packages\cctunifor.consoletable\1.0.1\lib\netstandard2.0\CCTUnifor.ConsoleTable.dll</HintPath>
+    </Reference>
+    <Reference Include="CCTUnifor.Logger">
+      <HintPath>..\..\..\..\..\..\.nuget\packages\cctunifor.logger\1.0.2\lib\netstandard2.0\CCTUnifor.Logger.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="grammars\grammar%280%29.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Update="inputs\input%280%29.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Update="inputs\_input%280%29.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="cmd.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Logs\tiny.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Logs\_cms.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

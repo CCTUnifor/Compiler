@@ -1,0 +1,137 @@
+﻿@page "/code-generator-cms"
+@using System
+@using System.Collections.Generic
+@using System.Linq
+@using MyCompiler.Tokenization
+@using CCTUnifor.Logger;
+@using MyCompiler.CodeGenerator
+@using MyCompiler.CodeGenerator.Code
+@using MyCompiler.Core.Extensions
+@using MyCompiler.Parser
+@using MyCompiler.WebApp.ViewModels
+
+<style>
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #dddddd;
+    }
+</style>
+
+<h1>Code Generator - CMS</h1>
+
+<form onsubmit="@TextAreaOneChanged">
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="grammar">Grammar</label>
+            <textarea id="grammar" class="form-control" rows="@row" bind="@grammarValue"></textarea>
+        </div>
+        <div class="form-group col-md-6">
+            <label for="input">Input</label>
+            <textarea id="input" class="form-control" rows="@row" bind="@inputValue"></textarea>
+        </div>
+    </div>
+    <button type="submit">Compiler</button>
+</form>
+
+<div>
+    <table>
+        <tr>
+            <th>Byte</th>
+            <th>Value</th>
+            <th>Type</th>
+        </tr>
+        @foreach (var code in Codes)
+            {
+        <tr>
+            <td>@code.Position</td>
+            <td>@code.Code.Value</td>
+            <td>@code.Code.Instruction</td>
+        </tr>
+            }
+    </table>
+</div>
+
+<div class="form-group col-md-12">
+    <label for="result"></label>
+    <textarea id="result" class="form-control" rows="20" disabled value="@result"></textarea>
+</div>
+
+@functions {
+
+    string grammarValue = GrammarMocks.Grammar1;
+    string inputValue = InputMocks.Input1;
+
+    string row = "10";
+    string result = "result";
+    CmsCodeGenerator codeGenerator;
+
+    IEnumerable<CodeViewModel> Codes
+    {
+        get
+        {
+            var c = new List<CodeViewModel>();
+            if (codeGenerator == null) return c;
+
+            var codes = codeGenerator.Codes;
+
+            int i = 0;
+            foreach (var code in codes)
+            {
+                c.Add(new CodeViewModel
+                {
+                    Code   = code,
+                    Position = i.ToHexadecimal("X4")
+                });
+
+                if (code is CmsCodeReference codeRef)
+                {
+                    i++;
+                    c.Add(new CodeViewModel
+                    {
+                        Code   = codeRef.Reference,
+                        Position = i.ToHexadecimal("X2")
+                    });
+                }
+                i++;
+            }
+
+            return c;
+        }
+    }
+
+    void TextAreaOneChanged() {
+        try
+        {
+            result = "";
+            Console.WriteLine($"Grammar: {grammarValue}");
+            Console.WriteLine($"Mocks: {inputValue}");
+
+            var parser = new TopDownParser(grammarValue);
+            parser.Parser(inputValue);
+
+            codeGenerator = new CmsCodeGenerator(parser, inputValue);
+            codeGenerator.Generator();
+            codeGenerator.Export();
+            codeGenerator.ExecuteVM();
+        }
+        catch (Exception e)
+        {
+            Logger.PrintLn(e);
+        }
+        finally
+        {
+            result = Logger.History;
+        }
+    }
+}
