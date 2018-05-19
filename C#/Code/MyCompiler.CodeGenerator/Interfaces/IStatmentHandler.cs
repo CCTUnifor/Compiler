@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MyCompiler.CodeGenerator.Interfaces
+﻿namespace MyCompiler.CodeGenerator.Interfaces
 {
     public interface IStatmentHandler
     {

@@ -2,7 +2,7 @@
 using MyCompiler.CodeGenerator.Enums;
 using MyCompiler.CodeGenerator.Interfaces;
 
-namespace MyCompiler.CodeGenerator.StatmentHandlers
+namespace MyCompiler.CodeGenerator.StatmentHandlers.CMS
 {
     public class UntilStatmentHandler : IStatmentHandler
     {
@@ -18,7 +18,7 @@ namespace MyCompiler.CodeGenerator.StatmentHandlers
             generator.AddCode(jmp);
 
             jf.Reference.ValueDecimal = generator.CodesLengh;
-            generator.State = CmsCodeState.Initial;
+            generator.GeneratorState = TinyCodeGeneratorState.Initial;
         }
     }
 }

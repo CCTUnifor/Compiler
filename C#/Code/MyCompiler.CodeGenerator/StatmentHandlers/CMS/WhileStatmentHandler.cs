@@ -2,7 +2,7 @@
 using MyCompiler.CodeGenerator.Enums;
 using MyCompiler.CodeGenerator.Interfaces;
 
-namespace MyCompiler.CodeGenerator.StatmentHandlers
+namespace MyCompiler.CodeGenerator.StatmentHandlers.CMS
 {
     public class WhileStatmentHandler : IStatmentHandler
     {
@@ -20,7 +20,7 @@ namespace MyCompiler.CodeGenerator.StatmentHandlers
             var commeBackWhile = (CmsCodeReference)CmsCodeFactory.JMP(startWhileReference);
             generator.StartWhileCodeReference.Push(commeBackWhile);
 
-            generator.State = CmsCodeState.Initial;
+            generator.GeneratorState = TinyCodeGeneratorState.Initial;
         }
     }
 }

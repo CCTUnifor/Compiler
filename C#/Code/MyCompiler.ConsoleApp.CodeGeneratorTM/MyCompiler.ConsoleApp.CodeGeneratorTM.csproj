@@ -20,16 +20,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MyCompiler.CodeGenerator\MyCompiler.CodeGenerator.csproj" />
+    <PackageReference Include="CCTUnifor.ConsoleTable" Version="1.0.1" />
+    <PackageReference Include="CCTUnifor.Logger" Version="1.0.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="CCTUnifor.ConsoleTable">
-      <HintPath>..\..\..\..\..\..\.nuget\packages\cctunifor.consoletable\1.0.1\lib\netstandard2.0\CCTUnifor.ConsoleTable.dll</HintPath>
-    </Reference>
-    <Reference Include="CCTUnifor.Logger">
-      <HintPath>..\..\..\..\..\..\.nuget\packages\cctunifor.logger\1.0.2\lib\netstandard2.0\CCTUnifor.Logger.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\MyCompiler.CodeGenerator\MyCompiler.CodeGenerator.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,6 +1,6 @@
 ﻿namespace MyCompiler.CodeGenerator.Enums
 {
-    public enum CmsCodeState
+    public enum TinyCodeGeneratorState
     {
         Initial,
         Read,

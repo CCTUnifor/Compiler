@@ -2,7 +2,7 @@
 using MyCompiler.CodeGenerator.Enums;
 using MyCompiler.CodeGenerator.Interfaces;
 
-namespace MyCompiler.CodeGenerator.StatmentHandlers
+namespace MyCompiler.CodeGenerator.StatmentHandlers.CMS
 {
     public class RepeatStatmentHandler : IStatmentHandler
     {
@@ -10,7 +10,7 @@ namespace MyCompiler.CodeGenerator.StatmentHandlers
         {
             generator.RepeatReferenceStack.Push(new CmsCode(generator.CodesLengh));
             generator.MoveNextToken();
-            generator.State = CmsCodeState.Initial;
+            generator.GeneratorState = TinyCodeGeneratorState.Initial;
         }
     }
 }

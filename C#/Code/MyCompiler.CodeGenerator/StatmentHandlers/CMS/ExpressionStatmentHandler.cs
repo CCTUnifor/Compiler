@@ -6,7 +6,7 @@ using MyCompiler.Grammar.Tokens;
 using MyCompiler.Grammar.Tokens.Terminals;
 using MyCompiler.Tokenization.TopDown;
 
-namespace MyCompiler.CodeGenerator.StatmentHandlers
+namespace MyCompiler.CodeGenerator.StatmentHandlers.CMS
 {
     public class ExpressionStatmentHandler : IStatmentHandler
     {

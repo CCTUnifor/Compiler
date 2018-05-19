@@ -5,11 +5,10 @@ using MyCompiler.CodeGenerator;
 using MyCompiler.ConsoleApp.CodeGeneratorCMS.Mocks;
 using MyCompiler.Parser;
 
-namespace MyCompiler.ConsoleApp.CodeGeneratorCMS
+namespace MyCompiler.ConsoleApp.CodeGeneratorTM
 {
     class Program
     {
-
         public static void ConfigConsole()
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
@@ -32,12 +31,7 @@ namespace MyCompiler.ConsoleApp.CodeGeneratorCMS
                 var parser = new TopDownParser(grammar);
                 parser.Parser(input);
 
-                //var codeGenerator = new CmsCodeGenerator(parser, input);
-                //codeGenerator.Generator();
-                //codeGenerator.Export();
-                //codeGenerator.ExecuteVM();
-
-                var codeGenerator = new TmCodeGenerator(parser, input);
+                var codeGenerator = new CmsCodeGenerator(parser, input);
                 codeGenerator.Generator();
                 codeGenerator.Export();
                 codeGenerator.ExecuteVM();
