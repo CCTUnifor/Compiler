@@ -22,6 +22,19 @@ class CodeGenerator:
         "+": 'ADD'
     }
 
+    operators_inverse{
+        "=": "<>",
+        "IS": '<>',
+        "<>": "=",
+        "!=": '=',
+        "<>": '=',
+        "NOT": '=',
+        ">": '<=',
+        ">=": '<',
+        "<": '>=',
+        "<=": '>',
+    }
+
     operator_regex = re.compile(r'(<=|>=|<>|NOT|IS|>|<|=|!=)')
     algebric_operator_regex = re.compile(r'(\*|\/|\+|-)')
 
