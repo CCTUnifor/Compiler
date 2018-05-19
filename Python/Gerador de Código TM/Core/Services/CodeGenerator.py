@@ -67,6 +67,7 @@ class CodeGenerator:
         self.ide_cache = None
         self.command_counter = 0
         self.end_stack = []
+        self.command_cache = []
     
     def compile(self):
         if self.Tokens is None:
@@ -131,6 +132,12 @@ class CodeGenerator:
                 
 
             elif token.unit.text == 'END':
+                item = self.end_stack.pop()
+                command = item[1]
+
+                if command == "IF":
+                    pass
+
                 raise Exception("TODO - Implementar END")
 
         elif self.state == 'READ':
@@ -148,9 +155,17 @@ class CodeGenerator:
         
         elif self.state == 'IF':
 
-            self.end_stack.append((self.command_counter, "IF",  ))
+            self.boolean_exp(token)
 
-            self.state = 'main program'
+            if token.unit.text == 'THEN':
+                operator = self.command_cache[1]
+                first_register = self.command_cache[0]
+
+                self.end_stack.append((self.command_counter, "IF", [operator, first_register]))
+
+                self.command_counter += 1
+                self.state = 'main program'
+
             raise Exception("TODO - Implementar IF")
             
 
@@ -171,6 +186,23 @@ class CodeGenerator:
         In case of an expression try to treat the Token and return True, if not return False
         """
         raise Exception("TODO - Implementar boolean_exp")
+        operator = CodeGenerator.operator_regex.match(token.unit.text)
+
+        if operator:
+            self.command_cache.append(CodeGenerator.operators_dict[token.value])
+
+        elif token.unit.text == 'ide':
+            self.command_cache.append(self.variables[token.value])
+
+        elif token.unit.text == 'num':
+            # self.command_cache.append(0) # boolean expression just compare with number 0 in TM VM
+            pass
+        
+        else:
+            return False
+        
+        return True
+
     
     def __write_on_code(self, code):
         self.intermediate_code += str(self.command_counter) + ": "
