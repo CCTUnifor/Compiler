@@ -7,12 +7,12 @@ Instruções Register Only - RO
 código operação (opcode) r,s,t (registradores)
 
 HALT (análoga ao STOP do CMS) os registradores s e t são ignorados
-IN (análoga ao IN do CMS) os registradores s e t são ignorados
-OUT (análoga ao OUT do CMS) os registradores s e t são ignorados
-ADD reg(r)=reg(s)+reg(t)
-SUB reg(r)=reg(s)-reg(t)
-MUL reg(r)=reg(s)*reg(t)
-DIV reg(r)=reg(s)/reg(t) pode gerar divisão por zero
+IN   (análoga ao IN do CMS) os registradores s e t são ignorados
+OUT  (análoga ao OUT do CMS) os registradores s e t são ignorados
+ADD  reg(r)=reg(s)+reg(t)
+SUB  reg(r)=reg(s)-reg(t)
+MUL  reg(r)=reg(s)*reg(t)
+DIV  reg(r)=reg(s)/reg(t) pode gerar divisão por zero
 -----------------------------------------------------------
 
 Instruções RM - Registrador Memória
@@ -20,18 +20,21 @@ Instruções RM - Registrador Memória
 Formato r,d,(s)
 d=deslocamento ou offset
 
-a=d+reg(s)
+a= d + reg(s)
 
-LD (LOAD) reg[r]=dMem(a) (carrega r com valor de memória em a)
+PC_REG = Program Counter= 7
+
+LD  (LOAD) reg[r]=dMem(a) (carrega r com valor de memória em a)
 LDA (LOAD Adress) reg[r]=a
 LDC (LOAD Constant) reg[r]=d
-ST (STORE) dMem(a)=reg[r]
-JLT (<)  if (reg(r)<0) reg(PC_REG)=a
-JLE (<=) if (reg(r)<=0) reg(PC_REG)=a
-JGE (>=) if (reg(r)>=0) reg(PC_REG)=a
-JGT (>) if (reg(r)>0) reg(PC_REG)=a
-JEQ (==) if (reg(r)==0) reg(PC_REG)=a
-JNE (!=) if (reg(r)!=0) reg(PC_REG)=a
+ST  (STORE) dMem(a)=reg[r]
+JLT (<)  if (reg(r) <  0) reg(PC_REG)=a
+    (jump to instruction a if r is negative, similarly for the following)
+JLE (<=) if (reg(r) <= 0) reg(PC_REG)=a
+JGE (>=) if (reg(r) >= 0) reg(PC_REG)=a
+JGT (>)  if (reg(r) >  0) reg(PC_REG)=a
+JEQ (==) if (reg(r) == 0) reg(PC_REG)=a
+JNE (!=) if (reg(r) != 0) reg(PC_REG)=a
 
 * Comentário em TM
 * calcula fatorial de um número
@@ -47,13 +50,14 @@ until r0==0
 write r1
 halt
 
-0: IN 0,0,0        r0=read
-1: JLE 0,6(7)      if r0 >0 then  
-2: LDC 1,1,0       r1=1
-3: LDC 2,1,0       r2=1
-4: MUL 1,1,0       r1=r1*r0
-5: SUB 0,0,2       r0=r0-r2
-6: JNE 0,-3(7)     until r0==0
-7: OUT 1,0,0       write r1
-8: HALT 0,0,0      halt
+0: IN    0 , 0  , 0    r0 = read
+1: JLE   0 , 6   (7)   if r0 > 0 then  
+2: LDC   1 , 1  , 0     r1 = 1
+3: LDC   2 , 1  , 0     r2 = 1
+                        *repeat
+4: MUL   1 , 1  , 0         r1 = r1 * r0
+5: SUB   0 , 0  , 2         r0 = r0 - r2
+6: JNE   0 , -3  (7)    until r0 == 0
+7: OUT   1 , 0  , 0     write r1
+8: HALT  0 , 0  , 0    halt
   

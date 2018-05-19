@@ -5,12 +5,12 @@ VAR z : INTEGER;
 BEGIN
     READ x;
     IF x > 0 THEN
-        y = 1
-        z = 1
-    END;
-    REPEAT
-        y = y * x;
-        x = x - z
-    UNTIL x == 0;
-    WRITE y
+        y := 1
+        z := 1
+        REPEAT
+            y := y * x;
+            x := x - z
+        UNTIL x == 0;
+        WRITE y
+    END
 END
