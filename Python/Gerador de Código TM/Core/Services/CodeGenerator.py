@@ -67,7 +67,7 @@ class CodeGenerator:
                 if token.value not in self.variables:
                     raise Exception('the variable "'+token.value+'" must be declared')
 
-                self.ide_cache = CodeGenerator.__int_to_byte(self.variables[token.value])
+                raise Exception("TODO - Implementar ATRIB")
                 self.state = 'ATRIB'
 
             elif token.unit.text == 'READ':
@@ -95,108 +95,28 @@ class CodeGenerator:
                 raise Exception("TODO - Implementar END")
 
         elif self.state == 'READ':
-            var_adress = CodeGenerator.__int_to_byte(self.variables[token.value])
-            self.__concat_to_bytecode(var_adress)
             self.state = 'main program'
         
         elif self.state == 'WRITE':
-            var_adress = CodeGenerator.__int_to_byte(self.variables[token.value])
-            self.__concat_to_bytecode(var_adress)
-            self.__concat_to_bytecode(bytes([CodeGenerator.command_dict['OUT']]))            
             self.state = 'main program'
         
         elif self.state == 'IF':
-            
-            self.boolean_exp(token)
+            self.state = 'main program'
 
-            if token.unit.text == 'THEN':
-                self.__concat_to_bytecode(self.operator_cache)
-                self.operator_cache = None
-
-                self.backpatching_stack.append(('IF', self.bytecode_next_position()))
-                self.__concat_to_bytecode(bytes([CodeGenerator.command_dict['JF'], 0, 0]))
-
-                self.state = 'main program'
-        
         elif self.state == 'WHILE':
-            self.boolean_exp(token)
-
-            if token.unit.text == 'DO':
-                self.__concat_to_bytecode(self.operator_cache)
-                self.operator_cache = None
-                
-                self.backpatching_stack.append(('WHILE', self.bytecode_next_position()))
-                self.__concat_to_bytecode(bytes([CodeGenerator.command_dict['JF'], 0, 0]))
-
-                self.state = 'main program'
-
+            self.state = 'main program'
         
         elif self.state == 'ATRIB':
-            algebric_operator = CodeGenerator.algebric_operator_regex.match(token.unit.text)
+            self.state = 'main program'
             
-            if token.unit.text == 'ide':
-                var_adress = CodeGenerator.__int_to_byte(self.variables[token.value])
-                self.__concat_to_bytecode(bytes([CodeGenerator.command_dict['LOD']]) + var_adress)
-                
-            elif algebric_operator:
-                # regex (* | / | + | - | )
-                algebric_operator = algebric_operator.group(1)
-                operator_hex = CodeGenerator.command_dict[CodeGenerator.operators_dict[algebric_operator]]
-                self.operator_cache = bytes([operator_hex])
-
-            elif token.unit.text == 'num':
-                num_hex = CodeGenerator.__int_to_byte(int(token.value))
-                self.__concat_to_bytecode(bytes([CodeGenerator.command_dict['LDI']]) + num_hex)
-            
-            elif token.unit.text == ':=':
-                pass
-
-            else:
-                if self.operator_cache:
-                    self.__concat_to_bytecode(self.operator_cache)
-                    self.operator_cache = None
-
-                self.__concat_to_bytecode(bytes([CodeGenerator.command_dict['STO']]) + self.ide_cache)
-                self.state = 'main program'
-                
-                self.process_token(token)
-        
         elif self.state == 'REPEAT':
-            self.backpatching_stack.append(('REPEAT', self.bytecode_next_position()))
             self.state = 'main program'
         
         elif self.state == 'UNTIL':
-            if token.unit.text == 'UNTIL':
-                pass
-
-            elif not self.boolean_exp(token):
-                self.state = 'main program'
-
-                self.process_token(token)                
+            self.state = 'main program'
 
     def boolean_exp(self, token:Token):
         """
         In case of an expression try to treat the Token and return True, if not return False
         """
         raise Exception("TODO - Implementar boolean_exp")
-        
-        operator = CodeGenerator.operator_regex.match(token.unit.text)
-        if token.unit.text == 'ide':
-            var_adress = CodeGenerator.__int_to_byte(self.variables[token.value])
-            self.__concat_to_bytecode(bytes([CodeGenerator.command_dict['LOD']]) + var_adress)
-            
-        elif operator:
-            operator = operator.group(1)
-            operator_hex = CodeGenerator.command_dict[CodeGenerator.operators_dict[operator]]
-            self.operator_cache = bytes([operator_hex])
-
-        elif token.unit.text == 'num':
-            num_hex = CodeGenerator.__int_to_byte(int(token.value))
-            self.__concat_to_bytecode(bytes([CodeGenerator.command_dict['LDI']]) + num_hex)
-        
-        else:        
-            return False
-
-        return True
-    
-# byte 22,23 0x43,0x00 but 00,00
