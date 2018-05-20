@@ -56,7 +56,9 @@ class teste_code_generator(unittest.TestCase):
 
         generator.compile()
         string_code = generator.intermediate_code
-
+        print(intermediate_code)
+        print()
+        print(string_code)
         self.assertListEqual(string_code, intermediate_code)
 
 

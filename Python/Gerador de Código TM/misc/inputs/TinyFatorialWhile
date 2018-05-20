@@ -1,0 +1,17 @@
+PROGRAM
+VAR x : INTEGER;
+VAR y : INTEGER;
+VAR z : INTEGER;
+BEGIN
+    READ x;
+    IF x > 0 THEN
+        y := 1;
+        z := 1;
+        WHILE x != 0
+        BEGIN
+            y := y * x;
+            x := x - z
+        END
+        WRITE y
+    END
+END

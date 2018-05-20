@@ -45,15 +45,12 @@ class CodeGenerator:
     }
 
     operators_inverse = {
-        "="     : "<>" ,
-        "IS"    : '<>' ,
-        "<>"    : "="  ,
-        "!="    : '='  ,
-        "NOT"   : '='  ,
-        ">"     : '<=' ,
-        ">="    : '<'  ,
-        "<"     : '>=' ,
-        "<="    : '>'
+        "JGE"   : "<"   ,
+        "JGT"   : "<="  ,
+        "JLT"   : ">="  ,
+        "JLE"   : ">"   ,
+        "JNE"   : "="   ,
+        "JEQ"   : "!="  ,
     }
 
     operators_reverse = {
@@ -146,8 +143,10 @@ class CodeGenerator:
                     command = item[1]
 
                     if command == "IF":
-                        cmd = item[2][0] + " " + item[2][1] + "," + self.command_counter - command_counter - 1 + "(7)"
-                        self.__write_on_code(cmd, False)
+                        op_code = CodeGenerator.operators_dict[CodeGenerator.operators_inverse[item[2][0]]]
+                        
+                        cmd = op_code + " " + str(item[2][1]) + "," + str(self.command_counter - command_counter - 1) + "(7)"
+                        self.__write_on_code(cmd, False, command_counter)
                     
                     elif command == "REPEAT":
                         self.state = 'UNTIL'
@@ -212,7 +211,7 @@ class CodeGenerator:
 
             elif algebric_operator:
                 algebric_operator = algebric_operator.group(1)
-                operator_code = CodeGenerator.command_dict[CodeGenerator.operators_dict[algebric_operator]]
+                operator_code = CodeGenerator.operators_dict[algebric_operator]
                 self.command_cache[0] = operator_code
             
             if self.state == 'main program':
@@ -220,7 +219,7 @@ class CodeGenerator:
             
         elif self.state == 'REPEAT':
             self.end_stack.append((self.command_counter, "REPEAT"))
-            self.command_counter += 1
+            # self.command_counter += 1
             
             self.state = 'main program'
         
@@ -233,13 +232,13 @@ class CodeGenerator:
                 command_counter = item[0]
                 command = item[1]
                 
-                op_code = CodeGenerator.operators_inverse[self.command_cache[0]]
-                first_reg = self.command_cache[1]
-                d_value = command_counter - self.command_counter
+                op_code = CodeGenerator.operators_dict[CodeGenerator.operators_inverse[self.command_cache[0]]]
+                first_reg = str(self.command_cache[1])
+                d_value = str(command_counter - self.command_counter - 1)
 
                 cmd = op_code + " " + first_reg + "," + d_value + "(7)"
                 
-                self.__write_on_code(cmd, False)
+                self.__write_on_code(cmd)
 
                 self.state = 'main program'
                 self.process_token(token)
@@ -259,10 +258,10 @@ class CodeGenerator:
             else:
                 operator_code = CodeGenerator.operators_dict[token.value]
 
-            self.command_cache[0](operator_code)
+            self.command_cache[0] = operator_code
 
         elif token.unit.text == 'ide':
-            self.command_cache[1](self.variables[token.value])
+            self.command_cache[1] = self.variables[token.value]
 
         elif token.unit.text == 'num':            
             pass # boolean expression just compare with number 0 in TM VM
@@ -273,14 +272,14 @@ class CodeGenerator:
         return True
 
     
-    def __write_on_code(self, code, next=True):
-        self.intermediate_code.append(str(self.command_counter) + ": " + str(code))
+    def __write_on_code(self, code, next=True, counter=None):
+        self.intermediate_code.append(str(counter if counter else self.command_counter) + ": " + str(code))
 
         if next:
             self.command_counter += 1
 
     def __RO_commands_builder(self, command, params):
-        command_size = CodeGenerator.command_dict[command][1]
+        command_size = CodeGenerator.command_dict[command][2]
 
         if not (len(params) is command_size):
             raise Exception('Invalid parameters ' + str(params) + ' for the command "' + command + '"')
@@ -292,7 +291,7 @@ class CodeGenerator:
                 code += command + " "
             
             elif i <= command_size:
-                code += params[i-1]
+                code += str(params[i-1])
 
             else:
                 code += "0"
@@ -308,7 +307,7 @@ class CodeGenerator:
     
     def __command_builder(self, command, params):
         if command not in CodeGenerator.command_dict:
-            raise Exception('Invalid command')
+            raise Exception('Invalid command: '+ str(command))
 
         command_category = CodeGenerator.command_dict[command][1]
         
