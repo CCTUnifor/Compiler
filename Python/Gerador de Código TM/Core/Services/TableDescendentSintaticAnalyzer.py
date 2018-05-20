@@ -105,7 +105,10 @@ class TableService:
                     raise Exception("Error: invalid file end")
 
                 else:
-                    raise Exception("Error on " + current.value + " at:")
+                    size = len(lxa.tokens)
+                    size = size-5 if size>5 else size
+
+                    raise Exception("Error on " + current.value + " at:" + str([i.value for i in lxa.tokens[size::]]))
         
         # print("Compiling succes for entry:\n"+ text)
         return lxa.tokens, historic

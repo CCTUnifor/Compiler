@@ -4,24 +4,25 @@ import re
 
 class CodeGenerator:
     command_dict = {
-        "HALT"  :  ("RO", 1)  , # (análoga ao STOP do CMS) os registradores s e t são ignorados
-        "IN"    :  ("RO", 1)  , # (análoga ao IN do CMS) os registradores s e t são ignorados
-        "OUT"   :  ("RO", 1)  , # (análoga ao OUT do CMS) os registradores s e t são ignorados
-        "ADD"   :  ("RO", 3)  , # reg(r)=reg(s)+reg(t)
-        "SUB"   :  ("RO", 3)  , # reg(r)=reg(s)-reg(t)
-        "MUL"   :  ("RO", 3)  , # reg(r)=reg(s)*reg(t)
-        "DIV"   :  ("RO", 3)  , # reg(r)=reg(s)/reg(t) pode gerar divisão por zero
-
-        "LDA"   :  ("RM", 3)  , # (LOAD) reg[r]=dMem(a) (carrega r com valor de memória em a)
-        "LD"    :  ("RM", 3)  , # (LOAD Adress) reg[r]=a
-        "LDC"   :  ("RM", 3)  , # (LOAD Constant) reg[r]=d
-        "ST"    :  ("RM", 3)  , # (STORE) dMem(a)=reg[r]
-        "JLT"   :  ("RM", 3)  , # (<)  if (reg(r) <  0) reg(PC_REG)=a
-        "JLE"   :  ("RM", 3)  , # (<=) if (reg(r) <= 0) reg(PC_REG)=a
-        "JGE"   :  ("RM", 3)  , # (>=) if (reg(r) >= 0) reg(PC_REG)=a
-        "JGT"   :  ("RM", 3)  , # (>)  if (reg(r) >  0) reg(PC_REG)=a
-        "JEQ"   :  ("RM", 3)  , # (==) if (reg(r) == 0) reg(PC_REG)=a
-        "JNE"   :  ("RM", 3)    # (!=) if (reg(r) != 0) reg(PC_REG)=a
+        # (type, construction_type,size)
+        "HALT"  :  ("RO","RO", 1)  , # (análoga ao STOP do CMS) os registradores s e t são ignorados
+        "IN"    :  ("RO","RO", 1)  , # (análoga ao IN do CMS) os registradores s e t são ignorados
+        "OUT"   :  ("RO","RO", 1)  , # (análoga ao OUT do CMS) os registradores s e t são ignorados
+        "ADD"   :  ("RO","RO", 3)  , # reg(r)=reg(s)+reg(t)
+        "SUB"   :  ("RO","RO", 3)  , # reg(r)=reg(s)-reg(t)
+        "MUL"   :  ("RO","RO", 3)  , # reg(r)=reg(s)*reg(t)
+        "DIV"   :  ("RO","RO", 3)  , # reg(r)=reg(s)/reg(t) pode gerar divisão por zero
+        
+        "LDA"   :  ("RM","RM", 3)  , # (LOAD) reg[r]=dMem(a) (carrega r com valor de memória em a)
+        "LD"    :  ("RM","RM", 3)  , # (LOAD Adress) reg[r]=a
+        "LDC"   :  ("RM","RO", 3)  , # (LOAD Constant) reg[r]=d
+        "ST"    :  ("RM","RM", 3)  , # (STORE) dMem(a)=reg[r]
+        "JLT"   :  ("RM","RM", 3)  , # (<)  if (reg(r) <  0) reg(PC_REG)=a
+        "JLE"   :  ("RM","RM", 3)  , # (<=) if (reg(r) <= 0) reg(PC_REG)=a
+        "JGE"   :  ("RM","RM", 3)  , # (>=) if (reg(r) >= 0) reg(PC_REG)=a
+        "JGT"   :  ("RM","RM", 3)  , # (>)  if (reg(r) >  0) reg(PC_REG)=a
+        "JEQ"   :  ("RM","RM", 3)  , # (==) if (reg(r) == 0) reg(PC_REG)=a
+        "JNE"   :  ("RM","RM", 3)    # (!=) if (reg(r) != 0) reg(PC_REG)=a
     }
 
     PC_REG = 7
@@ -48,7 +49,6 @@ class CodeGenerator:
         "IS"    : '<>' ,
         "<>"    : "="  ,
         "!="    : '='  ,
-        "<>"    : '='  ,
         "NOT"   : '='  ,
         ">"     : '<=' ,
         ">="    : '<'  ,
@@ -56,12 +56,24 @@ class CodeGenerator:
         "<="    : '>'
     }
 
+    operators_reverse = {
+        "="     : "=" ,
+        "IS"    : '=' ,
+        "<>"    : "<>"  ,
+        "!="    : '!='  ,
+        "NOT"   : 'NOT'  ,
+        ">"     : '<' ,
+        ">="    : '<='  ,
+        "<"     : '>' ,
+        "<="    : '>='
+    }
+
     operator_regex = re.compile(r'(<=|>=|<>|NOT|IS|>|<|=|!=)')
     algebric_operator_regex = re.compile(r'(\*|\/|\+|-)')
 
     def __init__(self, Tokens:Token=None):
         self.Tokens = Tokens
-        self.intermediate_code = None
+        self.intermediate_code = []
         self.variables = None
         self.state = None
         self.ide_cache = None
@@ -93,7 +105,7 @@ class CodeGenerator:
                 variable_location = len(self.variables)
                 self.variables[token.value] = variable_location
 
-                if variable_location >= 7:
+                if variable_location > 6:
                     raise Exception('maximum of 6 variables was exceeded')
             
             elif token.unit.text == 'BEGIN':
@@ -104,22 +116,20 @@ class CodeGenerator:
                 return
 
             elif token.unit.text == 'READ':
-                self.state = 'READ'
-                
+                self.state = 'READ'                
 
             elif token.unit.text == 'ide':
                 if token.value not in self.variables:
                     raise Exception('the variable "'+token.value+'" must be declared')
 
                 self.state = 'ATRIB'
-                self.ide_cache = self.variables[token.value]
-                raise Exception("TODO - Implementar ATRIB")
+                self.command_cache = [-1, self.variables[token.value],-1,-1]
             
             elif token.unit.text == 'WRITE':
-                raise Exception("TODO - Implementar WRITE")
                 self.state = 'WRITE'
 
             elif token.unit.text == 'IF':
+                self.command_cache = [-1,-1]
                 self.state = 'IF'
             
             elif token.unit.text == 'WHILE':
@@ -127,18 +137,24 @@ class CodeGenerator:
                 self.state = 'WHILE'
             
             elif token.unit.text == 'REPEAT':
-                raise Exception("TODO - Implementar REPEAT")
-                self.state = 'REPEAT'
-                
+                self.state = 'REPEAT'                
 
-            elif token.unit.text == 'END':
-                item = self.end_stack.pop()
-                command = item[1]
+            elif token.unit.text == 'END':                
+                if len(self.end_stack):
+                    item = self.end_stack.pop()
+                    command_counter = item[0]
+                    command = item[1]
 
-                if command == "IF":
-                    pass
+                    if command == "IF":
+                        cmd = item[2][0] + " " + item[2][1] + "," + self.command_counter - command_counter - 1 + "(7)"
+                        self.__write_on_code(cmd, False)
+                    
+                    elif command == "REPEAT":
+                        self.state = 'UNTIL'
+                        self.end_stack.append(item)
 
-                raise Exception("TODO - Implementar END")
+                else:
+                    self.__command_builder("HALT", [0])
 
         elif self.state == 'READ':
             if token.value not in self.variables:
@@ -151,52 +167,105 @@ class CodeGenerator:
             self.state = 'main program'
         
         elif self.state == 'WRITE':
+            if token.value not in self.variables:
+                raise Exception("the variable \"" + token.value + "\" was not declared")
+                
+            reg = self.variables[token.value]
+            
+            self.__command_builder("OUT", [reg])
+
             self.state = 'main program'
         
         elif self.state == 'IF':
-
             self.boolean_exp(token)
 
             if token.unit.text == 'THEN':
-                operator = self.command_cache[1]
-                first_register = self.command_cache[0]
+                self.end_stack.append((self.command_counter, "IF", self.command_cache))
+                self.command_cache = []
 
-                self.end_stack.append((self.command_counter, "IF", [operator, first_register]))
-
-                self.command_counter += 1
-                self.state = 'main program'
-
-            raise Exception("TODO - Implementar IF")
-            
+                self.command_counter += 1 
+                self.state = 'main program'            
 
         elif self.state == 'WHILE':
             self.state = 'main program'
         
         elif self.state == 'ATRIB':
-            self.state = 'main program'
+            algebric_operator = CodeGenerator.algebric_operator_regex.match(token.unit.text)
+            
+            if token.unit.text == 'num':
+                self.command_cache[0] = 'LDC'
+                self.command_cache[2] = str(token.value)
+                self.command_cache[3] = '0'
+
+                self.state = 'main program'
+            
+            elif token.unit.text == 'ide':
+                reg = self.variables[token.value]
+
+                if(self.command_cache[2] == -1):
+                    self.command_cache[2] = reg
+
+                else:
+                    self.command_cache[3] = reg
+
+                    self.state = 'main program'
+
+            elif algebric_operator:
+                algebric_operator = algebric_operator.group(1)
+                operator_code = CodeGenerator.command_dict[CodeGenerator.operators_dict[algebric_operator]]
+                self.command_cache[0] = operator_code
+            
+            if self.state == 'main program':
+                self.__command_builder(self.command_cache[0], self.command_cache[1::])
             
         elif self.state == 'REPEAT':
+            self.end_stack.append((self.command_counter, "REPEAT"))
+            self.command_counter += 1
+            
             self.state = 'main program'
         
         elif self.state == 'UNTIL':
-            self.state = 'main program'
+            if token.unit.text == 'UNTIL':
+                self.command_cache = [-1,-1]
+            
+            elif not self.boolean_exp(token):
+                item = self.end_stack.pop()
+                command_counter = item[0]
+                command = item[1]
+                
+                op_code = CodeGenerator.operators_inverse[self.command_cache[0]]
+                first_reg = self.command_cache[1]
+                d_value = command_counter - self.command_counter
+
+                cmd = op_code + " " + first_reg + "," + d_value + "(7)"
+                
+                self.__write_on_code(cmd, False)
+
+                self.state = 'main program'
+                self.process_token(token)
 
     def boolean_exp(self, token:Token):
         """
-        In case of an expression try to treat the Token and return True, if not return False
+        In case of an expression try to treat the Tokens and return True, if not return False
         """
-        raise Exception("TODO - Implementar boolean_exp")
+        # raise Exception("TODO - Implementar boolean_exp")
         operator = CodeGenerator.operator_regex.match(token.unit.text)
 
         if operator:
-            self.command_cache.append(CodeGenerator.operators_dict[token.value])
+            operator_code = None
+
+            if self.command_cache[1] is -1: # the variable was not found yet
+                operator_code = CodeGenerator.operators_dict[CodeGenerator.operators_reverse[token.value]]
+            else:
+                operator_code = CodeGenerator.operators_dict[token.value]
+
+            self.command_cache[0](operator_code)
 
         elif token.unit.text == 'ide':
-            self.command_cache.append(self.variables[token.value])
+            self.command_cache[1](self.variables[token.value])
 
-        elif token.unit.text == 'num':
-            # self.command_cache.append(0) # boolean expression just compare with number 0 in TM VM
-            pass
+        elif token.unit.text == 'num':            
+            pass # boolean expression just compare with number 0 in TM VM
         
         else:
             return False
@@ -204,11 +273,11 @@ class CodeGenerator:
         return True
 
     
-    def __write_on_code(self, code):
-        self.intermediate_code += str(self.command_counter) + ": "
-        self.intermediate_code += str(code) + "\n"
+    def __write_on_code(self, code, next=True):
+        self.intermediate_code.append(str(self.command_counter) + ": " + str(code))
 
-        self.command_counter += 1
+        if next:
+            self.command_counter += 1
 
     def __RO_commands_builder(self, command, params):
         command_size = CodeGenerator.command_dict[command][1]
@@ -241,7 +310,7 @@ class CodeGenerator:
         if command not in CodeGenerator.command_dict:
             raise Exception('Invalid command')
 
-        command_category = CodeGenerator.command_dict[command][0]
+        command_category = CodeGenerator.command_dict[command][1]
         
         if command_category == "RO":
             self.__RO_commands_builder(command, params)

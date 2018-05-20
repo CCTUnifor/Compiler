@@ -18,91 +18,47 @@ with io.open(grammar_file_name, "r", encoding='utf8') as file_obj:
 
 class teste_code_generator(unittest.TestCase):
 
-    def test_factorial_with_while(self):
-        code = """
-            PROGRAM
-            VAR x : INTEGER;
-            VAR fact : INTEGER;
-            BEGIN
-                READ x;
-                IF 0<x THEN
-                    fact := 1;
-                    WHILE x <= 0 DO
-                    BEGIN
-                        fact :=fact*x;
-                        x := x - 1
-                    END;
-                    WRITE fact
-                END
-            END
-        """
-
-        byte_stream = bytes(
-            [
-                0x4F, 0x00, 0x10, 0x5A, 0x0A, 0x00, 
-                0x00, 0x00, 0x00, 0x00, 0x57, 0x41, 
-                0x06, 0x00, 0x44, 0x00, 0x00, 0x40, 
-                0x06, 0x00, 0x24, 0x5C, 0x43, 0x00, 
-                0x44, 0x01, 0x00, 0x41, 0x08, 0x00, 
-                0x40, 0x06, 0x00, 0x44, 0x00, 0x00, 
-                0x25, 0x5C, 0x3F, 0x00, 0x40, 0x08, 
-                0x00, 0x40, 0x06, 0x00, 0x03, 0x41, 
-                0x08, 0x00, 0x40, 0x06, 0x00, 0x44, 
-                0x01, 0x00, 0x02, 0x41, 0x06, 0x00, 
-                0x5A, 0x1E, 0x00, 0x40, 0x08, 0x00, 
-                0x58, 0x61
-            ])
-        tokens, historic = compileGrammarService.compile(code)
-        generator = CodeGenerator(tokens)
-
-        generator.compile()
-        string_of_bytes = generator.bytecode
-
-        self.assertEqual(string_of_bytes.hex(), byte_stream.hex())
-
     def test_factorial_with_repeat(self):
         code = """
             PROGRAM
             VAR x : INTEGER;
-            VAR fact : INTEGER;
+            VAR y : INTEGER;
+            VAR z : INTEGER;
             BEGIN
                 READ x;
-                IF 0<x THEN
-                    fact := 1;
+                IF x > 0 THEN
+                    y := 1;
+                    z := 1;
                     REPEAT
-                        BEGIN
-                            fact :=fact*x;
-                            x := x - 1
-                        END
-                    UNTIL x IS 0 ;
-                    WRITE fact
+                    BEGIN
+                        y := y * x;
+                        x := x - z
+                    END
+                    UNTIL x = 0;
+                    WRITE y
                 END
             END
         """
 
-        byte_stream = bytes(
-            [
-                0x4F, 0x00, 0x10, 0x5A, 0x0A, 
-                0x00, 0x00, 0x00, 0x00, 0x00, 
-                0x57, 0x41, 0x06, 0x00, 0x44, 
-                0x00, 0x00, 0x40, 0x06, 0x00, 
-                0x24, 0x5C, 0x40, 0x00, 0x44, 
-                0x01, 0x00, 0x41, 0x08, 0x00, 
-                0x40, 0x08, 0x00, 0x40, 0x06, 
-                0x00, 0x03, 0x41, 0x08, 0x00, 
-                0x40, 0x06, 0x00, 0x44, 0x01, 
-                0x00, 0x02, 0x41, 0x06, 0x00, 
-                0x40, 0x06, 0x00, 0x44, 0x00, 
-                0x00, 0x20, 0x5C, 0x1E, 0x00, 
-                0x40, 0x08, 0x00, 0x58, 0x61
-            ])
+        intermediate_code = [
+                "0: IN 0,0,0",
+                "2: LDC 1,1,0",
+                "3: LDC 2,1,0",
+                "4: MUL 1,1,0",
+                "5: SUB 0,0,2",
+                "6: JNE 0,-3(7)",
+                "7: OUT 1,0,0",
+                "1: JLE 0,6(7)",
+                "8: HALT 0,0,0"
+            ]
         tokens, historic = compileGrammarService.compile(code)
         generator = CodeGenerator(tokens)
 
         generator.compile()
-        string_of_bytes = generator.bytecode
+        string_code = generator.intermediate_code
 
-        self.assertEqual(string_of_bytes.hex(), byte_stream.hex())
+        self.assertListEqual(string_code, intermediate_code)
+
 
 
 if __name__ == '__main__':
