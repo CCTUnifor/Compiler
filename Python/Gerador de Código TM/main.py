@@ -16,7 +16,8 @@ def create_file(b, file_name):
     else:
         f = open(path, 'w') # w from truncate and write in a existent file; b from byte reading
 
-    f.write(b)
+    for line in b:
+        f.write(line + "\n")
     f.close()
     #hexdump misc/saidas/Tiny -C
 

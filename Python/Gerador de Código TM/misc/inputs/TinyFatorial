@@ -4,7 +4,7 @@ VAR y : INTEGER;
 VAR z : INTEGER;
 BEGIN
     READ x;
-    IF x > 0 THEN
+    IF 0 < x THEN
         y := 1;
         z := 1;
         REPEAT
@@ -12,7 +12,7 @@ BEGIN
             y := y * x;
             x := x - z
         END
-        UNTIL x == 0;
+        UNTIL x = 0;
         WRITE y
     END
 END

@@ -130,7 +130,6 @@ class CodeGenerator:
                 self.state = 'IF'
             
             elif token.unit.text == 'WHILE':
-                raise Exception("TODO - Implementar WHILE")
                 self.state = 'WHILE'
             
             elif token.unit.text == 'REPEAT':
@@ -151,6 +150,9 @@ class CodeGenerator:
                     elif command == "REPEAT":
                         self.state = 'UNTIL'
                         self.end_stack.append(item)
+                    elif command == "WHILE":
+                        cmd = item[2][0] + " " + str(item[2][1]) + "," + str(command_counter - self.command_counter - 1) + "(7)"
+                        self.__write_on_code(cmd)                        
 
                 else:
                     self.__command_builder("HALT", [0])
@@ -186,8 +188,14 @@ class CodeGenerator:
                 self.state = 'main program'            
 
         elif self.state == 'WHILE':
-            self.state = 'main program'
-        
+            self.boolean_exp(token)
+
+            if token.unit.text == 'BEGIN':
+                self.end_stack.append((self.command_counter, "WHILE", self.command_cache))
+                self.command_cache = []
+
+                self.state = 'main program'                
+
         elif self.state == 'ATRIB':
             algebric_operator = CodeGenerator.algebric_operator_regex.match(token.unit.text)
             

@@ -7,11 +7,11 @@ BEGIN
     IF x > 0 THEN
         y := 1;
         z := 1;
-        WHILE x != 0
+        WHILE x != 0 DO
         BEGIN
             y := y * x;
             x := x - z
-        END
+        END;
         WRITE y
     END
 END
