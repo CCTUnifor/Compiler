@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using MyCompiler.CodeGenerator.Code;
-using MyCompiler.CodeGenerator.Code.Instructions;
+﻿using MyCompiler.CodeGenerator.Code.Instructions;
 
-namespace MyCompiler.CodeGenerator.Code
+namespace MyCompiler.CodeGenerator.Code.Factories
 {
     public static class CmsCodeFactory
     {

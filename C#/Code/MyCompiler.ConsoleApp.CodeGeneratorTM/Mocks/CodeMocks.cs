@@ -6,7 +6,6 @@
                                        "VAR a : INTEGER ; \n" +
                                        "BEGIN \n" +
                                        "	READ ( a ) ;\n" +
-                                       "	WRITE ( a ) ;\n" +
                                        "	IF ( a > 10 ) THEN\n" +
                                        "		WRITE ( a )\n" +
                                        "	END\n" +

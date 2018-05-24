@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using CCTUnifor.Logger;
+using MyCompiler.CodeGenerator.Code.Factories;
 using MyCompiler.CodeGenerator.Enums;
 using MyCompiler.CodeGenerator.Interfaces;
 using MyCompiler.CodeGenerator.StatmentHandlers.TM;
@@ -26,6 +27,8 @@ namespace MyCompiler.CodeGenerator
         public TinyCodeGeneratorState GeneratorState { get; set; }
         public int[] Registradores { get; set; }
         public Dictionary<Token, int> VarDictionary { get; set; }
+        public Stack<Token> Stack { get; set; }
+        public Stack<IfBackpackItem> IfBackpack { get; set; }
 
         public TmCodeGenerator(TopDownParser parser, string input)
         {
@@ -35,6 +38,8 @@ namespace MyCompiler.CodeGenerator
             Instructions = new List<string>();
             Registradores = new int[8];
             VarDictionary = new Dictionary<Token, int>();
+            Stack = new Stack<Token>();
+            IfBackpack = new Stack<IfBackpackItem>();
         }
 
         public void Generator()
@@ -45,7 +50,7 @@ namespace MyCompiler.CodeGenerator
         }
 
         private void End()
-            => Instructions.Add(InstructionFactory.Halt(Instructions.Count));
+            => Instructions.Add(InstructionFactory.Halt(InstructionLine));
 
         private void Header()
         {
@@ -84,12 +89,12 @@ namespace MyCompiler.CodeGenerator
                         case TinyCodeGeneratorState.Write:
                             statmentHandler = new WriteStatmentTMHandler();
                             break;
-                        //case TinyCodeGeneratorState.If:
-                        //    statmentHandler = new IfStatmentHandler();
-                        //    break;
-                        //case TinyCodeGeneratorState.End:
-                        //    statmentHandler = new EndStatmentHandler();
-                        //    break;
+                        case TinyCodeGeneratorState.If:
+                            statmentHandler = new IfStatmentTMHandler();
+                            break;
+                        case TinyCodeGeneratorState.End:
+                            statmentHandler = new EndStatmentTMHandler();
+                            break;
                         //case TinyCodeGeneratorState.While:
                         //    statmentHandler = new WhileStatmentHandler();
                         //    break;
@@ -114,7 +119,7 @@ namespace MyCompiler.CodeGenerator
 
         public void Export()
         {
-            var file = $"Logs/fonte";
+            var file = $"fonte";
             var path = $"{file}.tm";
 
             using (var fs = new StreamWriter(path))
@@ -152,6 +157,8 @@ namespace MyCompiler.CodeGenerator
             Console.ReadLine();
         }
 
+        public int InstructionLine => Instructions.Count;
+
         public void MoveNextToken() => Token = Tokenization.GetTokenIgnoreSpace();
         public void RemoveParentheses<T>() where T : Token
         {
@@ -160,37 +167,5 @@ namespace MyCompiler.CodeGenerator
             if (Token is T)
                 MoveNextToken();
         }
-    }
-
-    internal static class InstructionFactory
-    {
-        public static string Halt(int line) => $"{line}: {OpCodeTM.HALT} 0,0,0";
-
-        public static string Read(int line, int reg) => $"{line}: {OpCodeTM.IN} {reg},0,0";
-
-        public static string Write(int line, int reg) => $"{line}: {OpCodeTM.OUT} {reg},0,0";
-    }
-
-    public enum OpCodeTM
-    {
-        HALT,
-        IN,
-        OUT,
-        ADD,
-        SUB,
-        MUL,
-        DIV,
-
-        LD,
-        LDA,
-        LDC,
-        ST,
-        JLT,
-
-        JLE,
-        JGE,
-        JGT,
-        JEQ,
-        JNE
     }
 }
