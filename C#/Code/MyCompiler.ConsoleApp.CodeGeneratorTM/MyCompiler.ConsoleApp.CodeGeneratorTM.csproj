@@ -5,6 +5,11 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
 
+    <PropertyGroup>
+        <RuntimeIdentifiers>win10-x64;ubuntu.16.10-x64</RuntimeIdentifiers>
+        <Win32Resource />
+    </PropertyGroup>
+
   <ItemGroup>
     <None Remove="grammars\grammar(0).txt" />
     <None Remove="grammars\_grammar(0).txt" />
