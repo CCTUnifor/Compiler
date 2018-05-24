@@ -27,7 +27,7 @@ namespace MyCompiler.ConsoleApp.CodeGeneratorTM
             try
             {
                 var grammar = Read("Grammar", GrammarMocks.Grammar1);
-                var input = Read("Code", CodeMocks.Input1);
+                var input = Read("Code", CodeMocks.Fatorial);
 
                 var parser = new TopDownParser(grammar);
                 parser.Parser(input);

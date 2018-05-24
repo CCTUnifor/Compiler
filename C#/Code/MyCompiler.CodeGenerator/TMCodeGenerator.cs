@@ -29,6 +29,7 @@ namespace MyCompiler.CodeGenerator
         public Dictionary<Token, int> VarDictionary { get; set; }
         public Stack<Token> Stack { get; set; }
         public Stack<IfBackpackItem> IfBackpack { get; set; }
+        public Stack<RepeatBackpack> RepeatBackpack { get; set; }
 
         public TmCodeGenerator(TopDownParser parser, string input)
         {
@@ -40,6 +41,7 @@ namespace MyCompiler.CodeGenerator
             VarDictionary = new Dictionary<Token, int>();
             Stack = new Stack<Token>();
             IfBackpack = new Stack<IfBackpackItem>();
+            RepeatBackpack = new Stack<RepeatBackpack>();
         }
 
         public void Generator()
@@ -101,15 +103,16 @@ namespace MyCompiler.CodeGenerator
                         //case TinyCodeGeneratorState.Attribution:
                         //    statmentHandler = new AttributionStatmentHandler();
                         //    break;
-                        //case TinyCodeGeneratorState.Repeat:
-                        //    statmentHandler = new RepeatStatmentHandler();
-                        //    break;
-                        //case TinyCodeGeneratorState.Until:
-                        //    statmentHandler = new UntilStatmentHandler();
-                        //    break;
+                        case TinyCodeGeneratorState.Repeat:
+                            statmentHandler = new RepeatStatmentTMHandler();
+                            break;
+                        case TinyCodeGeneratorState.Until:
+                            statmentHandler = new UntilStatmentTMHandler();
+                            break;
                         default:
                             statmentHandler = new InitialStatmentTMHandler();
                             MoveNextToken();
+                            GeneratorState = TinyCodeGeneratorState.Initial;
                             break;
                     }
                     statmentHandler.Handler(this);

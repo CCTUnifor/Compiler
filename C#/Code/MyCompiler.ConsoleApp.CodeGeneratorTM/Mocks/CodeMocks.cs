@@ -53,5 +53,23 @@
                                        "	WRITE ( max ) ;\n" +
                                        "	WRITE ( min ) \n" +
                                        "END\n";
+
+        public static string Fatorial => "PROGRAM  \n" +
+                                         "VAR r0 : INTEGER ; \n" +
+                                         "VAR r1 : INTEGER ; \n" +
+                                         "VAR r2 : INTEGER ; \n" +
+                                         "BEGIN \n" +
+                                         "	  READ ( r0 ) ;\n" +
+                                         "	  IF ( r0 > 0 ) THEN\n" +
+                                         "	  	  r1 := 1 ;\n" +
+                                         "        r2 := 1\n" +
+                                         "	  END;\n" +
+                                         "    REPEAT\n" +
+                                         "    BEGIN\n" +
+                                         "        r1 := r1 * r0 ;\n" +
+                                         "        r0 := r0 - r2\n" +
+                                         "    END\n" +
+                                         "    UNTIL r0 = 0\n" +
+                                         "END\n";
     }
 }
