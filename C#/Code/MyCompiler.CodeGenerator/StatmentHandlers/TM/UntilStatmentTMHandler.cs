@@ -9,7 +9,7 @@ namespace MyCompiler.CodeGenerator.StatmentHandlers.TM
         {
             generator.MoveNextToken();
 
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
     }
 }
