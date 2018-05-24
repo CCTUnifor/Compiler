@@ -41,10 +41,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Logs\tiny.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Logs\_cms.exe">
+    <None Update="Logs\tm.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

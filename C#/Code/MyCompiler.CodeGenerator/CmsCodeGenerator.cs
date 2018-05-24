@@ -183,7 +183,6 @@ namespace MyCompiler.CodeGenerator
                 var selectMany = Codes.SelectMany(x => x.Bytes).ToArray();
                 foreach (var code in selectMany)
                     fs.WriteByte(code);
-                //fs.WriteByte("FF".ToConvertByte()[0]);
             }
 
             CodeGenerated = file;
@@ -203,15 +202,7 @@ namespace MyCompiler.CodeGenerator
             try
             {
                 using (var exe = Process.Start(info))
-                {
-                    //using (var output = exe.StandardOutput)
-                    //{
-                    //    var line = output.ReadLine();
-                    //    while (line != null)
-                    //        Logger.PrintLn(line);
-                    //}
                     exe.WaitForExit();
-                }
             }
             catch (Exception e)
             {

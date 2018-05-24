@@ -6,6 +6,7 @@
                                        "VAR a : INTEGER ; \n" +
                                        "BEGIN \n" +
                                        "	READ ( a ) ;\n" +
+                                       "	WRITE ( a ) ;\n" +
                                        "	IF ( a > 10 ) THEN\n" +
                                        "		WRITE ( a )\n" +
                                        "	END\n" +
@@ -20,7 +21,7 @@
                                        "		WRITE ( x1 )\n" +
                                        "	END\n" +
                                        "END\n";
-                                       
+
         public static string Input3 => "PROGRAM\n" +
                                        "VAR x1 : INTEGER ;\n" +
                                        "BEGIN\n" +

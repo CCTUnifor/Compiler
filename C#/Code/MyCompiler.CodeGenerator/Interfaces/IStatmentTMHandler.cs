@@ -2,6 +2,6 @@
 {
     public interface IStatmentTMHandler
     {
-        void Handler(TmCodeGenerator);
+        void Handler(TmCodeGenerator generator);
     }
 }

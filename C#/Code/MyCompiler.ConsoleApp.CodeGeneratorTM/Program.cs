@@ -9,6 +9,7 @@ namespace MyCompiler.ConsoleApp.CodeGeneratorTM
 {
     class Program
     {
+
         public static void ConfigConsole()
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
@@ -16,7 +17,7 @@ namespace MyCompiler.ConsoleApp.CodeGeneratorTM
             ConsoleTableOptions.DefaultIfNull = "Error";
             Logger.PathToSave = $"Logs/log{CmsCodeGenerator.Milliseconds}.txt";
 
-            Logger.PrintHeader("# Code Generator - CMS");
+            Logger.PrintHeader("# Code Generator - TM");
         }
 
         //[ConfigConsoleAspect]
@@ -31,7 +32,12 @@ namespace MyCompiler.ConsoleApp.CodeGeneratorTM
                 var parser = new TopDownParser(grammar);
                 parser.Parser(input);
 
-                var codeGenerator = new CmsCodeGenerator(parser, input);
+                //var codeGenerator = new CmsCodeGenerator(parser, input);
+                //codeGenerator.Generator();
+                //codeGenerator.Export();
+                //codeGenerator.ExecuteVM();
+
+                var codeGenerator = new TmCodeGenerator(parser, input);
                 codeGenerator.Generator();
                 codeGenerator.Export();
                 codeGenerator.ExecuteVM();
