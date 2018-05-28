@@ -1,14 +1,15 @@
 ﻿using System;
+using System.IO;
 using CCTUnifor.ConsoleTable;
 using CCTUnifor.Logger;
 using MyCompiler.CodeGenerator;
-using MyCompiler.ConsoleApp.CodeGeneratorCMS.Mocks;
 using MyCompiler.Parser;
 
-namespace MyCompiler.ConsoleApp.CodeGeneratorCMS
+namespace MyCompiler.ConsoleApp.CodeGeneratorTM
 {
     class Program
     {
+
         public static void ConfigConsole()
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
@@ -16,22 +17,24 @@ namespace MyCompiler.ConsoleApp.CodeGeneratorCMS
             ConsoleTableOptions.DefaultIfNull = "Error";
             Logger.PathToSave = $"Logs/log{CmsCodeGenerator.Milliseconds}.txt";
 
-            Logger.PrintHeader("# Code Generator - CMS");
+            Logger.PrintHeader("# Code Generator - TM");
         }
 
         //[ConfigConsoleAspect]
         private static void Main(string[] args)
         {
-            ConfigConsole();
             try
             {
-                var grammar = Read("Grammar", GrammarMocks.Grammar1);
-                var input = Read("Code", CodeMocks.Input1);
+                const string grammarFile = "grammar(0).txt";
+                const string inputFile = "input(0).txt";
+
+                var grammar = Read("Grammar", $"grammars/{grammarFile}");
+                var input = Read("Input", $"inputs/{inputFile}");
 
                 var parser = new TopDownParser(grammar);
                 parser.Parser(input);
 
-                var codeGenerator = new CmsCodeGenerator(parser, input);
+                var codeGenerator = new TmCodeGenerator(parser, input);
                 codeGenerator.Generator();
                 codeGenerator.Export();
                 codeGenerator.ExecuteVM();
@@ -44,9 +47,11 @@ namespace MyCompiler.ConsoleApp.CodeGeneratorCMS
             Console.ReadLine();
         }
 
-        private static string Read(string type, string content)
+        private static string Read(string type, string path)
         {
-            var code = content;
+
+            var input = new StreamReader($"{path}");
+            var code = input.ReadToEnd();
 
             Logger.PrintHeader(type);
             Logger.PrintLn(code);
@@ -55,4 +60,3 @@ namespace MyCompiler.ConsoleApp.CodeGeneratorCMS
         }
     }
 }
-

@@ -1,8 +1,8 @@
-﻿using MyCompiler.CodeGenerator.Code;
+﻿using MyCompiler.CodeGenerator.Code.Factories;
 using MyCompiler.CodeGenerator.Enums;
 using MyCompiler.CodeGenerator.Interfaces;
 
-namespace MyCompiler.CodeGenerator.StatmentHandlers
+namespace MyCompiler.CodeGenerator.StatmentHandlers.CMS
 {
     public class AttributionStatmentHandler : IStatmentHandler
     {
@@ -13,7 +13,7 @@ namespace MyCompiler.CodeGenerator.StatmentHandlers
 
             var token = generator.AttributionTokenStack.Pop();
             generator.AddCode(CmsCodeFactory.STO(generator.VariableArea[token.Value]));
-            generator.State = CmsCodeState.Initial;
+            generator.GeneratorState = TinyCodeGeneratorState.Initial;
         }
     }
 }

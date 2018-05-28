@@ -1,0 +1,68 @@
+## exemplo 1
+PROGRAM  
+VAR a : INTEGER ; 
+BEGIN 
+	READ ( a ) ;
+	IF ( a > 10 ) THEN
+		WRITE ( a )
+	END
+END
+
+## exemplo 2
+PROGRAM
+VAR x1 : INTEGER ;
+BEGIN
+	WHILE x1 < 100 DO
+	BEGIN
+		x1 := x1 + 1 ;
+		WRITE ( x1 )
+	END
+END
+
+## exemplo 3
+PROGRAM
+VAR x1 : INTEGER ;
+BEGIN
+	REPEAT
+	BEGIN
+		x1 := x1 + 1 ;
+		WRITE ( x1 )
+	END
+	UNTIL x1 < 100
+END
+
+## exemplo 4
+PROGRAM
+VAR num : INTEGER ;
+VAR max : INTEGER ;
+VAR min : INTEGER ;
+BEGIN
+	READ ( num ) ;
+	max := num ;
+	min := num ;
+	WHILE num != 999 DO
+	BEGIN
+		IF num > max THEN 
+			max := num 
+		END ;
+		IF num < min THEN
+			min := num
+		END ;
+		READ ( num )
+	END ;
+	WRITE ( max ) ;
+	WRITE ( min ) 
+END
+
+## maior valor
+PROGRAM
+VAR num : INTEGER ;
+VAR num2 : INTEGER ;
+VAR max : INTEGER ;
+BEGIN
+	READ ( num ) ;
+	READ ( num2 ) ;
+	IF num > num2 THEN max := num END ;
+	IF num2 > num THEN max := num2 END ;
+	WRITE ( max )
+END

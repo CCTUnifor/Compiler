@@ -3,7 +3,7 @@ using MyCompiler.CodeGenerator.Interfaces;
 using MyCompiler.Grammar.Tokens.Terminals;
 using MyCompiler.Tokenization.TopDown;
 
-namespace MyCompiler.CodeGenerator.StatmentHandlers
+namespace MyCompiler.CodeGenerator.StatmentHandlers.CMS
 {
     public class InitialStatmentHandler : IStatmentHandler
     {
@@ -12,41 +12,41 @@ namespace MyCompiler.CodeGenerator.StatmentHandlers
             switch (generator.Token)
             {
                 case ReadToken token:
-                    generator.State = CmsCodeState.Read;
+                    generator.GeneratorState = TinyCodeGeneratorState.Read;
                     break;
                 case WriteToken token:
-                    generator.State = CmsCodeState.Write;
+                    generator.GeneratorState = TinyCodeGeneratorState.Write;
                     break;
                 case IfToken token:
-                    generator.State = CmsCodeState.If;
+                    generator.GeneratorState = TinyCodeGeneratorState.If;
                     generator.TokenStack.Push(generator.Token);
                     break;
                 case WhileToken token:
-                    generator.State = CmsCodeState.While;
+                    generator.GeneratorState = TinyCodeGeneratorState.While;
                     generator.TokenStack.Push(generator.Token);
                     break;
                 case AttributionToken token:
-                    generator.State = CmsCodeState.Attribution;
+                    generator.GeneratorState = TinyCodeGeneratorState.Attribution;
                     break;
                 case EndToken token:
-                    generator.State = CmsCodeState.End;
+                    generator.GeneratorState = TinyCodeGeneratorState.End;
                     break;
                 case IdentifierToken token:
                     generator.MoveNextToken();
                     if (generator.Token is AttributionToken)
                     {
                         generator.AttributionTokenStack.Push(token);
-                        generator.State = CmsCodeState.Attribution;
+                        generator.GeneratorState = TinyCodeGeneratorState.Attribution;
                     }
                     //else
-                    //    generator.State = CmsCodeState.Identifier;
+                    //    generator.GeneratorState = TinyCodeGeneratorState.Identifier;
                     break;
                 case RepeatToken token:
-                    generator.State = CmsCodeState.Repeat;
+                    generator.GeneratorState = TinyCodeGeneratorState.Repeat;
                     //generator.TokenStack.Push(generator.Token);
                     break;
                 case UntilToken token:
-                    generator.State = CmsCodeState.Until;
+                    generator.GeneratorState = TinyCodeGeneratorState.Until;
                     break;
                 default:
                     generator.MoveNextToken();

@@ -6,9 +6,10 @@ using System.Linq;
 using CCTUnifor.Logger;
 using MyCompiler.CodeGenerator.Aspects;
 using MyCompiler.CodeGenerator.Code;
+using MyCompiler.CodeGenerator.Code.Factories;
 using MyCompiler.CodeGenerator.Enums;
 using MyCompiler.CodeGenerator.Interfaces;
-using MyCompiler.CodeGenerator.StatmentHandlers;
+using MyCompiler.CodeGenerator.StatmentHandlers.CMS;
 using MyCompiler.Core.Exceptions;
 using MyCompiler.Core.Extensions;
 using MyCompiler.Core.Interfaces;
@@ -29,7 +30,7 @@ namespace MyCompiler.CodeGenerator
         public Dictionary<string, CmsCode> VariableArea { get; set; }
         private CmsCode StopReference { get; set; }
         public Token Token { get; set; }
-        public CmsCodeState State { get; set; }
+        public TinyCodeGeneratorState GeneratorState { get; set; }
         public string CodeGenerated { get; set; }
 
 
@@ -110,37 +111,37 @@ namespace MyCompiler.CodeGenerator
 
         private void HandlerBody()
         {
-            State = CmsCodeState.Initial;
+            GeneratorState = TinyCodeGeneratorState.Initial;
             while (Token != null)
             {
                 IStatmentHandler statmentHandler;
-                switch (State)
+                switch (GeneratorState)
                 {
-                    case CmsCodeState.Initial:
+                    case TinyCodeGeneratorState.Initial:
                         statmentHandler = new InitialStatmentHandler();
                         break;
-                    case CmsCodeState.Read:
+                    case TinyCodeGeneratorState.Read:
                         statmentHandler = new ReadStatmentHandler();
                         break;
-                    case CmsCodeState.Write:
+                    case TinyCodeGeneratorState.Write:
                         statmentHandler = new WriteStatmentHandler();
                         break;
-                    case CmsCodeState.If:
+                    case TinyCodeGeneratorState.If:
                         statmentHandler = new IfStatmentHandler();
                         break;
-                    case CmsCodeState.End:
+                    case TinyCodeGeneratorState.End:
                         statmentHandler = new EndStatmentHandler();
                         break;
-                    case CmsCodeState.While:
+                    case TinyCodeGeneratorState.While:
                         statmentHandler = new WhileStatmentHandler();
                         break;
-                    case CmsCodeState.Attribution:
+                    case TinyCodeGeneratorState.Attribution:
                         statmentHandler = new AttributionStatmentHandler();
                         break;
-                    case CmsCodeState.Repeat:
+                    case TinyCodeGeneratorState.Repeat:
                         statmentHandler = new RepeatStatmentHandler();
                         break;
-                    case CmsCodeState.Until:
+                    case TinyCodeGeneratorState.Until:
                         statmentHandler = new UntilStatmentHandler();
                         break;
                     default:
@@ -183,7 +184,6 @@ namespace MyCompiler.CodeGenerator
                 var selectMany = Codes.SelectMany(x => x.Bytes).ToArray();
                 foreach (var code in selectMany)
                     fs.WriteByte(code);
-                //fs.WriteByte("FF".ToConvertByte()[0]);
             }
 
             CodeGenerated = file;
@@ -203,15 +203,7 @@ namespace MyCompiler.CodeGenerator
             try
             {
                 using (var exe = Process.Start(info))
-                {
-                    //using (var output = exe.StandardOutput)
-                    //{
-                    //    var line = output.ReadLine();
-                    //    while (line != null)
-                    //        Logger.PrintLn(line);
-                    //}
                     exe.WaitForExit();
-                }
             }
             catch (Exception e)
             {

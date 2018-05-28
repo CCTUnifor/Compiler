@@ -3,7 +3,7 @@ using MyCompiler.CodeGenerator.Enums;
 using MyCompiler.CodeGenerator.Interfaces;
 using MyCompiler.Grammar.Tokens.Terminals;
 
-namespace MyCompiler.CodeGenerator.StatmentHandlers
+namespace MyCompiler.CodeGenerator.StatmentHandlers.CMS
 {
     public class EndStatmentHandler : IStatmentHandler
     {
@@ -25,7 +25,7 @@ namespace MyCompiler.CodeGenerator.StatmentHandlers
             }
 
             generator.MoveNextToken();
-            generator.State = CmsCodeState.Initial;
+            generator.GeneratorState = TinyCodeGeneratorState.Initial;
         }
     }
 }

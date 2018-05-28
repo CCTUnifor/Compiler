@@ -1,0 +1,8 @@
+PROGRAM
+VAR a : INTEGER ;
+BEGIN
+	READ ( a ) ;
+	IF ( a > 0 ) THEN
+		WRITE ( a )
+	END
+END

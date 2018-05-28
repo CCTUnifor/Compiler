@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using MyCompiler.CodeGenerator.Code;
+﻿using MyCompiler.CodeGenerator.Code.Factories;
 using MyCompiler.CodeGenerator.Enums;
 using MyCompiler.CodeGenerator.Interfaces;
-using MyCompiler.Grammar;
-using MyCompiler.Grammar.Tokens;
 using MyCompiler.Grammar.Tokens.Terminals;
 
-namespace MyCompiler.CodeGenerator.StatmentHandlers
+namespace MyCompiler.CodeGenerator.StatmentHandlers.CMS
 {
     public class ReadStatmentHandler : IStatmentHandler
     {
@@ -20,9 +15,9 @@ namespace MyCompiler.CodeGenerator.StatmentHandlers
             generator.AddCode(CmsCodeFactory.STO(generator.VariableArea[generator.Token.Value]));
             generator.RemoveParentheses<CloseParenthesesToken>();
 
-            generator.State = CmsCodeState.Initial;
+            generator.GeneratorState = TinyCodeGeneratorState.Initial;
         }
 
-        
+
     }
 }

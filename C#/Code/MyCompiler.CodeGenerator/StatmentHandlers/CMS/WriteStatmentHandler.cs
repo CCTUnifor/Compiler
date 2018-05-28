@@ -1,9 +1,9 @@
-﻿using MyCompiler.CodeGenerator.Code;
+﻿using MyCompiler.CodeGenerator.Code.Factories;
 using MyCompiler.CodeGenerator.Enums;
 using MyCompiler.CodeGenerator.Interfaces;
 using MyCompiler.Grammar.Tokens.Terminals;
 
-namespace MyCompiler.CodeGenerator.StatmentHandlers
+namespace MyCompiler.CodeGenerator.StatmentHandlers.CMS
 {
     public class WriteStatmentHandler : IStatmentHandler
     {
@@ -14,7 +14,7 @@ namespace MyCompiler.CodeGenerator.StatmentHandlers
             generator.RemoveParentheses<CloseParenthesesToken>();
 
             generator.AddCode(CmsCodeFactory.OUT);
-            generator.State = CmsCodeState.Initial;
+            generator.GeneratorState = TinyCodeGeneratorState.Initial;
         }
     }
 }
