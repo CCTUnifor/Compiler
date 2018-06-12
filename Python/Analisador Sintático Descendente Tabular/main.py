@@ -17,6 +17,7 @@ grammar_name = "SXYZ"
 grammar_name = "SAB"
 grammar_name = "ETF"
 grammar_name = "Tiny"
+grammar_name = "SLE"
 
 grammar_file_name = grammar_file_directory + grammar_name
 input_file_name = input_file_directory + grammar_name

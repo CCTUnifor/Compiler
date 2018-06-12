@@ -1,0 +1,11 @@
+N = {E,E',S,L,L'}
+Sigma = {begin,end,ide,;,¬,v,:=}
+S = {S}
+P = {
+    S -> begin L end | ide := E
+    L -> S L'
+    L'-> ; S L' | ɛ
+    E -> ¬ E E' | ide E'
+    E'-> v E E' | ɛ
+}
+a gramática possui um loop infinito na hora de fazer o follow de E e E'.
